@@ -20,7 +20,7 @@ namespace UnityEditor.UI
             GameObject element = new GameObject("RaycastArea");
             RectTransform rectTransform = element.AddComponent<RectTransform>();
 
-            element.AddComponent<SCFramework.RaycastArea>();
+            element.AddComponent<PTGame.Framework.RaycastArea>();
 
             Undo.RegisterCreatedObjectUndo(element, "Create " + element.name);
             Undo.SetTransformParent(element.transform, parent.transform, "Parent " + element.name);

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 
-namespace SCFramework.Editor
+namespace PTGame.Framework.Editor
 {
     public class AppConfigEditor
     {

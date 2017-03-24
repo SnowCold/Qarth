@@ -115,7 +115,7 @@ namespace PTGame.Framework
                     if (readparm.tableInfo.fileName.StartsWith("Language")
                     && (PlatDefine.PlatformType == (int)PlatDelegateFactory.PlatformType.Android_AviaNA))
                     {
-                    string languageAbsPath = m_SdcardPath + "/Download/com.lingren.ttzj/Config/" + readparm.tableInfo.fileName + ".SCFrameworkgb";
+                    string languageAbsPath = m_SdcardPath + "/Download/com.lingren.ttzj/Config/" + readparm.tableInfo.fileName + ".PTGame.Frameworkgb";
                     if (File.Exists(languageAbsPath))
                     {
                     byte[] langData = FileMgr.S.ReadSyncByAbsoluteFilePath(languageAbsPath);
@@ -159,14 +159,14 @@ namespace PTGame.Framework
         {
             byte[] plainText;
 #if USE_TABLE_XC
-            SCFrameworkgFile SCFrameworkgFile = new SCFrameworkgFile();
-            SCFrameworkgFile.Read(readParams.fileData);
+            PTGame.FrameworkgFile PTGame.FrameworkgFile = new PTGame.FrameworkgFile();
+            PTGame.FrameworkgFile.Read(readParams.fileData);
 
-            if (!m_CryptoHelper.RsaVerify(SCFrameworkgFile.FileData, SCFrameworkgFile.RasText))
+            if (!m_CryptoHelper.RsaVerify(PTGame.FrameworkgFile.FileData, PTGame.FrameworkgFile.RasText))
             {
                 Log.iError("RsaVerify Fail");
             }
-            byte[] plainZipText = m_CryptoHelper.DesDecrypt(SCFrameworkgFile.FileData);
+            byte[] plainZipText = m_CryptoHelper.DesDecrypt(PTGame.FrameworkgFile.FileData);
             //解压
             using (MemoryStream ms = new MemoryStream(plainZipText))
             {

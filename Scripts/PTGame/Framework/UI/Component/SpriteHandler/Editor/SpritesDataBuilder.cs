@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using System.IO;
 
-namespace SCFramework.Editor
+namespace PTGame.Framework.Editor
 {
     public class SpritesDataBuilder
     {

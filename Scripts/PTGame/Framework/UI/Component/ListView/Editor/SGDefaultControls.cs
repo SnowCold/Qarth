@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using SCFramework;
+using PTGame.Framework;
 
 namespace UnityEngine.UI
 {

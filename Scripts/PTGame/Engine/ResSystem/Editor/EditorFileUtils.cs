@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace SCFramework.Editor
+namespace PTGame.Framework.Editor
 {
     public class EditorFileUtils
     {

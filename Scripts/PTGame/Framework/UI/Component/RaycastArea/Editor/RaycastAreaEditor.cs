@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace SCFramework
+namespace PTGame.Framework
 {
     [CustomEditor(typeof(RaycastArea), false)]
     [CanEditMultipleObjects]

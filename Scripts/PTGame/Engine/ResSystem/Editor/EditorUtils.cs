@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using Object = UnityEngine.Object;
 
-namespace SCFramework.Editor
+namespace PTGame.Framework.Editor
 {
 
     public class EditorUtils

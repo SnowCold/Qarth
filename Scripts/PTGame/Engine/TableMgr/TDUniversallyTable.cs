@@ -282,7 +282,7 @@ namespace PTGame.Framework
             int key = memberInstance.listData[m_SchemeHeader.GetFieldTypeIndex("Id")];
             if (m_DataCache.ContainsKey(key))
             {
-                Log.e(string.Format("Invaild,  TD{0}Table Id aSCFrameworkeady exists {1}", m_SchemeHeader.tableName, key));
+                Log.e(string.Format("Invaild,  TD{0}Table Id aPTGame.Frameworkeady exists {1}", m_SchemeHeader.tableName, key));
             }
             else
             {
