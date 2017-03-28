@@ -40,7 +40,9 @@ namespace PTGame.Framework
                 return null;
             }
 
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            FileInfo fileInfo = new FileInfo(path);
+
+            using (FileStream fs = fileInfo.OpenRead())
             {
                 System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
                 object data = bf.Deserialize(fs);
@@ -85,7 +87,9 @@ namespace PTGame.Framework
                 return null;
             }
 
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            FileInfo fileInfo = new FileInfo(path);
+
+            using (FileStream fs = fileInfo.OpenRead())
             {
                 XmlSerializer xmlserializer = new XmlSerializer(typeof(T));
                 object data = xmlserializer.Deserialize(fs);
