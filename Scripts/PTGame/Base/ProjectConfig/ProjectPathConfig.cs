@@ -8,7 +8,7 @@ namespace PTGame.Framework
     public class ProjectPathConfig
     {
         #region 工程目录
-        public const string APP_CONFIG_PATH = "Resources/Demo/Config/AppConfig";
+        public const string APP_CONFIG_PATH = "Resources/Config/AppConfig";
         #endregion
 
         #region UIRoot

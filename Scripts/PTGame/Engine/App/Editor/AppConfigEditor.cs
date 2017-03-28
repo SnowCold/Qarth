@@ -16,7 +16,7 @@ namespace PTGame.Framework.Editor
 
             AppConfig data = null;
             string folderPath = EditorUtils.GetSelectedDirAssetsPath();
-            string spriteDataPath = folderPath + "AppConfig.asset";
+            string spriteDataPath = folderPath + "/AppConfig.asset";
 
             data = AssetDatabase.LoadAssetAtPath<AppConfig>(spriteDataPath);
             if (data == null)
@@ -24,7 +24,7 @@ namespace PTGame.Framework.Editor
                 data = ScriptableObject.CreateInstance<AppConfig>();
                 AssetDatabase.CreateAsset(data, spriteDataPath);
             }
-
+            Log.i("Create App Config In Folder:" + spriteDataPath);
             EditorUtility.SetDirty(data);
             AssetDatabase.SaveAssets();
         }
