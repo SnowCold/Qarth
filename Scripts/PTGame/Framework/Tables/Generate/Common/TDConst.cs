@@ -31,7 +31,6 @@ namespace PTGame.Framework
 
         public void ReadRow(DataStreamReader dataR, int[] filedIndex)
         {
-          var schemeNames = dataR.GetSchemeName();
           int col = 0;
           while(true)
           {
