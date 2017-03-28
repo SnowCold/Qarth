@@ -14,7 +14,7 @@ namespace PTGame.Framework
             return "config/" + fileName + ".txt";
 #endif
         }
-
+        /*
         public static void CacheNewField(DataStreamReader dataR, string fieldName,  Dictionary<string, TDUniversally.FieldData> fieldCacheDict)
         {
             if (fieldCacheDict.ContainsKey(fieldName) == false)
@@ -42,6 +42,7 @@ namespace PTGame.Framework
                 }
             }
         }
+        */
     }
 }
 

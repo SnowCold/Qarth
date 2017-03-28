@@ -42,7 +42,7 @@ namespace PTGame.Framework
             return 0;
         }
     }
-
+    /*
     public partial class TDUniversally
     {
         [StructLayout(LayoutKind.Explicit)]
@@ -326,4 +326,5 @@ namespace PTGame.Framework
             }
         }
     }
+    */
 }

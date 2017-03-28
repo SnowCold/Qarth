@@ -13,9 +13,7 @@ namespace PTGame.Framework
         private EInt m_Id = 0;
         private string m_Key;
         private string m_Value;
-      
-      private Dictionary<string, TDUniversally.FieldData> m_DataCacheNoGenerate = new Dictionary<string, TDUniversally.FieldData>();
-      
+
         /// <summary>
         /// 序号
         /// </summary>
@@ -57,7 +55,6 @@ namespace PTGame.Framework
 
                   break;
                 default:
-                  TableHelper.CacheNewField(dataR, schemeNames[col], m_DataCacheNoGenerate);
                   break;
             }
           }
@@ -66,10 +63,6 @@ namespace PTGame.Framework
         
         public DataStreamReader.FieldType GetFieldTypeInNew(string fieldName)
         {
-            if (m_DataCacheNoGenerate.ContainsKey(fieldName))
-            {
-                return m_DataCacheNoGenerate[fieldName].fieldType;
-            }
             return DataStreamReader.FieldType.Unkown;
         }
         

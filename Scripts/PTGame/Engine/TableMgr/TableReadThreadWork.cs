@@ -75,8 +75,7 @@ namespace PTGame.Framework
         {
             if (onParse == null)
             {
-                TDUniversallyTable tdTable = new TDUniversallyTable(tableName);
-                onParse = tdTable.Parse;
+                return;
             }
             var readParam = CreateReadParams (onParse ,tableName);
             m_RequestFilePathQueue.Enqueue(readParam);
