@@ -53,6 +53,12 @@ namespace PTGame.Framework
 
         #region 配置工具相关
         public const string BUILD_CSHARP_WIN_SHELL = "table/output_code_csharp.bat";
+        public const string BUILD_TXT_DATA_WIN_SHELL = "table/output_txt.bat";
+        public const string BUILD_LRG_DATA_WIN_SHELL = "table/output_xc.bat";
+
+        public const string BUILD_CSHARP_LINUX_SHELL = "table/output_code_csharp.sh";
+        public const string BUILD_TXT_DATA_LINUX_SHELL = "table/output_txt.sh";
+        public const string BUILD_LRG_DATA_LINUX_SHELL = "table/output_xc.sh";
 
         public static string GetProjectToolsFolderPath()
         {
