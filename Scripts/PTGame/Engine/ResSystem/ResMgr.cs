@@ -63,7 +63,7 @@ namespace PTGame.Framework
             TryStartNextIEnumeratorTask();
         }
 
-        public IRes GetRes(string name, bool createNew)
+        public IRes GetRes(string name, bool createNew = false)
         {
             IRes res = null;
             if (m_ResDictionary.TryGetValue(name, out res))
@@ -95,6 +95,17 @@ namespace PTGame.Framework
             }
 
             return default(R);
+        }
+
+        public R GetAsset<R>(string name) where R : UnityEngine.Object
+        {
+            IRes res = null;
+            if (m_ResDictionary.TryGetValue(name, out res))
+            {
+                return res.asset as R;
+            }
+
+            return null;
         }
 
 #endregion

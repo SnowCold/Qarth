@@ -93,7 +93,8 @@ namespace PTGame.Framework
             }
 
             m_ExecuteContainer = null;
-            Destroy(gameObject);
+
+            actor.RemoveCom(this);
         }
     }
 }

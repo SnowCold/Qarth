@@ -143,6 +143,22 @@ namespace PTGame.Framework
             }
         }
 
+        public void RemoveCom(ICom com)
+        {
+            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
+            {
+                if (m_ComponentList[i] == com)
+                {
+                    m_ComponentList.RemoveAt(i);
+                    m_ComsNameList.RemoveAt(i);
+                    OnRemoveCom(com);
+
+                    DestroyCom(com);
+                    return;
+                }
+            }
+        }
+
         public T GetCom<T>() where T : ICom
         {
             for (int i = m_ComponentList.Count - 1; i >= 0; --i)
