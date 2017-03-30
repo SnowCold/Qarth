@@ -50,5 +50,14 @@ namespace PTGame.Framework
 
         public const string EXPORT_ASSETBUNDLE_CONFIG_PATH = "asset_bindle_config.bin";
         #endregion
+
+        #region 配置工具相关
+        public const string BUILD_CSHARP_WIN_SHELL = "table/output_code_csharp.bat";
+
+        public static string GetProjectToolsFolderPath()
+        {
+            return Application.dataPath + "/../../../Tools/";
+        }
+        #endregion
     }
 }
