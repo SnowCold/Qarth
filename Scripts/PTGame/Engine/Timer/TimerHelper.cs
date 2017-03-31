@@ -29,7 +29,7 @@ namespace PTGame.Framework
             {
                 for (int i = m_TimeItemList.Count - 1; i >= 0; --i)
                 {
-                    m_TimeItemList[i].enable = false;
+                    m_TimeItemList[i].Cancel();
                 }
                 
                 m_TimeItemList.Clear();

@@ -58,19 +58,17 @@ namespace PTGame.Framework
             set { m_HeapIndex = value; }
         }
 
-        public bool enable
+        public bool isEnable
         {
             get { return m_IsEnable; }
-            set 
+        }
+
+        public void Cancel()
+        {
+            if (m_IsEnable)
             {
-                if (value != m_IsEnable)
-                {
-                    m_IsEnable = value;
-                    if (!m_IsEnable)
-                    {
-                        m_Callback = null;
-                    }
-                }
+                m_IsEnable = false;
+                m_Callback = null;
             }
         }
 

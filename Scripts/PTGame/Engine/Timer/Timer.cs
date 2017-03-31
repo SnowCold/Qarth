@@ -105,7 +105,7 @@ namespace PTGame.Framework
             #region 不受缩放影响定时器更新
             while ((item = m_UnScaleTimeHeap.Top()) != null)
             {
-                if (!item.enable)
+                if (!item.isEnable)
                 {
                     m_UnScaleTimeHeap.Pop();
                     continue;
@@ -117,7 +117,7 @@ namespace PTGame.Framework
 
                     item.OnTimeTick();
 
-                    if (item.enable && item.NeedRepeat())
+                    if (item.isEnable && item.NeedRepeat())
                     {
                         Post2Really(item);
                     }
@@ -132,7 +132,7 @@ namespace PTGame.Framework
             #region 受缩放影响定时器更新
             while ((item = m_ScaleTimeHeap.Top()) != null)
             {
-                if (!item.enable)
+                if (!item.isEnable)
                 {
                     m_ScaleTimeHeap.Pop();
                     continue;
@@ -144,7 +144,7 @@ namespace PTGame.Framework
 
                     item.OnTimeTick();
 
-                    if (item.enable && item.NeedRepeat())
+                    if (item.isEnable && item.NeedRepeat())
                     {
                         Post2Scale(item);
                     }

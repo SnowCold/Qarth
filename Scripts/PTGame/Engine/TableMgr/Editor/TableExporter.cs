@@ -85,13 +85,56 @@ namespace PTGame.Framework
 
         private static void BuildCSharpThreadStart(string path)
         {
+            if (IsLinuxSystem())
+            {
+                CommandThreadStartLinux(path);
+            }
+            else
+            {
+                CommandThreadStartWin(path);
+            }
+
+        }
+
+        private static void CommandThreadStartLinux(string path)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "/bin/sh";
+            process.StartInfo.CreateNoWindow = false;
+            process.StartInfo.ErrorDialog = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardInput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.Arguments = path + " arg1 arg2";
+
+            process.Start();
+            string outPutstr = process.StandardOutput.ReadToEnd();
+            if (!string.IsNullOrEmpty(outPutstr))
+            {
+                Log.i(outPutstr);
+            }
+
+            process.WaitForExit();
+            process.Close();
+        }
+
+        private static void CommandThreadStartWin(string path)
+        {
             Process process = new Process();
             process.StartInfo.FileName = path;
             process.StartInfo.CreateNoWindow = false;
             process.StartInfo.ErrorDialog = true;
             process.StartInfo.UseShellExecute = false;
+            //process.StartInfo.RedirectStandardOutput = true;
 
             process.Start();
+            string outPutstr = process.StandardOutput.ReadToEnd();
+            if (!string.IsNullOrEmpty(outPutstr))
+            {
+                Log.i(outPutstr);
+            }
+
             process.WaitForExit();
             process.Close();
         }
