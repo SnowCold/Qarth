@@ -10,7 +10,7 @@ namespace PTGame.Framework.Editor
 {
     public class AppConfigEditor
     {
-        [MenuItem("Assets/AppConfig/Build AppConfig")]
+        [MenuItem("Assets/SCEngine/Config/Build AppConfig")]
         public static void BuildAppConfig()
         {
 

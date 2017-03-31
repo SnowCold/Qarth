@@ -26,14 +26,14 @@ namespace PTGame.Framework
         [MenuItem("Assets/SCEngine/Table/Build C#")]
         public static void BuildCSharpFile()
         {
-            string path = ProjectPathConfig.GetProjectToolsFolderPath();
+            string path = ProjectPathConfig.projectToolsFolder;
             if (IsLinuxSystem())
             {
-                path += ProjectPathConfig.BUILD_CSHARP_LINUX_SHELL;
+                path += ProjectPathConfig.buildCSharpLinuxShell;
             }
             else
             {
-                path += ProjectPathConfig.BUILD_CSHARP_WIN_SHELL;
+                path += ProjectPathConfig.buildCSharpWinShell;
             }
 
             Thread newThread = new Thread(new ThreadStart(() =>
@@ -46,14 +46,14 @@ namespace PTGame.Framework
         [MenuItem("Assets/SCEngine/Table/Build Data(txt)")]
         public static void BuildDataTxtMode()
         {
-            string path = ProjectPathConfig.GetProjectToolsFolderPath();
+            string path = ProjectPathConfig.projectToolsFolder;
             if (IsLinuxSystem())
             {
-                path += ProjectPathConfig.BUILD_TXT_DATA_LINUX_SHELL;
+                path += ProjectPathConfig.buildTxtDataLinuxShell;
             }
             else
             {
-                path += ProjectPathConfig.BUILD_TXT_DATA_WIN_SHELL;
+                path += ProjectPathConfig.buildTxtDataWinShell;
             }
 
             Thread newThread = new Thread(new ThreadStart(() =>
@@ -66,14 +66,14 @@ namespace PTGame.Framework
         [MenuItem("Assets/SCEngine/Table/Build Data(lrg)")]
         public static void BuildDataLrgMode()
         {
-            string path = ProjectPathConfig.GetProjectToolsFolderPath();
+            string path = ProjectPathConfig.projectToolsFolder;
             if (IsLinuxSystem())
             {
-                path += ProjectPathConfig.BUILD_LRG_DATA_LINUX_SHELL;
+                path += ProjectPathConfig.buildLrgDataLinuxShell;
             }
             else
             {
-                path += ProjectPathConfig.BUILD_LRG_DATA_WIN_SHELL;
+                path += ProjectPathConfig.buildLrgDataWinShell;
             }
 
             Thread newThread = new Thread(new ThreadStart(() =>

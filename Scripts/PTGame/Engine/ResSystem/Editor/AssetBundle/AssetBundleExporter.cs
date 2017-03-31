@@ -113,14 +113,14 @@ namespace PTGame.Framework.Editor
         {
             Log.i("Start Build All AssetBundles.");
 
-            string exportPath = Application.dataPath + "/" + ProjectPathConfig.EXPORT_ROOT_FOLDER;
+            string exportPath = Application.dataPath + "/" + ProjectPathConfig.exportRootFolder;
 
             if (Directory.Exists(exportPath) == false)
             {
                 Directory.CreateDirectory(exportPath);
             }
 
-            BuildPipeline.BuildAssetBundles("Assets/" + ProjectPathConfig.EXPORT_ROOT_FOLDER, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows);
+            BuildPipeline.BuildAssetBundles("Assets/" + ProjectPathConfig.exportRootFolder, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows);
         }
 #endregion
 
@@ -176,7 +176,7 @@ namespace PTGame.Framework.Editor
             }
 
             abb.assetNames = fileNameList.ToArray();
-            BuildPipeline.BuildAssetBundles(ProjectPathConfig.EXPORT_ROOT_FOLDER,
+            BuildPipeline.BuildAssetBundles(ProjectPathConfig.exportRootFolder,
                 new AssetBundleBuild[1] { abb },
                 BuildAssetBundleOptions.ChunkBasedCompression,
                 BuildTarget.StandaloneWindows);
@@ -210,8 +210,7 @@ namespace PTGame.Framework.Editor
 
             ProcessAssetBundleRes(table);
 
-            string filePath = FilePath.streamingAssetsPath + ProjectPathConfig.EXPORT_ASSETBUNDLE_CONFIG_PATH;
-            table.Save(filePath);
+            table.Save(ProjectPathConfig.exportABConfigFile);
         }
 
         private static void ProcessResourcesRes(AssetDataTable table)
@@ -221,8 +220,8 @@ namespace PTGame.Framework.Editor
 
         private static void ProcessAssetBundleRes(AssetDataTable table)
         {
-            int abIndex = table.AddAssetBundleName(ProjectPathConfig.ABMANIFEST_AB_NAME);
-            table.AddAssetData(new AssetData(ProjectPathConfig.ABMANIFEST_ASSET_NAME, eResType.kABAsset, abIndex));
+            int abIndex = table.AddAssetBundleName(ProjectPathConfig.abManifestABName);
+            table.AddAssetData(new AssetData(ProjectPathConfig.abManifestAssetName, eResType.kABAsset, abIndex));
 
             AssetDatabase.RemoveUnusedAssetBundleNames();
 

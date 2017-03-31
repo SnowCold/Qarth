@@ -27,9 +27,7 @@ namespace PTGame.Framework
 
         public void InitResMgr()
         {
-            string path = FilePath.streamingAssetsPath + ProjectPathConfig.EXPORT_ASSETBUNDLE_CONFIG_PATH;
-
-            AssetDataTable.S.LoadFromFile(path);
+            AssetDataTable.S.LoadFromFile(ProjectPathConfig.exportABConfigFile);
             ABManifestHandler.manifest = ABManifestHandler.LoadInstance();
             Log.i("Init[ResMgr]");
         }

@@ -28,7 +28,7 @@ namespace PTGame.Framework
         {
             ResLoader loader = ResLoader.Allocate();
 
-            AssetBundleManifest manifest = loader.LoadSync(ProjectPathConfig.ABMANIFEST_ASSET_NAME) as AssetBundleManifest;
+            AssetBundleManifest manifest = loader.LoadSync(ProjectPathConfig.abManifestAssetName) as AssetBundleManifest;
 
             loader.UnloadImage(false);
 

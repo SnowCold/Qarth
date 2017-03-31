@@ -5,64 +5,186 @@ using System.Collections.Generic;
 
 namespace PTGame.Framework
 {
-    public class ProjectPathConfig
+    public class ProjectPathConfig : ScriptableObject
     {
-        #region 工程目录
-        public const string APP_CONFIG_PATH = "Resources/Config/AppConfig";
+        public const string DEFAULT_APP_CONFIG_PATH = "Resources/Config/DefaultAppConfig";
+        private const string PROJECT_CONFIG_PATH = "Resources/Config/ProjectConfig";
+        private const string DEFAULT_PROJECT_CONFIG_PATH = "Resources/Config/DefaultProjectConfig";
+        private static ProjectPathConfig s_Instance;
+
+        #region 序列化区域
+
+        [SerializeField]
+        private string m_AppConfigPath = "Resources/Config/AppConfig";
+
+        [SerializeField]
+        private string m_UIRootPath = "Resources/UI/UIRoot";
+
+        [SerializeField]
+        private string m_ABManifestABName = "Assets";
+        [SerializeField]
+        private string m_ABRelativePath = "Assets/";
+        [SerializeField]
+        private string m_ABManifestAssetName = "assetbundlemanifest";
+        [SerializeField]
+        private string m_ExportABConfigFile = "asset_bindle_config.bin";
+
+        #region 配置工具相关
+        [SerializeField]
+        private string m_BuildCSharpWinShell = "table/output_code_csharp.bat";
+        [SerializeField]
+        public string m_BuildTxtDataWinShell = "table/output_txt.bat";
+        [SerializeField]
+        public string m_BuildLrgDataWinShell = "table/output_xc.bat";
+        [SerializeField]
+        public string m_BuildCSharpLinuxShell = "table/output_code_csharp.sh";
+        [SerializeField]
+        public string m_BuildTxtDataLinuxShell = "table/output_txt.sh";
+        [SerializeField]
+        public string m_BuildLrgDataLinuxShell = "table/output_xc.sh";
+
+        [SerializeField]
+        private string m_ProjectToolsFolder = "/../../../Tools/";
         #endregion
 
-        #region UIRoot
-        public const string UI_ROOT_PATH = "Resources/UI/UIRoot";
         #endregion
+
+        private static string ResourcesPath2Path(string path)
+        {
+            return path.Substring(10);
+        }
+
+        private static ProjectPathConfig LoadInstance()
+        {
+            UnityEngine.Object obj = Resources.Load(ResourcesPath2Path(PROJECT_CONFIG_PATH));
+
+            if (obj == null)
+            {
+                Log.w("Not Find Project Config File, Try Load Default Config.");
+
+                obj = Resources.Load(ResourcesPath2Path(DEFAULT_PROJECT_CONFIG_PATH));
+
+                if (obj == null)
+                {
+                    Log.e("Not Find Default Project Config File!");
+                    return null;
+                }
+            }
+
+            Log.i("Success Load Project Config.");
+
+            s_Instance = obj as ProjectPathConfig;
+
+            return s_Instance;
+        }
+
+        public static ProjectPathConfig S
+        {
+            get
+            {
+                if (s_Instance == null)
+                {
+                    s_Instance = LoadInstance();
+                }
+
+                return s_Instance;
+            }
+        }
+
+        public static void Reset()
+        {
+            Resources.UnloadAsset(s_Instance);
+            s_Instance = null;
+        }
+
+        public static string appConfigPath
+        {
+            get
+            {
+                return S.m_AppConfigPath;
+            }
+        }
+
+        public static string uiRootPath
+        {
+            get
+            {
+                return S.m_UIRootPath;
+            }
+        }
 
         #region AssetBundle 相关
 
-        public const string ABMANIFEST_AB_NAME = "putao";
-        public const string AB_RELATIVE_PATH = "abc/asd/putao/";
-        public const string ABMANIFEST_ASSET_NAME = "assetbundlemanifest";
+        public static string abManifestABName
+        {
+            get
+            {
+                return S.m_ABManifestABName;
+            }
+        }
+
+        public static string abManifestAssetName
+        {
+            get { return S.m_ABManifestAssetName; }
+        }
 
         public static string AssetBundleUrl2Name(string url)
         {
-            string parren = FilePath.streamingAssetsPath + AB_RELATIVE_PATH;
+            string parren = FilePath.streamingAssetsPath + S.m_ABRelativePath;
             return url.Replace(parren, "");
         }
 
         public static string AssetBundleName2Url(string name)
         {
-            string parren = FilePath.streamingAssetsPath + AB_RELATIVE_PATH;
+            string parren = FilePath.streamingAssetsPath + S.m_ABRelativePath;
             return parren + name;
         }
 
-        //导入目录
-        public const string IMPORT_ROOT_FOLDER = "Assets/Resources/Engine";
-
-        private const string IMPORT_TEXTURE_ROOT_FOLDER = "Assets/Resources/Engine/Texture";
-        private const string IMPORT_UI_ROOT_FOLDER = "Assets/Resources/Engine/UI";
-
-        public static string[] IMPORT_ROOT_FOLDERS =
-        {
-            IMPORT_TEXTURE_ROOT_FOLDER,
-            IMPORT_UI_ROOT_FOLDER
-        };
-
         //导出目录
-        public const string EXPORT_ROOT_FOLDER = "StreamingAssets/" + AB_RELATIVE_PATH;
+        public static string exportRootFolder
+        {
+            get { return "StreamingAssets/" + S.m_ABRelativePath; }
+        }
 
-        public const string EXPORT_ASSETBUNDLE_CONFIG_PATH = "asset_bindle_config.bin";
+
+        public static string exportABConfigFile
+        {
+            get { return FilePath.streamingAssetsPath + S.m_ExportABConfigFile; }
+        }
         #endregion
 
         #region 配置工具相关
-        public const string BUILD_CSHARP_WIN_SHELL = "table/output_code_csharp.bat";
-        public const string BUILD_TXT_DATA_WIN_SHELL = "table/output_txt.bat";
-        public const string BUILD_LRG_DATA_WIN_SHELL = "table/output_xc.bat";
-
-        public const string BUILD_CSHARP_LINUX_SHELL = "table/output_code_csharp.sh";
-        public const string BUILD_TXT_DATA_LINUX_SHELL = "table/output_txt.sh";
-        public const string BUILD_LRG_DATA_LINUX_SHELL = "table/output_xc.sh";
-
-        public static string GetProjectToolsFolderPath()
+        public static string buildCSharpWinShell
         {
-            return Application.dataPath + "/../../../Tools/";
+            get { return S.m_BuildCSharpWinShell; }
+        }
+
+        public static string buildTxtDataWinShell
+        {
+            get { return S.m_BuildTxtDataWinShell; }
+        }
+        public static string buildLrgDataWinShell
+        {
+            get { return S.m_BuildLrgDataWinShell; }
+        }
+
+        public static string buildCSharpLinuxShell
+        {
+            get { return S.m_BuildCSharpLinuxShell; }
+        }
+        public static string buildTxtDataLinuxShell
+        {
+            get { return S.m_BuildTxtDataLinuxShell; }
+        }
+        
+        public static string buildLrgDataLinuxShell
+        {
+            get { return S.m_BuildLrgDataLinuxShell; }
+        }
+
+        public static string projectToolsFolder
+        {
+            get { return Application.dataPath + S.m_ProjectToolsFolder; }
         }
         #endregion
     }
