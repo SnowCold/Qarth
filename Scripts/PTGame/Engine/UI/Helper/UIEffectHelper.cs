@@ -10,11 +10,11 @@ namespace PTGame.Framework
     {
         public static void AddUIEffect(Transform parent, GameObject effectRoot, int offsetOrder = 1)
         {
-            int sortingOrder = 0;
+            int sortingOrder = offsetOrder;
             Canvas parentCanvas = parent.GetComponentInParent<Canvas>();
             if (parentCanvas != null)
             {
-                sortingOrder = parentCanvas.sortingOrder;
+                sortingOrder += parentCanvas.sortingOrder;
             }
 
             effectRoot.transform.SetParent(parent, true);
@@ -24,7 +24,7 @@ namespace PTGame.Framework
             {
                 for (int i = 0; i < childs.Length; ++i)
                 {
-                    childs[i].sortingOrder = sortingOrder + 1;
+                    childs[i].sortingOrder = sortingOrder;
                 }
             }
         }

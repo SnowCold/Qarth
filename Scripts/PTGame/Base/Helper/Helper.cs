@@ -227,6 +227,46 @@ namespace PTGame.Framework
             return ret;
         }
 
+        public static Color String2ColorHex(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return Color.white;
+            }
+
+            int length = value.Length;
+            int strCount = length / 2;
+            if (length % 2 != 0)
+            {
+                ++strCount;
+            }
+
+            string[] str = new string[strCount];
+            for (int i = 0; i < strCount; ++i)
+            {
+                int leftLength = Mathf.Min(2, length - i * 2);
+                str[i] = value.Substring(i * 2, leftLength);
+            }
+
+            try
+            {
+                float r = str.Length > 0 ? Convert.ToInt16(str[0], 16) / 255.0f : 0f;
+                float g = str.Length > 1 ? Convert.ToInt16(str[1], 16) / 255.0f : 0f;
+                float b = str.Length > 2 ? Convert.ToInt16(str[2], 16) / 255.0f : 0f;
+                float a = str.Length > 3 ? Convert.ToInt16(str[3], 16) / 255.0f : 1f;
+
+                Color ret = new Color(r, g, b, a);
+
+                return ret;
+            }
+            catch (Exception e)
+            {
+                Log.e(e);
+            }
+
+            return Color.white;
+        }
+
         public static string ListInt2String(List<int> list, char split = ';')
         {
             if (null == list || list.Count <= 0)

@@ -15,6 +15,7 @@ namespace PTGame.Framework
         OnPanelOpen,
         OnPanelClose,
         OnParamUpdate,
+        OnSortingLayerUpdate,
         DumpTest,
     }
 

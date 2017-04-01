@@ -205,6 +205,7 @@ namespace PTGame.Framework
                 m_MaxSortingOrder += offset;
             }
 
+            SendViewEvent(ViewEvent.OnSortingLayerUpdate);
             m_IsOrderDirty = false;
         }
 

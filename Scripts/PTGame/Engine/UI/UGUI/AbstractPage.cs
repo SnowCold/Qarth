@@ -207,6 +207,9 @@ namespace PTGame.Framework
                 case ViewEvent.OnParamUpdate:
                     ERunner.Run(OnParamUpdate);
                     break;
+                case ViewEvent.OnSortingLayerUpdate:
+                    ERunner.Run(OnSortingLayerUpdate);
+                    break;
                 default:
                     break;
             }
@@ -287,6 +290,11 @@ namespace PTGame.Framework
 
         //面板被关闭的时候进入
         protected virtual void OnClose()
+        {
+
+        }
+
+        protected virtual void OnSortingLayerUpdate()
         {
 
         }
