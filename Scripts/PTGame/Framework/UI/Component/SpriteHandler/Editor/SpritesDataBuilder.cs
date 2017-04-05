@@ -14,7 +14,7 @@ namespace PTGame.Framework.Editor
         {
             SpritesData data = null;
             string folderPath = EditorUtils.GetSelectedDirAssetsPath();
-            string spriteDataPath = folderPath + "SpritesData.asset";
+            string spriteDataPath = folderPath + "/SpritesData.asset";
 
             data  = AssetDatabase.LoadAssetAtPath<SpritesData>(spriteDataPath);
             if (data == null)
