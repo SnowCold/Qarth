@@ -41,10 +41,10 @@ namespace PTGame.Framework
             yield return 0;
         }
 
-        public IEnumerator ReadAll(Action onLoadFinish)
+        public IEnumerator ReadAll(TDTableMetaData[] dataArray, Action onLoadFinish)
         {
             m_IsLoading = true;
-            TableReadThreadWork readWork = CreateTableReadJobs(TableConfig.delayLoadTableArray);
+            TableReadThreadWork readWork = CreateTableReadJobs(dataArray);
             readWork.Start();
             while (readWork.IsDone == false)
             {
