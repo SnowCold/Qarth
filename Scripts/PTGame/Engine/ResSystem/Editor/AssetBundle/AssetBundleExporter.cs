@@ -40,6 +40,8 @@ namespace PTGame.Framework.Editor
             }
 
             AutoGenAssetNameInFolder(selectPath, false);
+
+            AssetDatabase.SaveAssets();
             Log.i("Finish GenAssetNameAsFileName.");
         }
 
@@ -89,6 +91,7 @@ namespace PTGame.Framework.Editor
                         ai.assetBundleName = string.Format("{0}/{1}", assetBundleName, PathHelper.FileNameWithoutSuffix(fileName));
                     }
                 }
+                
                 //ai.SaveAndReimport();
                 //Log.i("Success Process Asset:" + fileName);
             }
@@ -220,8 +223,11 @@ namespace PTGame.Framework.Editor
 
         private static void ProcessAssetBundleRes(AssetDataTable table)
         {
-            int abIndex = table.AddAssetBundleName(ProjectPathConfig.abManifestABName);
-            table.AddAssetData(new AssetData(ProjectPathConfig.abManifestAssetName, eResType.kABAsset, abIndex));
+            AssetDataGroup group = null;
+
+            int abIndex = table.AddAssetBundleName(ProjectPathConfig.abManifestABName, out group);
+
+            group.AddAssetData(new AssetData(ProjectPathConfig.abManifestAssetName, eResType.kABAsset, abIndex));
 
             AssetDatabase.RemoveUnusedAssetBundleNames();
 
@@ -230,18 +236,17 @@ namespace PTGame.Framework.Editor
             {
                 for (int i = 0; i < abNames.Length; ++i)
                 {
-                    Log.i("AB Name:" + abNames[i]);
-                    abIndex = table.AddAssetBundleName(abNames[i]);
+                    abIndex = table.AddAssetBundleName(abNames[i], out group);
                     string[] assets = AssetDatabase.GetAssetPathsFromAssetBundle(abNames[i]);
                     foreach (var cell in assets)
                     {
                         if (cell.EndsWith(".unity"))
                         {
-                            table.AddAssetData(new AssetData(AssetPath2Name(cell), eResType.kABScene, abIndex));
+                            group.AddAssetData(new AssetData(AssetPath2Name(cell), eResType.kABScene, abIndex));
                         }
                         else
                         {
-                            table.AddAssetData(new AssetData(AssetPath2Name(cell), eResType.kABAsset, abIndex));
+                            group.AddAssetData(new AssetData(AssetPath2Name(cell), eResType.kABAsset, abIndex));
                         }
                     }
                 }

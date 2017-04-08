@@ -28,6 +28,9 @@ namespace PTGame.Framework
         public void InitResMgr()
         {
             AssetDataTable.S.LoadFromFile(ProjectPathConfig.exportABConfigFile);
+
+            AssetDataTable.S.SwitchLanguage("cn");
+
             ABManifestHandler.manifest = ABManifestHandler.LoadInstance();
             Log.i("Init[ResMgr]");
         }

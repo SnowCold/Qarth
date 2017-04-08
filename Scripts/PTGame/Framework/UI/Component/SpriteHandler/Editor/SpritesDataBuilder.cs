@@ -53,7 +53,6 @@ namespace PTGame.Framework.Editor
 
             EditorUtility.SetDirty(data);
             AssetDatabase.SaveAssets();
-
             Log.i("Success Process SpriteImport:" + folderPath);
         }
 
@@ -65,6 +64,8 @@ namespace PTGame.Framework.Editor
                 return;
             }
             import.spritePackingTag = folderPath.ToLower();
+            AssetDatabase.ImportAsset(texPath);
+            //EditorUtility.SetDirty(import);
         }
     }
 }

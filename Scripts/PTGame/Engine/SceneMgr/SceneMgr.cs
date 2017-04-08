@@ -181,7 +181,7 @@ namespace PTGame.Framework
                 return string.Empty;
             }
 
-            string assetBundleName = AssetDataTable.S.GetAssetBundleName(config.assetBundleIndex);
+            string assetBundleName = AssetDataTable.S.GetAssetBundleName(config.assetName, config.assetBundleIndex);
 
             if (string.IsNullOrEmpty(assetBundleName))
             {

@@ -18,6 +18,7 @@ namespace PTGame.Framework
         private bool m_HasInitUI = false;
         private bool m_HasOpen = false;
         private SpritesHandler m_SpritesHandler;
+        private ResLoader m_GlobalResLoader;
 
         protected int m_UIID;
 
@@ -52,27 +53,54 @@ namespace PTGame.Framework
 
 #region 通用功能接口
 
-        public Sprite FindSprite(string spriteName)
+        public Sprite FindSprite(string spriteName, bool global = false)
         {
+            Sprite result = null;
             if (m_SpritesData == null || m_SpritesData.Length == 0)
             {
-                return FindSpriteFromParent(spriteName);
-            }
 
-            if (m_SpritesHandler == null)
+            }
+            else
             {
-                m_SpritesHandler = new SpritesHandler();
-                m_SpritesHandler.SetData(m_SpritesData);
+                if (m_SpritesHandler == null)
+                {
+                    m_SpritesHandler = new SpritesHandler();
+                    m_SpritesHandler.SetData(m_SpritesData);
+                }
+
+                result = m_SpritesHandler.FindSprite(spriteName);
             }
 
-            Sprite sprite = m_SpritesHandler.FindSprite(spriteName);
-
-            if (sprite != null)
+            if (result == null)
             {
-                return sprite;
+                result = FindSpriteFromParent(spriteName);
             }
 
-            return FindSpriteFromParent(spriteName);
+            if (result == null && global)
+            {
+                if (m_GlobalResLoader == null)
+                {
+                    m_GlobalResLoader = ResLoader.Allocate();
+                }
+
+                result = m_GlobalResLoader.LoadSync(spriteName) as Sprite;
+            }
+
+            if (result == null)
+            {
+                Log.w("Not Find Sprite:" + spriteName);
+            }
+
+            return result;
+        }
+
+        public void ReleaseAllGlobalRes()
+        {
+            if (m_GlobalResLoader != null)
+            {
+                m_GlobalResLoader.Recycle2Cache();
+                m_GlobalResLoader = null;
+            }
         }
 
         public int GetParentPanelID()
@@ -166,6 +194,12 @@ namespace PTGame.Framework
             }
 
             BeforDestroy();
+
+            if (m_GlobalResLoader != null)
+            {
+                m_GlobalResLoader.Recycle2Cache();
+                m_GlobalResLoader = null;
+            }
 
             m_ParentPage = null;
         }
