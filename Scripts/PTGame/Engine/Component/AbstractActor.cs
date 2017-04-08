@@ -35,7 +35,7 @@ namespace PTGame.Framework
             {
                 StartCom(m_ComponentList[i]);
             }
-            m_HasAwake = true;
+            m_HasStart = true;
         }
 
         //关于Update的优化方案，可以后续再做
