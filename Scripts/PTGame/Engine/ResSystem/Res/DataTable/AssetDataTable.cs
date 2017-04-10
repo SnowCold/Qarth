@@ -169,7 +169,7 @@ namespace PTGame.Framework
 
         public void Dump()
         {
-            StringBuilder builder = new StringBuilder();
+            //StringBuilder builder = new StringBuilder();
 
             Log.i("#DUMP AssetDataTable BEGIN");
 
