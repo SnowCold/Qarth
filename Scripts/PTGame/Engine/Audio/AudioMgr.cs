@@ -14,10 +14,10 @@ namespace PTGame.Framework
             private AudioSource m_Source;
             private string m_Name;
 
-            private int m_LoopCount;
+            private int m_IsLoop;
             private AudioClip m_AudioClip;
 
-            public void SetAudio(AudioSource source, string name, int loopCount = 1)
+            public void SetAudio(AudioSource source, string name, bool loop)
             {
                 if (m_Name == name)
                 {
@@ -33,7 +33,7 @@ namespace PTGame.Framework
 
                 m_Loader = ResLoader.Allocate();
 
-                m_LoopCount = loopCount;
+                m_IsLoop = loop;
                 m_Name = name;
 
                 m_Loader.Add2Load(name, OnResLoadFinish);
@@ -70,6 +70,7 @@ namespace PTGame.Framework
                 }
 
                 m_Source.clip = m_AudioClip;
+                m_Source.loop = m_IsLoop;
 
                 m_Source.Play();
             }
@@ -108,7 +109,7 @@ namespace PTGame.Framework
                 m_MainUnit = new AudioUnit();
             }
 
-            m_MainUnit.SetAudio(m_MainSource, name, -1);
+            m_MainUnit.SetAudio(m_MainSource, name, true);
         }
     }
 }
