@@ -14,7 +14,7 @@ namespace PTGame.Framework
             private AudioSource m_Source;
             private string m_Name;
 
-            private int m_IsLoop;
+            private bool m_IsLoop;
             private AudioClip m_AudioClip;
 
             public void SetAudio(AudioSource source, string name, bool loop)
