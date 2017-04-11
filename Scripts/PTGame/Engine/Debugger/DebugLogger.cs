@@ -12,15 +12,17 @@ namespace PTGame.Framework
 	public class DebugLogger : TMonoSingleton<DebugLogger>
 	{
 		public static int MAX_DUMP_STACK_LINE = 6;
-		
+
+        [SerializeField]
+        private string m_DumpPath;
+        [SerializeField]
+        private bool m_Dump2Screen = true;
+        [SerializeField]
+        private bool m_Dump2File = true;
+
 		private static List<string>     m_Lines = new List<string>();
         private static List<string>     m_WriteTxt = new List<string>();
 		private string                  m_Outpath;
-
-        public void InitDebugLogger()
-        {
-            Log.i("Init[DebugLogger]");
-        }
 
         #region DumpStack
         public static void DumpStack()
@@ -49,12 +51,16 @@ namespace PTGame.Framework
         #endregion
 
 
-        private void Start()
+        public void InitDebuggerLog(string dumpPath, bool dump2File, bool dump2Screen)
 		{
-			
-			if(AppConfig.S.dumpPath.Length > 0)
+            Log.i("Init[DebugLogger]");
+            m_DumpPath = dumpPath;
+            m_Dump2File = dump2File;
+            m_Dump2Screen = dump2Screen;
+
+			if(m_DumpPath.Length > 0)
 			{
-				m_Outpath = AppConfig.S.dumpPath + "/outLog.txt";
+				m_Outpath = m_DumpPath + "/outLog.txt";
 				Log.i("日志记录文件：" + m_Outpath);
 			}
 			else
@@ -63,16 +69,15 @@ namespace PTGame.Framework
 				Log.i("日志记录文件：" + m_Outpath);
 			}
 
-			if(AppConfig.S.AppMode != APP_MODE.ReleaseMode && AppConfig.S.dumpToFile)
+			if(m_Dump2File || m_Dump2Screen)
 			{
-				if(System.IO.File.Exists(m_Outpath))
+				if(m_Dump2File && System.IO.File.Exists(m_Outpath))
 				{
 					File.Delete(m_Outpath);
 				}
-				Application.logMessageReceived += HandleLog;
-			}
-			
-		}
+                Application.logMessageReceived += HandleLog;
+            }
+        }
 		
 		private void Update()
 		{
@@ -101,7 +106,7 @@ namespace PTGame.Framework
 			}
 		}
 
-		static public void SaveLog(params object[] objs)
+        public static void SaveLog(params object[] objs)
 		{
 			string text = "";
 			for(int i = 0; i < objs.Length; ++i)

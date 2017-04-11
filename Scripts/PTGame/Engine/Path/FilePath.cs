@@ -37,7 +37,7 @@ namespace PTGame.Framework
 #elif UNITY_ANDROID && !UNITY_EDITOR
                     m_StreamingAssetsPath = Application.streamingAssetsPath + "/";
 #elif (UNITY_STANDALONE_WIN) && !UNITY_EDITOR
-                    m_StreamingAssetsPath = GetParentDir(Application.dataPath, 2) + "/BuildRes/";
+                    m_StreamingAssetsPath = Application.streamingAssetsPath + "/";//GetParentDir(Application.dataPath, 2) + "/BuildRes/";
 #elif UNITY_STANDALONE_OSX && !UNITY_EDITOR
                     m_StreamingAssetsPath = Application.streamingAssetsPath + "/";
 #else
