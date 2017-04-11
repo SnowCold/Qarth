@@ -205,7 +205,7 @@ namespace PTGame.Framework
         public void LoadAsync(Action listener = null)
         {
             m_Listener = listener;
-            ResMgr.S.timeDebugger.Begin("LoadAsync");
+            //ResMgr.S.timeDebugger.Begin("LoadAsync");
             DoLoadAsync();
         }
 
@@ -398,8 +398,8 @@ namespace PTGame.Framework
             {
                 RemoveAllCallbacks(false);
 
-                ResMgr.S.timeDebugger.End();
-                ResMgr.S.timeDebugger.Dump(-1);
+                //ResMgr.S.timeDebugger.End();
+                //ResMgr.S.timeDebugger.Dump(-1);
                 if (m_Listener != null)
                 {
                     m_Listener();

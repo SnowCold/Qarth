@@ -14,5 +14,6 @@ namespace PTGame.Framework
         public const int LAYER_HIDE_UI = 10;
         public const int LAYER_NPC = 11;
         public const int LAYER_PLAYER = 12;
+        public const int LAYER_AR = 20;
     }
 }
