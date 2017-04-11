@@ -24,6 +24,8 @@ namespace PTGame.Framework
                     return;
                 }
 
+                m_Source = source;
+
                 if (m_Loader != null)
                 {
                     Release();
