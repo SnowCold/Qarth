@@ -123,7 +123,18 @@ namespace PTGame.Framework.Editor
                 Directory.CreateDirectory(exportPath);
             }
 
-            BuildPipeline.BuildAssetBundles("Assets/" + ProjectPathConfig.exportRootFolder, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows);
+            BuildTarget buildTarget = BuildTarget.StandaloneWindows;
+#if UNITY_IPHONE
+            buildTarget = BuildTarget.iOS;
+#elif UNITY_ANDROID
+            buildTarget = BuildTarget.Android;
+#elif UNITY_STANDALONE_OSX
+            buildTarget = BuildTarget.StandaloneOSXUniversal;
+#elif UNITY_STANDALONE_WIN
+            buildTarget = BuildTarget.StandaloneWindows;
+#endif
+
+            BuildPipeline.BuildAssetBundles("Assets/" + ProjectPathConfig.exportRootFolder, BuildAssetBundleOptions.ChunkBasedCompression, buildTarget);
         }
 #endregion
 
@@ -185,7 +196,7 @@ namespace PTGame.Framework.Editor
                 BuildTarget.StandaloneWindows);
         }
 
-        #endregion
+#endregion
 
 #endregion
 
