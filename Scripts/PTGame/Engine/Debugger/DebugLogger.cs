@@ -81,7 +81,12 @@ namespace PTGame.Framework
 		
 		private void Update()
 		{
-			//因为写入文件的操作必须在主线程中完成，所以在Update中哦给你写入文件。
+            //因为写入文件的操作必须在主线程中完成，所以在Update中哦给你写入文件。
+            if (!m_Dump2File)
+            {
+                return;
+            }
+            
 			if(m_WriteTxt.Count > 0)
 			{
 				string[] temp = m_WriteTxt.ToArray();
