@@ -18,7 +18,7 @@ namespace PTGame.Framework
         {
             if (m_SpritesData == null || m_SpritesData.Length == 0)
             {
-                Log.w("Nor Find SpriteName:" + spriteName);
+                //Log.w("Nor Find SpriteName:" + spriteName);
                 return null;
             }
 
@@ -31,7 +31,7 @@ namespace PTGame.Framework
                     return result;
                 }
             }
-            Log.w("Nor Find SpriteName:" + spriteName);
+            //Log.w("Nor Find SpriteName:" + spriteName);
             return null;
         }
     }

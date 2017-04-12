@@ -9,10 +9,46 @@ namespace PTGame.Framework
     public class AssetDataGroup
     {
         [Serializable]
+        public class ABUnit
+        {
+            public string abName;
+            public string[] abDepends;
+
+            public ABUnit(string name, string[] depends)
+            {
+                this.abName = name;
+                if (depends == null || depends.Length == 0)
+                {
+
+                }
+                else
+                {
+                    this.abDepends = depends;
+                }
+            }
+
+            public override string ToString()
+            {
+                string result = string.Format("ABName:" + abName);
+                if (abDepends == null)
+                {
+                    return result;
+                }
+
+                for (int i = 0; i < abDepends.Length; ++i)
+                {
+                    result += string.Format(" #:{0}", abDepends[i]);
+                }
+
+                return result;
+            }
+        }
+
+        [Serializable]
         public class SerializeData
         {
             private string m_Key;
-            private string[] m_AssetBundleNameArray;
+            private ABUnit[] m_ABUnitArray;
             private AssetData[] m_AssetDataArray;
 
             public string key
@@ -21,10 +57,10 @@ namespace PTGame.Framework
                 set { m_Key = value; }
             }
 
-            public string[] assetBundleNameArray
+            public ABUnit[] abUnitArray
             {
-                get { return m_AssetBundleNameArray; }
-                set { m_AssetBundleNameArray = value; }
+                get { return m_ABUnitArray; }
+                set { m_ABUnitArray = value; }
             }
 
             public AssetData[] assetDataArray
@@ -36,7 +72,7 @@ namespace PTGame.Framework
 
         private string m_Key;
 
-        private List<string> m_AssetBundleNameArray;
+        private List<ABUnit> m_ABUnitArray;
         private Dictionary<string, AssetData> m_AssetDataMap;
 
         public string key
@@ -57,9 +93,9 @@ namespace PTGame.Framework
 
         public void Reset()
         {
-            if (m_AssetBundleNameArray != null)
+            if (m_ABUnitArray != null)
             {
-                m_AssetBundleNameArray.Clear();
+                m_ABUnitArray.Clear();
             }
 
             if (m_AssetDataMap != null)
@@ -68,16 +104,16 @@ namespace PTGame.Framework
             }
         }
 
-        public int AddAssetBundleName(string name)
+        public int AddAssetBundleName(string name, string[] depends)
         {
             if (string.IsNullOrEmpty(name))
             {
                 return -1;
             }
 
-            if (m_AssetBundleNameArray == null)
+            if (m_ABUnitArray == null)
             {
-                m_AssetBundleNameArray = new List<string>();
+                m_ABUnitArray = new List<ABUnit>();
             }
 
             AssetData config = GetAssetData(name);
@@ -87,9 +123,9 @@ namespace PTGame.Framework
                 return config.assetBundleIndex;
             }
 
-            m_AssetBundleNameArray.Add(name);
+            m_ABUnitArray.Add(new ABUnit(name, depends));
 
-            int index = m_AssetBundleNameArray.Count - 1;
+            int index = m_ABUnitArray.Count - 1;
 
             AddAssetData(new AssetData(name, eResType.kAssetBundle, index));
 
@@ -98,14 +134,14 @@ namespace PTGame.Framework
 
         public int GetAssetBundleIndex(string name)
         {
-            if (m_AssetBundleNameArray == null)
+            if (m_ABUnitArray == null)
             {
                 return -1;
             }
 
-            for (int i = 0; i < m_AssetBundleNameArray.Count; ++i)
+            for (int i = 0; i < m_ABUnitArray.Count; ++i)
             {
-                if (m_AssetBundleNameArray[i].Equals(name))
+                if (m_ABUnitArray[i].abName.Equals(name))
                 {
                     return i;
                 }
@@ -114,24 +150,60 @@ namespace PTGame.Framework
             return -1;
         }
 
-        public string GetAssetBundleName(string assetName, int index)
+        public bool GetAssetBundleName(string assetName, int index, out string result)
         {
-            if (m_AssetBundleNameArray == null)
+            result = null;
+
+            if (m_ABUnitArray == null)
             {
-                return null;
+                return false;
             }
 
-            if (index >= m_AssetBundleNameArray.Count)
+            if (index >= m_ABUnitArray.Count)
             {
-                return null;
+                return false;
             }
 
             if (m_AssetDataMap.ContainsKey(assetName))
             {
-                return m_AssetBundleNameArray[index];
+                result = m_ABUnitArray[index].abName;
+                return true;
             }
 
-            return null;
+            return false;
+        }
+
+        public ABUnit GetABUnit(string assetName)
+        {
+            AssetData data = GetAssetData(assetName);
+
+            if (data == null)
+            {
+                return null;
+            }
+
+            if (m_ABUnitArray == null)
+            {
+                return null;
+            }
+
+            return m_ABUnitArray[data.assetBundleIndex];
+        }
+
+        public bool GetAssetBundleDepends(string abName, out string[] result)
+        {
+            result = null;
+
+            ABUnit unit = GetABUnit(abName);
+
+            if (unit == null)
+            {
+                return false;
+            }
+
+            result = unit.abDepends;
+
+            return true;
         }
 
         public AssetData GetAssetData(string name)
@@ -163,7 +235,9 @@ namespace PTGame.Framework
 
             if (m_AssetDataMap.ContainsKey(key))
             {
-                Log.e("Already Add AssetData:" + data.assetName);
+                AssetData old = GetAssetData(data.assetName);
+
+                Log.e("Already Add AssetData Name:{0} \n OldAB:{1}      NewAB:{2}", data.assetName, m_ABUnitArray[old.assetBundleIndex].abName, m_ABUnitArray[data.assetBundleIndex].abName);
                 return false;
             }
 
@@ -198,7 +272,7 @@ namespace PTGame.Framework
         {
             SerializeData sd = new SerializeData();
             sd.key = m_Key;
-            sd.assetBundleNameArray = m_AssetBundleNameArray.ToArray();
+            sd.abUnitArray = m_ABUnitArray.ToArray();
             if (m_AssetDataMap != null)
             {
                 AssetData[] acArray = new AssetData[m_AssetDataMap.Count];
@@ -218,7 +292,7 @@ namespace PTGame.Framework
         public void Save(string outPath)
         {
             SerializeData sd = new SerializeData();
-            sd.assetBundleNameArray = m_AssetBundleNameArray.ToArray();
+            sd.abUnitArray = m_ABUnitArray.ToArray();
             if (m_AssetDataMap != null)
             {
                 AssetData[] acArray = new AssetData[m_AssetDataMap.Count];
@@ -248,12 +322,12 @@ namespace PTGame.Framework
 
             builder.AppendLine("#DUMP AssetDataGroup :" + m_Key);
 
-            if (m_AssetBundleNameArray != null)
+            if (m_ABUnitArray != null)
             {
                 builder.AppendLine(" #DUMP AssetBundleNameArray BEGIN");
-                for (int i = 0; i < m_AssetBundleNameArray.Count; ++i)
+                for (int i = 0; i < m_ABUnitArray.Count; ++i)
                 {
-                    builder.AppendLine(m_AssetBundleNameArray[i]);
+                    builder.AppendLine(m_ABUnitArray[i].ToString());
                 }
                 builder.AppendLine(" #DUMP AssetBundleNameArray END");
             }
@@ -268,7 +342,7 @@ namespace PTGame.Framework
                 builder.AppendLine(" #DUMP AssetBundleNameArray END");
             }
 
-            builder.AppendLine("#DUMP AssetDataTable END");
+            builder.AppendLine("#DUMP AssetDataGroup END");
 
             Log.i(builder.ToString());
         }
@@ -280,7 +354,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            m_AssetBundleNameArray = new List<string>(data.assetBundleNameArray);
+            m_ABUnitArray = new List<ABUnit>(data.abUnitArray);
 
             if (data.assetDataArray != null)
             {

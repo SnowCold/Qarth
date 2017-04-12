@@ -185,13 +185,7 @@ namespace PTGame.Framework
 
         private void InitAssetBundleName()
         {
-            m_DependResList = null;
-            if (ABManifestHandler.manifest == null)
-            {
-                return;
-            }
-
-            m_DependResList = ABManifestHandler.GetAllDependenciesByUrl(name);
+            m_DependResList = AssetDataTable.S.GetAllDependenciesByUrl(name);
         }
     }
 }

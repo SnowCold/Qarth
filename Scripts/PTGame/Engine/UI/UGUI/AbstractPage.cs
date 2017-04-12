@@ -73,7 +73,7 @@ namespace PTGame.Framework
 
             if (result == null)
             {
-                result = FindSpriteFromParent(spriteName);
+                result = FindSpriteFromParent(spriteName, global);
             }
 
             if (result == null && global)
@@ -297,14 +297,14 @@ namespace PTGame.Framework
             UIMgr.S.CloseDependPanel(GetParentPanelID(), uiID);
         }
 
-        private Sprite FindSpriteFromParent(string spriteName)
+        private Sprite FindSpriteFromParent(string spriteName, bool global)
         {
             if (m_ParentPage == null)
             {
                 return null;
             }
 
-            return m_ParentPage.FindSprite(spriteName);
+            return m_ParentPage.FindSprite(spriteName, global);
         }
 
         #region 子类需重载

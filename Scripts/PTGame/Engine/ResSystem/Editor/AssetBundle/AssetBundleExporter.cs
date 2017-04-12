@@ -225,9 +225,12 @@ namespace PTGame.Framework.Editor
         {
             AssetDataGroup group = null;
 
-            int abIndex = table.AddAssetBundleName(ProjectPathConfig.abManifestABName, out group);
+            int abIndex = table.AddAssetBundleName(ProjectPathConfig.abManifestABName, null, out group);
 
-            group.AddAssetData(new AssetData(ProjectPathConfig.abManifestAssetName, eResType.kABAsset, abIndex));
+            if (abIndex > 0)
+            {
+                group.AddAssetData(new AssetData(ProjectPathConfig.abManifestAssetName, eResType.kABAsset, abIndex));
+            }
 
             AssetDatabase.RemoveUnusedAssetBundleNames();
 
@@ -236,7 +239,13 @@ namespace PTGame.Framework.Editor
             {
                 for (int i = 0; i < abNames.Length; ++i)
                 {
-                    abIndex = table.AddAssetBundleName(abNames[i], out group);
+                    string[] depends = AssetDatabase.GetAssetBundleDependencies(abNames[i], false);
+                    abIndex = table.AddAssetBundleName(abNames[i], depends, out group);
+                    if (abIndex < 0)
+                    {
+                        continue;
+                    }
+
                     string[] assets = AssetDatabase.GetAssetPathsFromAssetBundle(abNames[i]);
                     foreach (var cell in assets)
                     {

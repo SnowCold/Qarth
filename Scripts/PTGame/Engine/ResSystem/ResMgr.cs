@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -27,11 +27,14 @@ namespace PTGame.Framework
 
         public void InitResMgr()
         {
-            AssetDataTable.S.LoadFromFile(ProjectPathConfig.exportABConfigFile);
-
+            AssetDataTable.S.Reset();
+            List<string> outResult = new List<string>();
+            FilePath.GetFileInFolder(FilePath.streamingAssetsPath, "asset_bindle_config.bin", outResult);
+            for (int i = 0; i < outResult.Count; ++i)
+            {
+                AssetDataTable.S.LoadFromFile(outResult[i]);
+            }
             AssetDataTable.S.SwitchLanguage("cn");
-
-            ABManifestHandler.manifest = ABManifestHandler.LoadInstance();
             Log.i("Init[ResMgr]");
         }
 

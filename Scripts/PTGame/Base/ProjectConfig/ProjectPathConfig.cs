@@ -146,7 +146,6 @@ namespace PTGame.Framework
             get { return "StreamingAssets/" + S.m_ABRelativePath; }
         }
 
-
         public static string exportABConfigFile
         {
             get { return FilePath.streamingAssetsPath + S.m_ExportABConfigFile; }

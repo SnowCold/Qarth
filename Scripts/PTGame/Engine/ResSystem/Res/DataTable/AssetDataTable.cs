@@ -22,21 +22,28 @@ namespace PTGame.Framework
             }
         }
 
-        public const string DEFAULT_GROUP_KEY = "default";
-
         private List<AssetDataGroup> m_ActiveAssetDataGroup = new List<AssetDataGroup>();
         private List<AssetDataGroup> m_AllAssetDataGroup = new List<AssetDataGroup>();
 
         public void SwitchLanguage(string key)
         {
             m_ActiveAssetDataGroup.Clear();
+
+            string languageKey = string.Format("[{0}]", key);
+
             for (int i = m_AllAssetDataGroup.Count - 1; i >= 0; --i)
             {
                 AssetDataGroup group = m_AllAssetDataGroup[i];
-                if (group.key.Equals(key) || group.key.Equals(DEFAULT_GROUP_KEY))
+
+                if (!group.key.Contains("i18res"))
                 {
                     m_ActiveAssetDataGroup.Add(group);
                 }
+                else if (group.key.Contains(languageKey))
+                {
+                    m_ActiveAssetDataGroup.Add(group);
+                }
+
             }
             Log.i("AssetDataTable Switch 2 Language:" + key);
         }
@@ -52,7 +59,7 @@ namespace PTGame.Framework
             m_ActiveAssetDataGroup.Clear();
         }
 
-        public int AddAssetBundleName(string name, out AssetDataGroup group)
+        public int AddAssetBundleName(string name, string[] depends, out AssetDataGroup group)
         {
             group = null;
 
@@ -62,13 +69,12 @@ namespace PTGame.Framework
             }
 
             string key = null;
-            if (name.StartsWith("i18res"))
+
+            key = GetKeyFromABName(name);
+
+            if (key == null)
             {
-                key = GetKeyFromABName(name);
-            }
-            else
-            {
-                key = DEFAULT_GROUP_KEY;
+                return -1;
             }
 
             group = GetAssetDataGroup(key);
@@ -76,24 +82,44 @@ namespace PTGame.Framework
             if (group == null)
             {
                 group = new AssetDataGroup(key);
+                Log.i("#Create Config Group:" + key);
                 m_AllAssetDataGroup.Add(group);
             }
 
-            return group.AddAssetBundleName(name);
+            return group.AddAssetBundleName(name, depends);
         }
 
         public string GetAssetBundleName(string assetName, int index)
         {
+            string result = null;
             for (int i = m_ActiveAssetDataGroup.Count - 1; i >= 0; --i)
             {
-                string result = m_ActiveAssetDataGroup[i].GetAssetBundleName(assetName, index);
-                if (string.IsNullOrEmpty(result))
+                if (!m_ActiveAssetDataGroup[i].GetAssetBundleName(assetName, index, out result))
                 {
                     continue;
                 }
+
                 return result;
             }
             Log.w(string.Format("Failed GetAssetBundleName : {0} - Index:{1}", assetName, index));
+            return null;
+        }
+
+        public string[] GetAllDependenciesByUrl(string url)
+        {
+            string abName = ProjectPathConfig.AssetBundleUrl2Name(url);
+            string[] depends = null;
+
+            for (int i = m_ActiveAssetDataGroup.Count - 1; i >= 0; --i)
+            {
+                if (!m_ActiveAssetDataGroup[i].GetAssetBundleDepends(abName, out depends))
+                {
+                    continue;
+                }
+
+                return depends;
+            }
+
             return null;
         }
 
@@ -141,8 +167,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            Reset();
-
+            Log.i("Load AssetConfig From File:" + path);
             SetSerizlizeData(sd);
         }
 
@@ -188,8 +213,6 @@ namespace PTGame.Framework
                 return;
             }
 
-            m_AllAssetDataGroup = new List<AssetDataGroup>(data.assetDataGroup.Length);
-
             for (int i = data.assetDataGroup.Length - 1; i >= 0; --i)
             {
                 m_AllAssetDataGroup.Add(BuildAssetDataGroup(data.assetDataGroup[i]));
@@ -216,8 +239,30 @@ namespace PTGame.Framework
 
         private string GetKeyFromABName(string name)
         {
-            name = name.Substring(7);
-            string key = name.Substring(0, name.IndexOf('/'));
+            int pIndex = name.IndexOf('/');
+
+            if (pIndex < 0)
+            {
+                return name;
+            }
+
+            string key = name.Substring(0, pIndex);
+
+            if (name.Contains("i18res"))
+            {
+                int i18Start = name.IndexOf("i18res") + 7;
+                name = name.Substring(i18Start);
+                pIndex = name.IndexOf('/');
+                if (pIndex < 0)
+                {
+                    Log.w("Not Valid AB Path:" + name);
+                    return null;
+                }
+
+                string language = string.Format("[{0}]", name.Substring(0, pIndex));
+                key = string.Format("{0}-i18res-{1}", key, language);
+            }
+
             return key;
         }
 
