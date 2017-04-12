@@ -237,7 +237,7 @@ namespace PTGame.Framework
             {
                 AssetData old = GetAssetData(data.assetName);
 
-                Log.e("Already Add AssetData Name:{0} \n OldAB:{1}      NewAB:{2}", data.assetName, m_ABUnitArray[old.assetBundleIndex].abName, m_ABUnitArray[data.assetBundleIndex].abName);
+                Log.e("Already Add AssetData :{0} \n OldAB:{1}      NewAB:{2}", data.assetName, m_ABUnitArray[old.assetBundleIndex].abName, m_ABUnitArray[data.assetBundleIndex].abName);
                 return false;
             }
 
