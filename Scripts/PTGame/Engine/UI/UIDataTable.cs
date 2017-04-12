@@ -66,6 +66,11 @@ namespace PTGame.Framework
             get { return m_IsSingleton; }
         }
 
+        public string shortName
+        {
+            get { return GenerateShortName(m_Name); }
+        }
+
         public virtual string fullPath
         {
             get
@@ -93,6 +98,17 @@ namespace PTGame.Framework
             {
                 m_Name = PathHelper.FullAssetPath2Name(m_Name);
             }
+        }
+
+        private string GenerateShortName(string name)
+        {
+            int folderIndex = name.LastIndexOf('/');
+            if (folderIndex >= 0)
+            {
+                return name.Substring(folderIndex + 1);
+            }
+
+            return name;
         }
     }
 
@@ -173,13 +189,7 @@ namespace PTGame.Framework
 
             m_UIDataMap.Add(data.uiID, data);
 
-            string shortName = data.name;
-            int folderIndex = shortName.LastIndexOf('/');
-            if (folderIndex >= 0)
-            {
-                shortName = shortName.Substring(folderIndex + 1);
-            }
-            m_UINameDataMap.Add(shortName, data);
+            m_UINameDataMap.Add(data.shortName, data);
         }
 
         public static UIData Get<T>(T uiID) where T : IConvertible
