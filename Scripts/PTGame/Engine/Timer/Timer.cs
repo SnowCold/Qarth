@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-    [TMonoSingletonAttribute("[Singleton]/Timer")]
+    [TMonoSingletonAttribute("[Tools]/Timer")]
     public class Timer : TMonoSingleton<Timer>
     {
         BinaryHeap<TimeItem>        m_UnScaleTimeHeap = new BinaryHeap<TimeItem>(128, eBinaryHeapSortMode.kMin);

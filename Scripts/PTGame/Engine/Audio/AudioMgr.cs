@@ -8,7 +8,7 @@ namespace PTGame.Framework
     [TMonoSingletonAttribute("[Tools]/AudioMgr")]
     public class AudioMgr : TMonoSingleton<AudioMgr>
     {
-        class AudioUnit
+        class AudioUnit : ICacheAble
         {
             private ResLoader m_Loader;
             private AudioSource m_Source;
@@ -16,8 +16,30 @@ namespace PTGame.Framework
 
             private bool m_IsLoop;
             private AudioClip m_AudioClip;
+            private TimeItem m_TimeItem;
+            private bool m_UsedCache = true;
+            private bool m_IsCache = false;
 
-            public void SetAudio(AudioSource source, string name, bool loop)
+            public bool usedCache
+            {
+                get { return m_UsedCache; }
+                set { m_UsedCache = false; }
+            }
+
+            public bool cacheFlag
+            {
+                get
+                {
+                    return m_IsCache;
+                }
+
+                set
+                {
+                    m_IsCache = true;
+                }
+            }
+
+            public void SetAudio(GameObject root, string name, bool loop)
             {
                 if (string.IsNullOrEmpty(name))
                 {
@@ -29,11 +51,14 @@ namespace PTGame.Framework
                     return;
                 }
 
-                m_Source = source;
+                if (m_Source == null)
+                {
+                    m_Source = root.AddComponent<AudioSource>();
+                }
 
                 if (m_Loader != null)
                 {
-                    Release();
+                    CleanResources();
                 }
 
                 m_Loader = ResLoader.Allocate();
@@ -77,11 +102,37 @@ namespace PTGame.Framework
                 m_Source.clip = m_AudioClip;
                 m_Source.loop = m_IsLoop;
 
+                if (!m_IsLoop)
+                {
+                    m_TimeItem = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length);
+                }
+
                 m_Source.Play();
+            }
+
+            private void OnSoundPlayFinish(int count)
+            {
+                Release();
             }
 
             private void Release()
             {
+                CleanResources();
+
+                if (m_UsedCache)
+                {
+                    ObjectPool<AudioUnit>.S.Recycle(this);
+                }
+            }
+
+            private void CleanResources()
+            {
+                if (m_TimeItem != null)
+                {
+                    m_TimeItem.Cancel();
+                    m_TimeItem = null;
+                }
+
                 if (m_Source != null)
                 {
                     if (m_Source.clip == m_AudioClip)
@@ -91,30 +142,42 @@ namespace PTGame.Framework
                 }
 
                 m_AudioClip = null;
+
                 if (m_Loader != null)
                 {
                     m_Loader.Recycle2Cache();
                     m_Loader = null;
                 }
             }
+
+            public void OnCacheReset()
+            {
+                CleanResources();
+            }
         }
-        
-        private AudioSource m_MainSource;
+
+        private int m_MaxSoundCount = 5;
         private AudioUnit m_MainUnit;
 
         public override void OnSingletonInit()
         {
-            m_MainSource = gameObject.AddComponent<AudioSource>();
+            ObjectPool<AudioUnit>.S.Init(m_MaxSoundCount, 1);
+            m_MainUnit = new AudioUnit();
+            m_MainUnit.usedCache = false;
         }
 
         public void PlayBg(string name)
         {
-            if (m_MainUnit == null)
-            {
-                m_MainUnit = new AudioUnit();
-            }
+            m_MainUnit.SetAudio(gameObject, name, true);
+        }
 
-            m_MainUnit.SetAudio(m_MainSource, name, true);
+        public bool PlaySound(string name, bool loop)
+        {
+            AudioUnit unit = ObjectPool<AudioUnit>.S.Allocate();
+
+            unit.SetAudio(gameObject, name, loop);
+
+            return true;
         }
     }
 }
