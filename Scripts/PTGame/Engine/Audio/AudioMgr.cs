@@ -19,6 +19,11 @@ namespace PTGame.Framework
 
             public void SetAudio(AudioSource source, string name, bool loop)
             {
+                if (string.IsNullOrEmpty(name))
+                {
+                    return;
+                }
+
                 if (m_Name == name)
                 {
                     return;

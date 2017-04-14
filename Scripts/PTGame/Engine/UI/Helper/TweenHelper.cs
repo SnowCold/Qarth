@@ -35,5 +35,21 @@ namespace PTGame.Framework
 
             return DOTween.To(getter, setter, context.Length, duration);
         }
+
+        public static Tweener DoDelay(float duration)
+        {
+            int index = 0;
+            DOGetter<int> getter = () =>
+            {
+                return index;
+            };
+
+            DOSetter<int> setter = (x) =>
+            {
+                index = x;
+            };
+
+            return DOTween.To(getter, setter, 1, duration);
+        }
     }
 }
