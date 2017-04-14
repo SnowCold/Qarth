@@ -8,7 +8,7 @@ namespace PTGame.Framework
     [TMonoSingletonAttribute("[Tools]/AudioMgr")]
     public class AudioMgr : TMonoSingleton<AudioMgr>
     {
-        class AudioUnit : ICacheAble
+        public class AudioUnit : ICacheAble
         {
             private ResLoader m_Loader;
             private AudioSource m_Source;
@@ -19,6 +19,13 @@ namespace PTGame.Framework
             private TimeItem m_TimeItem;
             private bool m_UsedCache = true;
             private bool m_IsCache = false;
+
+            private Action m_OnFinishListener;
+
+            public void SetOnFinishListener(Action l)
+            {
+                m_OnFinishListener = l;
+            }
 
             public bool usedCache
             {
@@ -35,7 +42,7 @@ namespace PTGame.Framework
 
                 set
                 {
-                    m_IsCache = true;
+                    m_IsCache = value;
                 }
             }
 
@@ -69,6 +76,11 @@ namespace PTGame.Framework
                 m_Loader.Add2Load(name, OnResLoadFinish);
 
                 m_Loader.LoadAsync();
+            }
+
+            public void Stop()
+            {
+                Release();
             }
 
             private void OnResLoadFinish(bool result, IRes res)
@@ -112,6 +124,10 @@ namespace PTGame.Framework
 
             private void OnSoundPlayFinish(int count)
             {
+                if (m_OnFinishListener != null)
+                {
+                    m_OnFinishListener();
+                }
                 Release();
             }
 
@@ -127,6 +143,10 @@ namespace PTGame.Framework
 
             private void CleanResources()
             {
+                m_Name = null;
+
+                m_OnFinishListener = null;
+
                 if (m_TimeItem != null)
                 {
                     m_TimeItem.Cancel();
@@ -137,6 +157,7 @@ namespace PTGame.Framework
                 {
                     if (m_Source.clip == m_AudioClip)
                     {
+                        m_Source.Stop();
                         m_Source.clip = null;
                     }
                 }
@@ -156,8 +177,8 @@ namespace PTGame.Framework
             }
         }
 
-        private int m_MaxSoundCount = 5;
-        private AudioUnit m_MainUnit;
+        protected int m_MaxSoundCount = 5;
+        protected AudioUnit m_MainUnit;
 
         public override void OnSingletonInit()
         {
@@ -166,18 +187,19 @@ namespace PTGame.Framework
             m_MainUnit.usedCache = false;
         }
 
-        public void PlayBg(string name)
+        public AudioUnit PlayBg(string name)
         {
             m_MainUnit.SetAudio(gameObject, name, true);
+            return m_MainUnit;
         }
 
-        public bool PlaySound(string name, bool loop)
+        public AudioUnit PlaySound(string name, bool loop)
         {
             AudioUnit unit = ObjectPool<AudioUnit>.S.Allocate();
 
             unit.SetAudio(gameObject, name, loop);
 
-            return true;
+            return unit;
         }
     }
 }
