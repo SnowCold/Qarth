@@ -22,10 +22,10 @@ namespace PTGame.Framework
         private void Awake()
         {
             m_OriPosition = transform.localPosition;
-            RandomPath();
+            RandomPath(true);
         }
 
-        private void RandomPath()
+        private void RandomPath(bool ori)
         {
             //确定速度方向
             int dir = RandomHelper.Range(0, 10);
@@ -34,12 +34,18 @@ namespace PTGame.Framework
 
             if (dir > 5)
             {
-                transform.localPosition = new Vector3(m_Rect.xMax, m_BaseY, 0);
+                if (!ori)
+                {
+                    transform.localPosition = new Vector3(m_Rect.xMax, m_BaseY, 0);
+                }
                 m_CurrentSpeed = -speed;
             }
             else
             {
-                transform.localPosition = new Vector3(m_Rect.xMin, m_BaseY, 0);
+                if (!ori)
+                {
+                    transform.localPosition = new Vector3(m_Rect.xMax, m_BaseY, 0);
+                }
                 m_CurrentSpeed = speed;
             }
 
@@ -56,7 +62,7 @@ namespace PTGame.Framework
 
             if (currentPos.x > m_Rect.xMax || currentPos.x < m_Rect.xMin)
             {
-                RandomPath();
+                RandomPath(false);
             }
         }
     }
