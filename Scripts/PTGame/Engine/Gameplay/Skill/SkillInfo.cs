@@ -6,18 +6,18 @@ using System.Collections.Generic;
 
 namespace PTGame.Framework
 {
+    public enum SkillState
+    {
+        kUnInit = 0,
+        kReleased = 1,
+        kRunning = 2,
+        kRemove = 4,//标记需要删除
+    }
+
     public class SkillInfo
     {
-        public enum eSkillState
-        {
-            kUnInit = 0,
-            kReleased = 1,
-            kRunning = 2,
-            kRemove = 4,//标记需要删除
-        }
-
         private int         m_SkillID = -1;
-        private eSkillState m_SkillState = eSkillState.kUnInit;
+        private SkillState m_SkillState = SkillState.kUnInit;
 
         public int skillID
         {
@@ -25,7 +25,7 @@ namespace PTGame.Framework
             set { m_SkillID = value; }
         }
 
-        public eSkillState skillState
+        public SkillState skillState
         {
             get { return m_SkillState; }
             set { m_SkillState = value; }
@@ -34,7 +34,7 @@ namespace PTGame.Framework
         public void Reset()
         {
             m_SkillID = -1;
-            m_SkillState = eSkillState.kUnInit;
+            m_SkillState = SkillState.kUnInit;
         }
     }
 }

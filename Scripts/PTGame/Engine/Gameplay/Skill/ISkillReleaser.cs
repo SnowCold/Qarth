@@ -8,10 +8,6 @@ namespace PTGame.Framework
 {
     public interface ISkillReleaser
     {
-        AbstractActor actor
-        {
-            get;
-        }
         void OnSkillRelease(ISkill skill);
         void OnSkillRemove(ISkill skill);
     }

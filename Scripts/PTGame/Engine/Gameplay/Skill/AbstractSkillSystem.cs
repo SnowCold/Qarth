@@ -51,7 +51,7 @@ namespace PTGame.Framework
 
             m_SkillList.Add(skill);
 
-            skill.skillInfo = CreateSkillInfo(NextSkillID);
+            skill.skillInfo = CreateSkillInfo(nextSkillID);
 
             skill.DoSkillRelease(this, releaser);
 
@@ -65,7 +65,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            skill.skillInfo.skillState = SkillInfo.eSkillState.kRemove;
+            skill.skillInfo.skillState = SkillState.kRemove;
         }
 
         public void RemoveSkillByReleaser(ISkillReleaser releaser)
@@ -79,7 +79,7 @@ namespace PTGame.Framework
             {
                 if (m_SkillList[i].skillReleaser == releaser)
                 {
-                    m_SkillList[i].skillInfo.skillState = SkillInfo.eSkillState.kRemove;
+                    m_SkillList[i].skillInfo.skillState = SkillState.kRemove;
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace PTGame.Framework
             for (int i = m_SkillList.Count - 1; i >= 0; --i)
             {
                 ISkill skill = m_SkillList[i];
-                if (skill.skillInfo.skillState == SkillInfo.eSkillState.kRemove)
+                if (skill.skillInfo.skillState == SkillState.kRemove)
                 {
                     m_SkillList.RemoveAt(i);
                     skill.DoSkillRemove();
@@ -103,12 +103,12 @@ namespace PTGame.Framework
         #endregion
 
         #region Protected Func
-        protected int NextSkillID
+        protected int nextSkillID
         {
             get { return ++m_NextSkillID; }
         }
 
-        protected SkillInfo CreateSkillInfo(int skillID, SkillInfo.eSkillState defaultState = SkillInfo.eSkillState.kUnInit)
+        protected SkillInfo CreateSkillInfo(int skillID, SkillState defaultState = SkillState.kUnInit)
         {
             SkillInfo info = new SkillInfo();
             info.skillID = skillID;
