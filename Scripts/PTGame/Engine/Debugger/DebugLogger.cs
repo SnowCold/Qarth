@@ -138,7 +138,7 @@ namespace PTGame.Framework
 		void OnGUI()
 		{
 			
-			if(AppConfig.S.dumpToScreen && m_Lines.Count > 0)
+			if(m_Dump2Screen && m_Lines.Count > 0)
 			{
 				GUI.color = Color.red;
 				for(int i = 0, imax = m_Lines.Count; i < imax; ++i)

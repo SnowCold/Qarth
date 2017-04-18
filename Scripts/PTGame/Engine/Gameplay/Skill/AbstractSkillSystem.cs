@@ -21,16 +21,14 @@ namespace PTGame.Framework
         }
 
         #endregion
-
-        private int                         m_NextSkillID = 0;
         //对技能列表的增删操作优化空间比较大
         private List<SkillReleaseFilter>    m_SkillFilterList;  //技能释放过滤器列表
-        private List<ISkill>                m_SkillList;    //释放技能列表
+        private List<SkillInfo>             m_SkillInfoList;    //释放技能列表
 
         public AbstractSkillSystem()
         {
             m_SkillFilterList = new List<SkillReleaseFilter>();
-            m_SkillList = new List<ISkill>();
+            m_SkillInfoList = new List<SkillInfo>();
         }
 
         #region Public Func
@@ -38,6 +36,12 @@ namespace PTGame.Framework
         {
             if (skill == null)
             {
+                return false;
+            }
+
+            if (skill.skillInfo != null)
+            {
+                Log.w("Skill Already Release.");
                 return false;
             }
 
@@ -49,9 +53,12 @@ namespace PTGame.Framework
                 }
             }
 
-            m_SkillList.Add(skill);
+            SkillInfo info = SkillInfo.Allocate();
 
-            skill.skillInfo = CreateSkillInfo(nextSkillID);
+            info.skill = skill;
+            skill.skillInfo = info;
+
+            m_SkillInfoList.Add(info);
 
             skill.DoSkillRelease(this, releaser);
 
@@ -60,12 +67,12 @@ namespace PTGame.Framework
 
         public void RemoveSkill(ISkill skill)
         {
-            if (skill == null || skill.skillInfo == null)
+            if (skill == null)
             {
                 return;
             }
 
-            skill.skillInfo.skillState = SkillState.kRemove;
+            DoSkillRemove(skill.skillInfo);
         }
 
         public void RemoveSkillByReleaser(ISkillReleaser releaser)
@@ -75,46 +82,56 @@ namespace PTGame.Framework
                 return;
             }
 
-            for(int i = m_SkillList.Count - 1; i >= 0; --i)
+            for(int i = m_SkillInfoList.Count - 1; i >= 0; --i)
             {
-                if (m_SkillList[i].skillReleaser == releaser)
+                if (m_SkillInfoList[i].skill != null)
                 {
-                    m_SkillList[i].skillInfo.skillState = SkillState.kRemove;
+                    ISkill skill = m_SkillInfoList[i].skill;
+                    if (skill.skillReleaser == releaser)
+                    {
+                        DoSkillRemove(m_SkillInfoList[i]);
+                    }
                 }
             }
         }
 
         public void Update(float time)
         {
-            for (int i = m_SkillList.Count - 1; i >= 0; --i)
+            for (int i = m_SkillInfoList.Count - 1; i >= 0; --i)
             {
-                ISkill skill = m_SkillList[i];
-                if (skill.skillInfo.skillState == SkillState.kRemove)
+                SkillInfo info = m_SkillInfoList[i];
+                if (info.skillState == SkillState.kRemove || info.skill == null)
                 {
-                    m_SkillList.RemoveAt(i);
-                    skill.DoSkillRemove();
+                    DoSkillRemove(info);
+
+                    m_SkillInfoList.RemoveAt(i);
+                    info.Recycle2Cache();
                     continue;
                 }
 
-                skill.DoSkillUpdate(time);
+                info.skill.DoSkillUpdate(time);
             }
         }
 
-        #endregion
-
-        #region Protected Func
-        protected int nextSkillID
+        private void DoSkillRemove(SkillInfo info)
         {
-            get { return ++m_NextSkillID; }
+            if (info == null)
+            {
+                return;
+            }
+
+            info.skillState = SkillState.kRemove;
+
+            if (info.skill == null)
+            {
+                return;
+            }
+
+            info.skill.DoSkillRemove();
+            info.skill.skillInfo = null;
+            info.skill = null;
         }
 
-        protected SkillInfo CreateSkillInfo(int skillID, SkillState defaultState = SkillState.kUnInit)
-        {
-            SkillInfo info = new SkillInfo();
-            info.skillID = skillID;
-            info.skillState = defaultState;
-            return info;
-        }
         #endregion
     }
 }

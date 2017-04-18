@@ -30,6 +30,14 @@ namespace PTGame.Framework
             get { return m_SkillReleaser; }
         }
 
+        public void StopSelf()
+        {
+            if (m_SkillSystem != null)
+            {
+                m_SkillSystem.RemoveSkill(this);
+            }
+        }
+
         public void DoSkillRelease(AbstractSkillSystem system, ISkillReleaser releaser)
         {
             //Log.i("OnSkillRelease");
