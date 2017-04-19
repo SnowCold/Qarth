@@ -195,6 +195,11 @@ namespace PTGame.Framework
 
         public AudioUnit PlaySound(string name, bool loop)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
             AudioUnit unit = ObjectPool<AudioUnit>.S.Allocate();
 
             unit.SetAudio(gameObject, name, loop);

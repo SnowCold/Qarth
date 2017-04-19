@@ -113,7 +113,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            for (int i = list.Count - 1; i >= 0; ++i)
+            for (int i = list.Count - 1; i >= 0; --i)
             {
                 Add2Load(list[i]);
             }
