@@ -325,6 +325,19 @@ namespace PTGame.Framework
 
         private void DoLoadAsync()
         {
+            if (m_LoadingCount == 0)
+            {
+                //ResMgr.S.timeDebugger.End();
+                //ResMgr.S.timeDebugger.Dump(-1);
+                if (m_Listener != null)
+                {
+                    m_Listener();
+                    m_Listener = null;
+                }
+
+                return;
+            }
+
             var nextNode = m_WaitLoadList.First;
             LinkedListNode<IRes> currentNode = null;
             while (nextNode != null)
@@ -403,6 +416,7 @@ namespace PTGame.Framework
                 if (m_Listener != null)
                 {
                     m_Listener();
+                    m_Listener = null;
                 }
 
                 m_Strategy.OnAllTaskFinish(this);
