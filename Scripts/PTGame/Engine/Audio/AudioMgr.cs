@@ -75,7 +75,10 @@ namespace PTGame.Framework
 
                 m_Loader.Add2Load(name, OnResLoadFinish);
 
-                m_Loader.LoadAsync();
+                if (m_Loader != null)
+                {
+                    m_Loader.LoadAsync();
+                }
             }
 
             public void Stop()

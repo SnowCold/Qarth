@@ -78,7 +78,7 @@ namespace PTGame.Framework.Editor
                 if (ai == null)
                 {
                     Log.e("Not Find Asset:" + fullFileName);
-                    return;
+                    continue;
                 }
                 else
                 {
