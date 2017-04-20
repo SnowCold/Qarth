@@ -98,8 +98,8 @@ namespace PTGame.Framework
 
                 if (m_AudioClip == null)
                 {
-                    Release();
                     Log.e("Asset Is Invalid AudioClip:" + m_Name);
+                    Release();
                     return;
                 }
 
