@@ -597,7 +597,16 @@ namespace PTGame.Framework
                     return;
                 }
 
-                PrepareDynamicResource(data);
+                OpenParam info = GetOpenInfo(m_CurrentMaster);
+
+                object[] args = null;
+
+                if (info != null)
+                {
+                    args = info.Args;
+                }
+
+                CollectDynamicResource(data, m_ResLoader, args);
 
                 m_ResLoader.Add2Load(data.fullPath, (state, res) =>
                 {
@@ -673,7 +682,7 @@ namespace PTGame.Framework
                     }
                 }
 
-                PrepareDynamicResource(data);
+                CollectDynamicResource(data, m_ResLoader);
 
                 m_ResLoader.Add2Load(data.fullPath, (state, res) =>
                 {
@@ -777,44 +786,6 @@ namespace PTGame.Framework
                 UIMgr.S.SetPanelSortingOrderDirty();
             }
 
-            //收集预加载资源
-            private void PrepareDynamicResource(UIData data)
-            {
-                if (data == null || data.panelClassType == null)
-                {
-                    return;
-                }
-
-                //TimeDebugger timer = new TimeDebugger("PrepareDynamicResource");
-                //timer.Begin("P1");
-                var methodInfo = data.panelClassType.GetMethod("PrepareDynamicResource", System.Reflection.BindingFlags.Static |
-    System.Reflection.BindingFlags.Public);
-                //timer.End();
-
-                if (methodInfo == null)
-                {
-                    //timer.Dump(-1);
-                    return;
-                }
-
-                //timer.Begin("P2");
-                object result = methodInfo.Invoke(null, null);
-                if (result == null)
-                {
-                    return;
-                }
-
-                if (result is List<string>)
-                {
-                    m_ResLoader.Add2Load((List<string>)result);
-                }
-                else if (result is string)
-                {
-                    m_ResLoader.Add2Load((string)result);
-                }
-                //timer.End();
-                //timer.Dump(-1);
-            }
         }
     }
 }

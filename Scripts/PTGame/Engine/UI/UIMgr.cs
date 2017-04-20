@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-
+using System.Reflection;
 
 namespace PTGame.Framework
 {
@@ -90,7 +90,60 @@ namespace PTGame.Framework
             return uiRoot.GetComponent<UIRoot>();
         }
 
-        #region Public Func
+#region Public Func
+
+//收集预加载资源
+        public static void CollectDynamicResource(UIData data, ResLoader loader, params object[] args)
+        {
+            if (data == null || data.panelClassType == null)
+            {
+                return;
+            }
+
+            //TimeDebugger timer = new TimeDebugger("PrepareDynamicResource");
+            //timer.Begin("P1");
+
+            var methodInfo = data.panelClassType.GetMethod("PrepareDynamicResource", System.Reflection.BindingFlags.Static |
+System.Reflection.BindingFlags.Public);
+            //timer.End();
+
+            if (methodInfo == null)
+            {
+                //timer.Dump(-1);
+                return;
+            }
+
+            object[] paramWrap = new object[1];
+            paramWrap[0] = args;
+            //timer.Begin("P2");
+            object result = null;
+
+            try
+            {
+                result = methodInfo.Invoke(null, paramWrap);
+            }
+            catch (Exception e)
+            {
+                result = null;
+                Log.e(e);
+            }
+
+            if (result == null)
+            {
+                return;
+            }
+
+            if (result is List<string>)
+            {
+                loader.Add2Load((List<string>)result);
+            }
+            else if (result is string)
+            {
+                loader.Add2Load((string)result);
+            }
+            //timer.End();
+            //timer.Dump(-1);
+        }
 
         public void SetPanelSortingOrderDirty()
         {
