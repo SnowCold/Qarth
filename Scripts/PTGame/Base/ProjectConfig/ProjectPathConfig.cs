@@ -150,6 +150,11 @@ namespace PTGame.Framework
         {
             get { return FilePath.streamingAssetsPath + S.m_ExportABConfigFile; }
         }
+
+        public static string abConfigfileName
+        {
+            get { return S.m_ExportABConfigFile; }
+        }
         #endregion
 
         #region 配置工具相关

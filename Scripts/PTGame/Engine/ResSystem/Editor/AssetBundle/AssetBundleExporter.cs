@@ -266,62 +266,6 @@ namespace PTGame.Framework.Editor
             }
         }
 
-        private static void BuildAssetBundlesInFolder(string folderPath)
-        {
-            if (folderPath == null)
-            {
-                Log.w("Folder Path Is Null.");
-                return;
-            }
-
-            Log.i("Start Build AssetBundle:" + folderPath);
-            string fullFolderPath = EditorUtils.AssetsPath2ABSPath(folderPath);//EditUtils.GetFullPath4AssetsPath(folderPath);
-            string assetBundleName = EditorUtils.AssetPath2ReltivePath(folderPath);// EditUtils.GetReltivePath4AssetPath(folderPath);
-            var filePaths = Directory.GetFiles(fullFolderPath);
-
-            AssetBundleBuild abb = new AssetBundleBuild();
-            abb.assetBundleName = assetBundleName;
-
-            AssetDatabase.GetAssetPathsFromAssetBundle("abName");
-
-            List<string> fileNameList = new List<string>();
-
-            for (int i = 0; i < filePaths.Length; ++i)
-            {
-                if (!AssetFileFilter.IsAsset(filePaths[i]))
-                {
-                    continue;
-                }
-
-                string fileName = Path.GetFileName(filePaths[i]);
-                fileName = string.Format("{0}/{1}", folderPath, fileName);
-                fileNameList.Add(fileName);
-            }
-
-            if (fileNameList.Count <= 0)
-            {
-                Log.w("Not Find Asset In Folder:" + folderPath);
-                return;
-            }
-
-            BuildTarget buildTarget = BuildTarget.StandaloneWindows;
-#if UNITY_IPHONE
-            buildTarget = BuildTarget.iOS;
-#elif UNITY_ANDROID
-            buildTarget = BuildTarget.Android;
-#elif UNITY_STANDALONE_OSX
-            buildTarget = BuildTarget.StandaloneOSXUniversal;
-#elif UNITY_STANDALONE_WIN
-            buildTarget = BuildTarget.StandaloneWindows;
-#endif
-
-            abb.assetNames = fileNameList.ToArray();
-            BuildPipeline.BuildAssetBundles(ProjectPathConfig.exportRootFolder,
-                new AssetBundleBuild[1] { abb },
-                BuildAssetBundleOptions.ChunkBasedCompression,
-                buildTarget);
-        }
-
 #endregion
 
 #endregion
@@ -348,9 +292,55 @@ namespace PTGame.Framework.Editor
             Log.i("Start BuildAssetDataTable!");
             AssetDataTable table = new AssetDataTable();
 
-            ProcessAssetBundleRes(table);
+            ProcessAssetBundleRes(table, null);
 
             table.Save(ProjectPathConfig.exportABConfigFile);
+        }
+
+        [MenuItem("Assets/SCEngine/Asset/BuildDataTableInFolder(指定文件夹生成Asset配置表)")]
+        public static void BuildDataTableInFolder()
+        {
+            Log.i("Start BuildAssetDataTable!");
+
+            string selectPath = EditorUtils.GetSelectedDirAssetsPath();
+            if (selectPath == null)
+            {
+                Log.w("Not Select Any Folder!");
+                return;
+            }
+
+            Dictionary<string, int> builderData = new Dictionary<string, int>();
+            CollectABInFolder(selectPath, builderData);
+
+            if (builderData.Count <= 0)
+            {
+                return;
+            }
+
+            AssetDataTable table = new AssetDataTable();
+
+            string[] abNames = new string[builderData.Keys.Count];
+
+            int index = 0;
+            foreach (var cell in builderData)
+            {
+                abNames[index++] = cell.Key;
+            }
+
+            ProcessAssetBundleRes(table, abNames);
+
+            string relativePath = EditorUtils.ABSPath2AssetsPath(selectPath);
+            relativePath = EditorUtils.AssetPath2ReltivePath(relativePath);
+            relativePath = relativePath.ToLower();
+
+            string outFolder = Application.dataPath + "/" + ProjectPathConfig.exportRootFolder + relativePath + "/";
+
+            if (Directory.Exists(outFolder) == false)
+            {
+                Directory.CreateDirectory(outFolder);
+            }
+
+            table.Save(outFolder + ProjectPathConfig.abConfigfileName);
         }
 
         private static void ProcessResourcesRes(AssetDataTable table)
@@ -358,7 +348,7 @@ namespace PTGame.Framework.Editor
             
         }
 
-        private static void ProcessAssetBundleRes(AssetDataTable table)
+        private static void ProcessAssetBundleRes(AssetDataTable table, string[] abNames)
         {
             AssetDataGroup group = null;
 
@@ -371,7 +361,11 @@ namespace PTGame.Framework.Editor
 
             AssetDatabase.RemoveUnusedAssetBundleNames();
 
-            string[] abNames = AssetDatabase.GetAllAssetBundleNames();
+            if (abNames == null)
+            {
+                abNames = AssetDatabase.GetAllAssetBundleNames();
+            }
+
             if (abNames != null && abNames.Length > 0)
             {
                 for (int i = 0; i < abNames.Length; ++i)
