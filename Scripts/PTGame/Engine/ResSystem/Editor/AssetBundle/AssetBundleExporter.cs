@@ -286,7 +286,7 @@ namespace PTGame.Framework.Editor
             return assetPath.Substring(startIndex).ToLower();
         }
 
-        [MenuItem("Assets/SCEngine/Asset/BuildDataTable(生成Asset配置表)")]
+        [MenuItem("Assets/SCEngine/Asset/BuildDataTable(生成全局Asset配置表)")]
         public static void BuildDataTable()
         {
             Log.i("Start BuildAssetDataTable!");
@@ -352,12 +352,7 @@ namespace PTGame.Framework.Editor
         {
             AssetDataGroup group = null;
 
-            int abIndex = table.AddAssetBundleName(ProjectPathConfig.abManifestABName, null, out group);
-
-            if (abIndex > 0)
-            {
-                group.AddAssetData(new AssetData(ProjectPathConfig.abManifestAssetName, eResType.kABAsset, abIndex));
-            }
+            int abIndex = -1;
 
             AssetDatabase.RemoveUnusedAssetBundleNames();
 

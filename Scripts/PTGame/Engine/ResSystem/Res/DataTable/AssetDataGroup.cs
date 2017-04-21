@@ -71,7 +71,7 @@ namespace PTGame.Framework
         }
 
         private string m_Key;
-
+        private string m_FolderPath;
         private List<ABUnit> m_ABUnitArray;
         private Dictionary<string, AssetData> m_AssetDataMap;
 
@@ -85,9 +85,10 @@ namespace PTGame.Framework
             m_Key = key;
         }
 
-        public AssetDataGroup(SerializeData data)
+        public AssetDataGroup(SerializeData data, string path)
         {
             m_Key = data.key;
+            m_FolderPath = path;
             SetSerizlizeData(data);
         }
 
@@ -172,6 +173,20 @@ namespace PTGame.Framework
 
             return false;
         }
+
+        public bool GetAssetBundlePath(string assetName, out string result)
+        {
+            result = null;
+            ABUnit unit = GetABUnit(assetName);
+            if (unit == null)
+            {
+                return false;
+            }
+
+            result = m_FolderPath + unit.abName;
+            return true;
+        }
+
 
         public ABUnit GetABUnit(string assetName)
         {

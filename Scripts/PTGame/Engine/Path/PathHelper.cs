@@ -40,5 +40,11 @@ namespace PTGame.Framework
             }
             return name;
         }
+
+        public static string GetFolderPath(string filePath)
+        {
+            FileInfo info = new FileInfo(filePath);
+            return info.Directory.FullName + "/";
+        }
     }
 }

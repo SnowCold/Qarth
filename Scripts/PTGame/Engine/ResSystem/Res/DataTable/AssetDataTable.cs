@@ -105,6 +105,23 @@ namespace PTGame.Framework
             return null;
         }
 
+        //该函数的使用对打包规划要求太高，暂不提供
+        public string GetAssetBundlePath(string assetName)
+        {
+            string result = null;
+            for (int i = m_ActiveAssetDataGroup.Count - 1; i >= 0; --i)
+            {
+                if (!m_ActiveAssetDataGroup[i].GetAssetBundlePath(assetName, out result))
+                {
+                    continue;
+                }
+
+                return result;
+            }
+            Log.w(string.Format("Failed GetAssetBundlePath : {0}", assetName));
+            return null;
+        }
+
         public string[] GetAllDependenciesByUrl(string url)
         {
             string abName = ProjectPathConfig.AssetBundleUrl2Name(url);
@@ -168,7 +185,10 @@ namespace PTGame.Framework
             }
 
             Log.i("Load AssetConfig From File:" + path);
-            SetSerizlizeData(sd);
+
+            string parentFolder = PathHelper.GetFolderPath(path);
+
+            SetSerizlizeData(sd, parentFolder);
         }
 
         public void Save(string outPath)
@@ -206,7 +226,7 @@ namespace PTGame.Framework
             Log.i("#DUMP AssetDataTable END");
         }
 
-        private void SetSerizlizeData(SerializeData data)
+        private void SetSerizlizeData(SerializeData data, string path)
         {
             if (data == null || data.assetDataGroup == null)
             {
@@ -215,13 +235,13 @@ namespace PTGame.Framework
 
             for (int i = data.assetDataGroup.Length - 1; i >= 0; --i)
             {
-                m_AllAssetDataGroup.Add(BuildAssetDataGroup(data.assetDataGroup[i]));
+                m_AllAssetDataGroup.Add(BuildAssetDataGroup(data.assetDataGroup[i], path));
             }
         }
 
-        private AssetDataGroup BuildAssetDataGroup(AssetDataGroup.SerializeData data)
+        private AssetDataGroup BuildAssetDataGroup(AssetDataGroup.SerializeData data, string path)
         {
-            return new AssetDataGroup(data);
+            return new AssetDataGroup(data, path);
         }
 
         private AssetDataGroup GetAssetDataGroup(string key)
