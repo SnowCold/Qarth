@@ -150,7 +150,120 @@ namespace PTGame.Framework.Editor
                 return;
             }
 
-            BuildAssetBundlesInFolder(selectPath);
+            string exportPath = Application.dataPath + "/" + ProjectPathConfig.exportRootFolder;
+
+            if (Directory.Exists(exportPath) == false)
+            {
+                Directory.CreateDirectory(exportPath);
+            }
+
+            Dictionary<string, int> builderData = new Dictionary<string, int>();
+            CollectABInFolder(selectPath, builderData);
+
+            List<AssetBundleBuild> builderList = new List<AssetBundleBuild>();
+            foreach(var cell in builderData)
+            {
+                string abName = cell.Key;
+                AssetBundleBuild build = new AssetBundleBuild();
+                build.assetBundleName = abName;
+                build.assetNames = AssetDatabase.GetAssetPathsFromAssetBundle(abName);
+                builderList.Add(build);
+            }
+
+            if (builderList.Count == 0)
+            {
+                Log.i("No AssetBundles Found InSelectFolder:" + selectPath);
+                return;
+            }
+
+            BuildTarget buildTarget = BuildTarget.StandaloneWindows;
+#if UNITY_IPHONE
+            buildTarget = BuildTarget.iOS;
+#elif UNITY_ANDROID
+            buildTarget = BuildTarget.Android;
+#elif UNITY_STANDALONE_OSX
+            buildTarget = BuildTarget.StandaloneOSXUniversal;
+#elif UNITY_STANDALONE_WIN
+            buildTarget = BuildTarget.StandaloneWindows;
+#endif
+
+            BuildPipeline.BuildAssetBundles("Assets/" + ProjectPathConfig.exportRootFolder,
+                builderList.ToArray(),
+                BuildAssetBundleOptions.ChunkBasedCompression,
+                buildTarget);
+
+            Log.i("Finish Build AssetBundles InSelectFolder:" + selectPath);
+        }
+
+        private static void CollectABInFolder(string folderPath, Dictionary<string, int> builderData)
+        {
+            if (folderPath == null)
+            {
+                Log.w("Folder Path Is Null.");
+                return;
+            }
+
+            string workPath = EditorUtils.AssetsPath2ABSPath(folderPath);
+
+            var filePaths = Directory.GetFiles(workPath);
+
+            for (int i = 0; i < filePaths.Length; ++i)
+            {
+                if (!AssetFileFilter.IsAsset(filePaths[i]))
+                {
+                    continue;
+                }
+
+                string fileName = Path.GetFileName(filePaths[i]);
+
+                string fullFileName = string.Format("{0}/{1}", folderPath, fileName);
+
+                AssetImporter ai = AssetImporter.GetAtPath(fullFileName);
+                if (ai == null)
+                {
+                    Log.w("Not Find Asset:" + fullFileName);
+                    continue;
+                }
+                else if (!string.IsNullOrEmpty(ai.assetBundleName))
+                {
+                    RecordNewAB(ai.assetBundleName, builderData);
+                }
+            }
+
+            //递归处理文件夹
+            var dirs = Directory.GetDirectories(workPath);
+            for (int i = 0; i < dirs.Length; ++i)
+            {
+                string fileName = Path.GetFileName(dirs[i]);
+
+                fileName = string.Format("{0}/{1}", folderPath, fileName);
+                CollectABInFolder(fileName, builderData);
+            }
+        }
+
+        private static void RecordNewAB(string abName, Dictionary<string, int> builderData)
+        {
+            if (builderData.ContainsKey(abName))
+            {
+                return;
+            }
+
+            builderData.Add(abName, 0);
+
+            string[] depends = AssetDatabase.GetAssetBundleDependencies(abName, true);
+
+            if (depends != null)
+            {
+                for (int i = 0; i < depends.Length; ++i)
+                {
+                    if (builderData.ContainsKey(depends[i]))
+                    {
+                        continue;
+                    }
+
+                    builderData.Add(depends[i], 0);
+                }
+            }
         }
 
         private static void BuildAssetBundlesInFolder(string folderPath)
@@ -168,6 +281,8 @@ namespace PTGame.Framework.Editor
 
             AssetBundleBuild abb = new AssetBundleBuild();
             abb.assetBundleName = assetBundleName;
+
+            AssetDatabase.GetAssetPathsFromAssetBundle("abName");
 
             List<string> fileNameList = new List<string>();
 
@@ -189,11 +304,22 @@ namespace PTGame.Framework.Editor
                 return;
             }
 
+            BuildTarget buildTarget = BuildTarget.StandaloneWindows;
+#if UNITY_IPHONE
+            buildTarget = BuildTarget.iOS;
+#elif UNITY_ANDROID
+            buildTarget = BuildTarget.Android;
+#elif UNITY_STANDALONE_OSX
+            buildTarget = BuildTarget.StandaloneOSXUniversal;
+#elif UNITY_STANDALONE_WIN
+            buildTarget = BuildTarget.StandaloneWindows;
+#endif
+
             abb.assetNames = fileNameList.ToArray();
             BuildPipeline.BuildAssetBundles(ProjectPathConfig.exportRootFolder,
                 new AssetBundleBuild[1] { abb },
                 BuildAssetBundleOptions.ChunkBasedCompression,
-                BuildTarget.StandaloneWindows);
+                buildTarget);
         }
 
 #endregion
