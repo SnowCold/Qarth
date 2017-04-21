@@ -63,10 +63,10 @@ namespace PTGame.Framework
                     m_Source = root.AddComponent<AudioSource>();
                 }
 
-                if (m_Loader != null)
-                {
-                    CleanResources();
-                }
+                //防止卸载后立马加载的情况
+                ResLoader preLoader = m_Loader;
+                m_Loader = null;
+                CleanResources();
 
                 m_Loader = ResLoader.Allocate();
 
@@ -74,6 +74,12 @@ namespace PTGame.Framework
                 m_Name = name;
 
                 m_Loader.Add2Load(name, OnResLoadFinish);
+
+                if (preLoader != null)
+                {
+                    preLoader.Recycle2Cache();
+                    preLoader = null;
+                }
 
                 if (m_Loader != null)
                 {
