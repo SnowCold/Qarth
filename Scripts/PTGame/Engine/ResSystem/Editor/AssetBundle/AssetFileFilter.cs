@@ -10,7 +10,7 @@ namespace PTGame.Framework.Editor
     {
         public static bool IsAsset(string fileName)
         {
-            if (fileName.EndsWith(".meta") || fileName.EndsWith(".gaf"))
+            if (fileName.EndsWith(".meta") || fileName.EndsWith(".gaf") || fileName.EndsWith(".DS_Store"))
             {
                 return false;
             }
