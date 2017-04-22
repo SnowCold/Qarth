@@ -7,6 +7,7 @@ namespace PTGame.Framework
 {
     public class ProjectPathConfig : ScriptableObject
     {
+        public const string DEFAULT_TABLE_EXPORT_PATH = "StreamingAssets/config";
         public const string DEFAULT_APP_CONFIG_PATH = "Resources/Config/DefaultAppConfig";
         private const string PROJECT_CONFIG_PATH = "Resources/Config/ProjectConfig";
         private const string DEFAULT_PROJECT_CONFIG_PATH = "Resources/Config/DefaultProjectConfig";

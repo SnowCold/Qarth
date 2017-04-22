@@ -59,7 +59,7 @@ namespace PTGame.Framework
             m_ActiveAssetDataGroup.Clear();
         }
 
-        public int AddAssetBundleName(string name, string[] depends, out AssetDataGroup group)
+        public int AddAssetBundleName(string name, string[] depends, string md5, int fileSize, out AssetDataGroup group)
         {
             group = null;
 
@@ -86,7 +86,7 @@ namespace PTGame.Framework
                 m_AllAssetDataGroup.Add(group);
             }
 
-            return group.AddAssetBundleName(name, depends);
+            return group.AddAssetBundleName(name, depends, md5, fileSize);
         }
 
         public string GetAssetBundleName(string assetName, int index)
@@ -103,6 +103,32 @@ namespace PTGame.Framework
             }
             Log.w(string.Format("Failed GetAssetBundleName : {0} - Index:{1}", assetName, index));
             return null;
+        }
+
+        public List<ABUnit> GetAllABUnit()
+        {
+            List<ABUnit> result = new List<ABUnit>();
+            for (int i = m_AllAssetDataGroup.Count - 1; i >= 0; --i)
+            {
+                result.AddRange(m_AllAssetDataGroup[i].GetAllABUnit());
+            }
+            return result;
+        }
+
+        public ABUnit GetABUnit(string name)
+        {
+            ABUnit result = null;
+
+            for (int i = m_AllAssetDataGroup.Count - 1; i >= 0; --i)
+            {
+                result = m_AllAssetDataGroup[i].GetABUnit(name);
+                if (result != null)
+                {
+                    break;
+                }
+            }
+
+            return result;
         }
 
         //该函数的使用对打包规划要求太高，暂不提供
@@ -168,6 +194,11 @@ namespace PTGame.Framework
 
         public void LoadFromFile(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
             object data = SerializeHelper.DeserializeBinary(path);
 
             if (data == null)
@@ -184,7 +215,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            Log.i("Load AssetConfig From File:" + path);
+            //Log.i("Load AssetConfig From File:" + path);
 
             string parentFolder = PathHelper.GetFolderPath(path);
 

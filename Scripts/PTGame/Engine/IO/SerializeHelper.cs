@@ -42,6 +42,12 @@ namespace PTGame.Framework
 
             FileInfo fileInfo = new FileInfo(path);
 
+            if (!fileInfo.Exists)
+            {
+                Log.w("DeserializeBinary File Not Exit.");
+                return null;
+            }
+
             using (FileStream fs = fileInfo.OpenRead())
             {
                 System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();

@@ -337,15 +337,78 @@ namespace PTGame.Framework.Editor
 
             if (Directory.Exists(outFolder) == false)
             {
-                Directory.CreateDirectory(outFolder);
+                var info = Directory.CreateDirectory(outFolder);
+                if (!info.Exists)
+                {
+                    Log.e("Can not create config file in:" + outFolder);
+                    return;
+                }
             }
 
             table.Save(outFolder + ProjectPathConfig.abConfigfileName);
         }
 
-        private static void ProcessResourcesRes(AssetDataTable table)
+        private static string GetMD5HashFromFile(string fileName)
         {
-            
+            try
+            {
+                FileStream file = new FileStream(fileName, FileMode.Open);
+                System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+                byte[] retVal = md5.ComputeHash(file);
+                file.Close();
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < retVal.Length; i++)
+                {
+                    sb.Append(retVal[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex);
+            }
+
+            return null;
+        }
+
+        [MenuItem("Assets/SCEngine/Asset/BuildTableConfig(生成配表资源清单)")]
+        public static void BuildTableConfigTable()
+        {
+            Log.i("Start BuildTableConfigTable!");
+            AssetDataTable table = new AssetDataTable();
+            string folder = Application.dataPath + "/" + ProjectPathConfig.DEFAULT_TABLE_EXPORT_PATH;
+            ProcessTableConfig(table, folder);
+
+            table.Save(folder + "/" + ProjectPathConfig.abConfigfileName);
+        }
+
+        private static void ProcessTableConfig(AssetDataTable table, string folder)
+        {
+
+            AssetDataGroup group = null;
+
+            DirectoryInfo direInfo = new DirectoryInfo(folder);
+
+            FileInfo[] fileInfos = direInfo.GetFiles();
+
+            if (fileInfos == null || fileInfos.Length == 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < fileInfos.Length; ++i)
+            {
+                FileInfo info = fileInfos[i];
+
+                if (AssetFileFilter.IsConfigTable(info.FullName))
+                {
+                    string md5 = GetMD5HashFromFile(info.FullName);
+                    table.AddAssetBundleName(info.Name, null, md5, (int)info.Length, out group);
+                }
+            }
+
+            table.Dump();
         }
 
         private static void ProcessAssetBundleRes(AssetDataTable table, string[] abNames)
@@ -365,12 +428,19 @@ namespace PTGame.Framework.Editor
             {
                 for (int i = 0; i < abNames.Length; ++i)
                 {
+                    string abPath = Application.dataPath + "/" + ProjectPathConfig.exportRootFolder + abNames[i];
+
+                    string md5 = GetMD5HashFromFile(abPath);
+
                     string[] depends = AssetDatabase.GetAssetBundleDependencies(abNames[i], false);
-                    abIndex = table.AddAssetBundleName(abNames[i], depends, out group);
+
+                    FileInfo info = new FileInfo(abPath);
+                    abIndex = table.AddAssetBundleName(abNames[i], depends, md5, (int)info.Length, out group);
                     if (abIndex < 0)
                     {
                         continue;
                     }
+                    //Log.i("MD5:" + GetMD5HashFromFile(abPath));
 
                     string[] assets = AssetDatabase.GetAssetPathsFromAssetBundle(abNames[i]);
                     foreach (var cell in assets)

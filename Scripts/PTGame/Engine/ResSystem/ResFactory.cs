@@ -30,6 +30,10 @@ namespace PTGame.Framework
             {
                 assetType = eResType.kNetImageRes;
             }
+            else if (name.StartsWith("HotUpdateRes:"))
+            {
+                assetType = eResType.kHotUpdateRes;
+            }
             else
             {
                 AssetData data = AssetDataTable.S.GetAssetData(name);
@@ -61,6 +65,8 @@ namespace PTGame.Framework
                     return InternalRes.Allocate(name);
                 case eResType.kNetImageRes:
                     return NetImageRes.Allocate(name);
+                case eResType.kHotUpdateRes:
+                    return HotUpdateRes.Allocate(name);
                 default:
                     Log.e("Invalid assetType :" + assetType);
                     return null;

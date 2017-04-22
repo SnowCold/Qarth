@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -25,19 +24,16 @@ namespace PTGame.Framework
             return res;
         }
 
-        public static string localPhotoFolderPath
+        public void SetDownloadProgress(int totalSize, int download)
         {
-            get
-            {
-                return FilePath.persistentDataPath4Photo;
-            }
+
         }
 
         public string localResPath
         {
             get
             {
-                return string.Format("{0}{1}", localPhotoFolderPath, m_HashCode);
+                return string.Format("{0}{1}", FilePath.persistentDataPath4Photo, m_HashCode);
             }
         }
 

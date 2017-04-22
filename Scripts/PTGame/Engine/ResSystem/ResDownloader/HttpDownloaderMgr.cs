@@ -105,7 +105,7 @@ namespace PTGame.Framework
 
             m_TaskCount++;
 
-            Log.i("[HttpDownload]about to download new data:" + m_Uri);
+            //Log.i("[HttpDownload]about to download new data:" + m_Uri);
 
             return true;
         }
@@ -278,14 +278,14 @@ namespace PTGame.Framework
                     {
                         m_StartPosition -= 1;
                     }
-                    Log.i("exist tmp file:" + m_TmpFile + ", m_StartPosition:" + m_StartPosition + ", IsAsync:" + m_FileStream.IsAsync);
+                    //Log.i("exist tmp file:" + m_TmpFile + ", m_StartPosition:" + m_StartPosition + ", IsAsync:" + m_FileStream.IsAsync);
                     m_FileStream.Seek(m_StartPosition, System.IO.SeekOrigin.Current); //移动文件流中的当前指针 
                 }
                 else
                 {
                     m_FileStream = new FileStream(m_TmpFile, FileMode.Create);
                     m_StartPosition = 0;
-                    Log.i("NOT exist tmp file:" + m_TmpFile + ", IsAsync:" + m_FileStream.IsAsync);
+                    //Log.i("NOT exist tmp file:" + m_TmpFile + ", IsAsync:" + m_FileStream.IsAsync);
                 }
             }
             catch (Exception exception)
@@ -308,7 +308,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            Log.i("[HttpDownload]connect responed.");
+            //Log.i("[HttpDownload]connect responed.");
 
             try
             {
@@ -417,8 +417,9 @@ namespace PTGame.Framework
                     {
                         File.Delete(m_SaveFile);
                     }
+
                     File.Move(m_TmpFile, m_SaveFile);
-                    Log.i("Finished!! fileLength:" + m_FileLength + ",Download byte:" + m_CurrentDownloadByte);
+                    //Log.i("Finished!! fileLength:" + m_FileLength + ",Download byte:" + m_CurrentDownloadByte);
 
                     // 进度回调
                     lock (m_Event)

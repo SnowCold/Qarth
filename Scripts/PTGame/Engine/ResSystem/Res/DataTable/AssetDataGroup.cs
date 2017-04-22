@@ -9,42 +9,6 @@ namespace PTGame.Framework
     public class AssetDataGroup
     {
         [Serializable]
-        public class ABUnit
-        {
-            public string abName;
-            public string[] abDepends;
-
-            public ABUnit(string name, string[] depends)
-            {
-                this.abName = name;
-                if (depends == null || depends.Length == 0)
-                {
-
-                }
-                else
-                {
-                    this.abDepends = depends;
-                }
-            }
-
-            public override string ToString()
-            {
-                string result = string.Format("ABName:" + abName);
-                if (abDepends == null)
-                {
-                    return result;
-                }
-
-                for (int i = 0; i < abDepends.Length; ++i)
-                {
-                    result += string.Format(" #:{0}", abDepends[i]);
-                }
-
-                return result;
-            }
-        }
-
-        [Serializable]
         public class SerializeData
         {
             private string m_Key;
@@ -105,7 +69,7 @@ namespace PTGame.Framework
             }
         }
 
-        public int AddAssetBundleName(string name, string[] depends)
+        public int AddAssetBundleName(string name, string[] depends, string md5, int fileSize)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -124,7 +88,7 @@ namespace PTGame.Framework
                 return config.assetBundleIndex;
             }
 
-            m_ABUnitArray.Add(new ABUnit(name, depends));
+            m_ABUnitArray.Add(new ABUnit(name, depends, md5, fileSize));
 
             int index = m_ABUnitArray.Count - 1;
 
@@ -203,6 +167,11 @@ namespace PTGame.Framework
             }
 
             return m_ABUnitArray[data.assetBundleIndex];
+        }
+
+        public List<ABUnit> GetAllABUnit()
+        {
+            return m_ABUnitArray;
         }
 
         public bool GetAssetBundleDepends(string abName, out string[] result)

@@ -11,7 +11,7 @@ namespace PTGame.Framework
         private static string           m_StreamingAssetsPath;
         private static string           m_PersistentDataPath4Res;
         private static string           m_PersistentDataPath4Photo;
-
+        private static string           m_PersistentDownloadCachePath;
         // 外部目录  
         public static string persistentDataPath
         {
@@ -48,6 +48,27 @@ namespace PTGame.Framework
                 }
 
                 return m_StreamingAssetsPath;
+            }
+        }
+
+        public static string persistentDownloadCachePath
+        {
+            get
+            {
+                if (null == m_PersistentDownloadCachePath)
+                {
+                    m_PersistentDownloadCachePath = persistentDataPath + "Download/";
+
+                    if (!Directory.Exists(m_PersistentDownloadCachePath))
+                    {
+                        Directory.CreateDirectory(m_PersistentDownloadCachePath);
+#if UNITY_IPHONE && !UNITY_EDITOR
+                        UnityEngine.iOS.Device.SetNoBackupFlag(m_PersistentDownloadCachePath);
+#endif
+                    }
+                }
+
+                return m_PersistentDownloadCachePath;
             }
         }
 

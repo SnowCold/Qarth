@@ -26,6 +26,7 @@ namespace PTGame.Framework
         public const short kABScene = 2;
         public const short kInternal = 3;
         public const short kNetImageRes = 4;
+        public const short kHotUpdateRes = 5;
     }
 
     public interface IRes : IRefCounter, ICacheType, IEnumeratorTask

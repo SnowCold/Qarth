@@ -36,6 +36,7 @@ namespace PTGame.Framework
             }
             AssetDataTable.S.SwitchLanguage("cn");
             Log.i("Init[ResMgr]");
+
         }
 
         #region 属性

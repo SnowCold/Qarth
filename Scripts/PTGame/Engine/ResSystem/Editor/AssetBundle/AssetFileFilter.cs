@@ -16,5 +16,14 @@ namespace PTGame.Framework.Editor
             }
             return true;
         }
+
+        public static bool IsConfigTable(string fileName)
+        {
+            if (fileName.EndsWith(".txt"))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
