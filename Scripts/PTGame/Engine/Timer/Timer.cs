@@ -13,6 +13,16 @@ namespace PTGame.Framework
         private float               m_CurrentUnScaleTime = -1;
         private float               m_CurrentScaleTime = -1;
 
+        public float currentScaleTime
+        {
+            get { return m_CurrentScaleTime; }
+        }
+
+        public float currentUnScaleTime
+        {
+            get { return m_CurrentUnScaleTime; }
+        }
+
         public override void OnSingletonInit()
         {
             m_UnScaleTimeHeap.Clear();
