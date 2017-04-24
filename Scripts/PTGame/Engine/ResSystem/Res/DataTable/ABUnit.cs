@@ -14,12 +14,12 @@ namespace PTGame.Framework
         public long buildTime;
         public int fileSize;
 
-        public ABUnit(string name, string[] depends, string md5, int fileSize)
+        public ABUnit(string name, string[] depends, string md5, int fileSize, long buildTime)
         {
             this.abName = name;
             this.md5 = md5;
             this.fileSize = fileSize;
-            this.buildTime = DateTime.Now.Ticks;
+            this.buildTime = buildTime;
             if (depends == null || depends.Length == 0)
             {
 

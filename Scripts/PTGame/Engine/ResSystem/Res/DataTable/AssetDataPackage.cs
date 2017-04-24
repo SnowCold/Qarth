@@ -76,7 +76,7 @@ namespace PTGame.Framework
             }
         }
 
-        public int AddAssetBundleName(string name, string[] depends, string md5, int fileSize)
+        public int AddAssetBundleName(string name, string[] depends, string md5, int fileSize, long buildTime)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -95,7 +95,7 @@ namespace PTGame.Framework
                 return config.assetBundleIndex;
             }
 
-            m_ABUnitArray.Add(new ABUnit(name, depends, md5, fileSize));
+            m_ABUnitArray.Add(new ABUnit(name, depends, md5, fileSize, buildTime));
 
             int index = m_ABUnitArray.Count - 1;
 

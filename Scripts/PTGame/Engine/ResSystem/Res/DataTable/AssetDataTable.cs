@@ -48,7 +48,7 @@ namespace PTGame.Framework
             m_ActiveAssetDataPackages.Clear();
         }
 
-        public int AddAssetBundleName(string name, string[] depends, string md5, int fileSize, out AssetDataPackage package)
+        public int AddAssetBundleName(string name, string[] depends, string md5, int fileSize, long buildTime, out AssetDataPackage package)
         {
             package = null;
 
@@ -56,7 +56,7 @@ namespace PTGame.Framework
             {
                 return -1;
             }
-
+            
             string key = null;
             string path = null;
 
@@ -76,7 +76,7 @@ namespace PTGame.Framework
                 Log.i("#Create Config Group:" + key);
             }
 
-            return package.AddAssetBundleName(name, depends, md5, fileSize);
+            return package.AddAssetBundleName(name, depends, md5, fileSize, buildTime);
         }
 
         public string GetAssetBundleName(string assetName, int index)
