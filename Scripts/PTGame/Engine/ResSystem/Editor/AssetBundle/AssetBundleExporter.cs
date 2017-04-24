@@ -272,7 +272,7 @@ namespace PTGame.Framework.Editor
 
 #region 构建 AssetDataTable
 
-        [MenuItem("Assets/SCEngine/Asset/生成Asset清单[全局]")]
+        [MenuItem("Assets/SCEngine/Asset/生成Asset清单")]
         public static void BuildDataTable()
         {
             Log.i("Start BuildAssetDataTable!");
@@ -283,6 +283,7 @@ namespace PTGame.Framework.Editor
             table.Save(ProjectPathConfig.absExportRootFolder);
         }
 
+        /*
         [MenuItem("Assets/SCEngine/Asset/生成Asset清单[当前文件夹]")]
         public static void BuildDataTableInFolder()
         {
@@ -317,6 +318,7 @@ namespace PTGame.Framework.Editor
 
             table.Save(ProjectPathConfig.absExportRootFolder);
         }
+        */
 
         [MenuItem("Assets/SCEngine/Asset/生成Table清单")]
         public static void BuildTableConfigTable()
