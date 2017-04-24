@@ -33,5 +33,21 @@ namespace PTGame.Framework
                 }
             }
         }
+
+        public static int GetLayerOffset(Transform parent, int offsetOrder = -1)
+        {
+            if (parent == null)
+            {
+                return offsetOrder;
+            }
+
+            int sortingOrder = offsetOrder;
+            Canvas parentCanvas = parent.GetComponentInParent<Canvas>();
+            if (parentCanvas != null)
+            {
+                sortingOrder += parentCanvas.sortingOrder;
+            }
+            return sortingOrder;
+        }
     }
 }
