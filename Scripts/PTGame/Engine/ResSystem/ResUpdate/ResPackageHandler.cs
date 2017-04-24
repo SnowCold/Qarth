@@ -126,7 +126,7 @@ namespace PTGame.Framework
         {
             AssetDataTable remoteDataTable = new AssetDataTable();
 
-            remoteDataTable.LoadFromFile(res.destionResPath);
+            remoteDataTable.LoadPackageFromFile(res.destionResPath);
 
             m_UpdateUnitList = CalculateUpdateList(AssetDataTable.S, remoteDataTable);
 

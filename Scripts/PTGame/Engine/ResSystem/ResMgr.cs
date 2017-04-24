@@ -32,7 +32,7 @@ namespace PTGame.Framework
             FilePath.GetFileInFolder(FilePath.streamingAssetsPath, "asset_bindle_config.bin", outResult);
             for (int i = 0; i < outResult.Count; ++i)
             {
-                AssetDataTable.S.LoadFromFile(outResult[i]);
+                AssetDataTable.S.LoadPackageFromFile(outResult[i]);
             }
             AssetDataTable.S.SwitchLanguage("cn");
             Log.i("Init[ResMgr]");

@@ -20,15 +20,13 @@ namespace PTGame.Framework
 
         [SerializeField]
         private string m_UIRootPath = "Resources/UI/UIRoot";
-
-        [SerializeField]
-        private string m_ABManifestABName = "Assets";
         [SerializeField]
         private string m_ABRelativePath = "Assets/";
         [SerializeField]
-        private string m_ABManifestAssetName = "assetbundlemanifest";
-        [SerializeField]
         private string m_ExportABConfigFile = "asset_bindle_config.bin";
+
+        [SerializeField]
+        private string m_TableFolder = "config/";
 
         #region 配置工具相关
         [SerializeField]
@@ -114,20 +112,15 @@ namespace PTGame.Framework
             }
         }
 
-        #region AssetBundle 相关
-
-        public static string abManifestABName
+        public static string tableFolder
         {
             get
             {
-                return S.m_ABManifestABName;
+                return S.m_TableFolder;
             }
         }
 
-        public static string abManifestAssetName
-        {
-            get { return S.m_ABManifestAssetName; }
-        }
+        #region AssetBundle 相关
 
         public static string AssetBundleUrl2Name(string url)
         {
@@ -147,9 +140,9 @@ namespace PTGame.Framework
             get { return "StreamingAssets/" + S.m_ABRelativePath; }
         }
 
-        public static string exportABConfigFile
+        public static string absExportRootFolder
         {
-            get { return FilePath.streamingAssetsPath + S.m_ExportABConfigFile; }
+            get { return FilePath.streamingAssetsPath + S.m_ABRelativePath; }
         }
 
         public static string abConfigfileName

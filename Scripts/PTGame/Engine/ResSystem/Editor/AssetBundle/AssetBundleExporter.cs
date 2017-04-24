@@ -14,7 +14,7 @@ namespace PTGame.Framework.Editor
 
 #region 处理AssetBundle Name
         //自动设置选中目录下的AssetBundle Name
-        [MenuItem("Assets/SCEngine/Asset/GenAssetNameAsFolderName(按文件夹名字设置Asset名字)")]
+        [MenuItem("Assets/SCEngine/Asset/设置Asset名字[文件夹])")]
         public static void GenAssetNameAsFolderName()
         {
             string selectPath = EditorUtils.GetSelectedDirAssetsPath();
@@ -29,7 +29,7 @@ namespace PTGame.Framework.Editor
         }
 
         //自动设置选中目录下的AssetBundle Name
-        [MenuItem("Assets/SCEngine/Asset/GenAssetNameAsFileName(按文件名字设置Asset名字)")]
+        [MenuItem("Assets/SCEngine/Asset/设置Asset名字[文件])")]
         public static void GenAssetNameAsFileName()
         {
             string selectPath = EditorUtils.GetSelectedDirAssetsPath();
@@ -111,7 +111,7 @@ namespace PTGame.Framework.Editor
 #region 构建AssetBundle
 
 #region 构建所有AssetBundle
-        [MenuItem("Assets/SCEngine/Asset/BuildAllAB(构建所有AB)")]
+        [MenuItem("Assets/SCEngine/Asset/构建AB[全局])")]
         public static void BuildAllAssetBundles()
         {
             Log.i("Start Build All AssetBundles.");
@@ -140,7 +140,7 @@ namespace PTGame.Framework.Editor
 
 #region 指定具体文件构建
 
-        [MenuItem("Assets/SCEngine/Asset/BuildABInFolder(指定文件夹构建AB)")]
+        [MenuItem("Assets/SCEngine/Asset/构建AB[当前文件夹]")]
         public static void BuildAssetBundlesInSelectFolder()
         {
             string selectPath = EditorUtils.GetSelectedDirAssetsPath();//.CurrentSelectFolder;
@@ -272,21 +272,7 @@ namespace PTGame.Framework.Editor
 
 #region 构建 AssetDataTable
 
-        private static string AssetPath2Name(string assetPath)
-        {
-            int startIndex = assetPath.LastIndexOf("/") + 1;
-            int endIndex = assetPath.LastIndexOf(".");
-
-            if (endIndex > 0)
-            {
-                int length = endIndex - startIndex;
-                return assetPath.Substring(startIndex, length).ToLower();
-            }
-
-            return assetPath.Substring(startIndex).ToLower();
-        }
-
-        [MenuItem("Assets/SCEngine/Asset/BuildDataTable(生成全局Asset配置表)")]
+        [MenuItem("Assets/SCEngine/Asset/生成Asset清单[全局]")]
         public static void BuildDataTable()
         {
             Log.i("Start BuildAssetDataTable!");
@@ -294,10 +280,10 @@ namespace PTGame.Framework.Editor
 
             ProcessAssetBundleRes(table, null);
 
-            table.Save(ProjectPathConfig.exportABConfigFile);
+            table.Save(ProjectPathConfig.absExportRootFolder);
         }
 
-        [MenuItem("Assets/SCEngine/Asset/BuildDataTableInFolder(指定文件夹生成Asset配置表)")]
+        [MenuItem("Assets/SCEngine/Asset/生成Asset清单[当前文件夹]")]
         public static void BuildDataTableInFolder()
         {
             Log.i("Start BuildAssetDataTable!");
@@ -329,23 +315,32 @@ namespace PTGame.Framework.Editor
 
             ProcessAssetBundleRes(table, abNames);
 
-            string relativePath = EditorUtils.ABSPath2AssetsPath(selectPath);
-            relativePath = EditorUtils.AssetPath2ReltivePath(relativePath);
-            relativePath = relativePath.ToLower();
+            table.Save(ProjectPathConfig.absExportRootFolder);
+        }
 
-            string outFolder = Application.dataPath + "/" + ProjectPathConfig.exportRootFolder + relativePath + "/";
+        [MenuItem("Assets/SCEngine/Asset/生成Table清单")]
+        public static void BuildTableConfigTable()
+        {
+            Log.i("Start BuildTableConfigTable!");
+            AssetDataTable table = new AssetDataTable();
+            string folder = Application.dataPath + "/" + ProjectPathConfig.DEFAULT_TABLE_EXPORT_PATH;
+            ProcessTableConfig(table, folder);
 
-            if (Directory.Exists(outFolder) == false)
+            table.Save(FilePath.streamingAssetsPath);
+        }
+
+        private static string AssetPath2Name(string assetPath)
+        {
+            int startIndex = assetPath.LastIndexOf("/") + 1;
+            int endIndex = assetPath.LastIndexOf(".");
+
+            if (endIndex > 0)
             {
-                var info = Directory.CreateDirectory(outFolder);
-                if (!info.Exists)
-                {
-                    Log.e("Can not create config file in:" + outFolder);
-                    return;
-                }
+                int length = endIndex - startIndex;
+                return assetPath.Substring(startIndex, length).ToLower();
             }
 
-            table.Save(outFolder + ProjectPathConfig.abConfigfileName);
+            return assetPath.Substring(startIndex).ToLower();
         }
 
         private static string GetMD5HashFromFile(string fileName)
@@ -372,21 +367,10 @@ namespace PTGame.Framework.Editor
             return null;
         }
 
-        [MenuItem("Assets/SCEngine/Asset/BuildTableConfig(生成配表资源清单)")]
-        public static void BuildTableConfigTable()
-        {
-            Log.i("Start BuildTableConfigTable!");
-            AssetDataTable table = new AssetDataTable();
-            string folder = Application.dataPath + "/" + ProjectPathConfig.DEFAULT_TABLE_EXPORT_PATH;
-            ProcessTableConfig(table, folder);
-
-            table.Save(folder + "/" + ProjectPathConfig.abConfigfileName);
-        }
-
         private static void ProcessTableConfig(AssetDataTable table, string folder)
         {
 
-            AssetDataGroup group = null;
+            AssetDataPackage group = null;
 
             DirectoryInfo direInfo = new DirectoryInfo(folder);
 
@@ -404,7 +388,7 @@ namespace PTGame.Framework.Editor
                 if (AssetFileFilter.IsConfigTable(info.FullName))
                 {
                     string md5 = GetMD5HashFromFile(info.FullName);
-                    table.AddAssetBundleName(info.Name, null, md5, (int)info.Length, out group);
+                    table.AddAssetBundleName(ProjectPathConfig.tableFolder + info.Name, null, md5, (int)info.Length, out group);
                 }
             }
 
@@ -413,7 +397,7 @@ namespace PTGame.Framework.Editor
 
         private static void ProcessAssetBundleRes(AssetDataTable table, string[] abNames)
         {
-            AssetDataGroup group = null;
+            AssetDataPackage group = null;
 
             int abIndex = -1;
 

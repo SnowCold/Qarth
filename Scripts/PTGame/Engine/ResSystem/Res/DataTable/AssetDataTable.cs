@@ -10,38 +10,27 @@ namespace PTGame.Framework
 
     public class AssetDataTable : TSingleton<AssetDataTable>
     {
-        [Serializable]
-        public class SerializeData
-        {
-            private AssetDataGroup.SerializeData[] m_AssetDataGroup;
 
-            public AssetDataGroup.SerializeData[] assetDataGroup
-            {
-                get { return m_AssetDataGroup; }
-                set { m_AssetDataGroup = value; }
-            }
-        }
-
-        private List<AssetDataGroup> m_ActiveAssetDataGroup = new List<AssetDataGroup>();
-        private List<AssetDataGroup> m_AllAssetDataGroup = new List<AssetDataGroup>();
+        private List<AssetDataPackage> m_ActiveAssetDataPackages = new List<AssetDataPackage>();
+        private List<AssetDataPackage> m_AllAssetDataPackages = new List<AssetDataPackage>();
 
         public void SwitchLanguage(string key)
         {
-            m_ActiveAssetDataGroup.Clear();
+            m_ActiveAssetDataPackages.Clear();
 
             string languageKey = string.Format("[{0}]", key);
 
-            for (int i = m_AllAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                AssetDataGroup group = m_AllAssetDataGroup[i];
+                AssetDataPackage group = m_AllAssetDataPackages[i];
 
                 if (!group.key.Contains("i18res"))
                 {
-                    m_ActiveAssetDataGroup.Add(group);
+                    m_ActiveAssetDataPackages.Add(group);
                 }
                 else if (group.key.Contains(languageKey))
                 {
-                    m_ActiveAssetDataGroup.Add(group);
+                    m_ActiveAssetDataPackages.Add(group);
                 }
 
             }
@@ -50,18 +39,18 @@ namespace PTGame.Framework
 
         public void Reset()
         {
-            for (int i = m_AllAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                m_AllAssetDataGroup[i].Reset();
+                m_AllAssetDataPackages[i].Reset();
             }
 
-            m_AllAssetDataGroup.Clear();
-            m_ActiveAssetDataGroup.Clear();
+            m_AllAssetDataPackages.Clear();
+            m_ActiveAssetDataPackages.Clear();
         }
 
-        public int AddAssetBundleName(string name, string[] depends, string md5, int fileSize, out AssetDataGroup group)
+        public int AddAssetBundleName(string name, string[] depends, string md5, int fileSize, out AssetDataPackage package)
         {
-            group = null;
+            package = null;
 
             if (string.IsNullOrEmpty(name))
             {
@@ -69,32 +58,33 @@ namespace PTGame.Framework
             }
 
             string key = null;
+            string path = null;
 
-            key = GetKeyFromABName(name);
+            GetPackageKeyFromABName(name, out key, out path);
 
-            if (key == null)
+            if (string.IsNullOrEmpty(key))
             {
                 return -1;
             }
 
-            group = GetAssetDataGroup(key);
+            package = GetAssetDataPackage(key);
 
-            if (group == null)
+            if (package == null)
             {
-                group = new AssetDataGroup(key);
+                package = new AssetDataPackage(key, path);
+                m_AllAssetDataPackages.Add(package);
                 Log.i("#Create Config Group:" + key);
-                m_AllAssetDataGroup.Add(group);
             }
 
-            return group.AddAssetBundleName(name, depends, md5, fileSize);
+            return package.AddAssetBundleName(name, depends, md5, fileSize);
         }
 
         public string GetAssetBundleName(string assetName, int index)
         {
             string result = null;
-            for (int i = m_ActiveAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_ActiveAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                if (!m_ActiveAssetDataGroup[i].GetAssetBundleName(assetName, index, out result))
+                if (!m_ActiveAssetDataPackages[i].GetAssetBundleName(assetName, index, out result))
                 {
                     continue;
                 }
@@ -108,9 +98,9 @@ namespace PTGame.Framework
         public List<ABUnit> GetAllABUnit()
         {
             List<ABUnit> result = new List<ABUnit>();
-            for (int i = m_AllAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                result.AddRange(m_AllAssetDataGroup[i].GetAllABUnit());
+                result.AddRange(m_AllAssetDataPackages[i].GetAllABUnit());
             }
             return result;
         }
@@ -119,9 +109,9 @@ namespace PTGame.Framework
         {
             ABUnit result = null;
 
-            for (int i = m_AllAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                result = m_AllAssetDataGroup[i].GetABUnit(name);
+                result = m_AllAssetDataPackages[i].GetABUnit(name);
                 if (result != null)
                 {
                     break;
@@ -135,9 +125,9 @@ namespace PTGame.Framework
         public string GetAssetBundlePath(string assetName)
         {
             string result = null;
-            for (int i = m_ActiveAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_ActiveAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                if (!m_ActiveAssetDataGroup[i].GetAssetBundlePath(assetName, out result))
+                if (!m_ActiveAssetDataPackages[i].GetAssetBundlePath(assetName, out result))
                 {
                     continue;
                 }
@@ -153,9 +143,9 @@ namespace PTGame.Framework
             string abName = ProjectPathConfig.AssetBundleUrl2Name(url);
             string[] depends = null;
 
-            for (int i = m_ActiveAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_ActiveAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                if (!m_ActiveAssetDataGroup[i].GetAssetBundleDepends(abName, out depends))
+                if (!m_ActiveAssetDataPackages[i].GetAssetBundleDepends(abName, out depends))
                 {
                     continue;
                 }
@@ -168,9 +158,9 @@ namespace PTGame.Framework
 
         public AssetData GetAssetData(string assetName)
         {
-            for (int i = m_ActiveAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_ActiveAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                AssetData result = m_ActiveAssetDataGroup[i].GetAssetData(assetName);
+                AssetData result = m_ActiveAssetDataPackages[i].GetAssetData(assetName);
                 if (result == null)
                 {
                     continue;
@@ -183,7 +173,7 @@ namespace PTGame.Framework
 
         public bool AddAssetData(string key, AssetData data)
         {
-            var group = GetAssetDataGroup(key);
+            var group = GetAssetDataPackage(key);
             if (group == null)
             {
                 Log.e("Not Find Group:" + key);
@@ -192,7 +182,7 @@ namespace PTGame.Framework
             return group.AddAssetData(data);
         }
 
-        public void LoadFromFile(string path)
+        public void LoadPackageFromFile(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -207,7 +197,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            SerializeData sd = data as SerializeData;
+            AssetDataPackage.SerializeData sd = data as AssetDataPackage.SerializeData;
 
             if (sd == null)
             {
@@ -215,31 +205,16 @@ namespace PTGame.Framework
                 return;
             }
 
-            //Log.i("Load AssetConfig From File:" + path);
-
             string parentFolder = PathHelper.GetFolderPath(path);
-
-            SetSerizlizeData(sd, parentFolder);
+            m_AllAssetDataPackages.Add(BuildAssetDataPackage(sd, path));
         }
 
-        public void Save(string outPath)
+        public void Save(string outFolder)
         {
-            SerializeData sd = new SerializeData();
 
-            sd.assetDataGroup = new AssetDataGroup.SerializeData[m_AllAssetDataGroup.Count];
-
-            for (int i = 0; i < m_AllAssetDataGroup.Count; ++i)
+            for (int i = 0; i < m_AllAssetDataPackages.Count; ++i)
             {
-                sd.assetDataGroup[i] = m_AllAssetDataGroup[i].GetSerializeData();
-            }
-
-            if (SerializeHelper.SerializeBinary(outPath, sd))
-            {
-                Log.i("Success Save AssetDataTable:" + outPath);
-            }
-            else
-            {
-                Log.e("Failed Save AssetDataTable:" + outPath);
+                m_AllAssetDataPackages[i].Save(outFolder);
             }
         }
 
@@ -249,72 +224,102 @@ namespace PTGame.Framework
 
             Log.i("#DUMP AssetDataTable BEGIN");
 
-            for (int i = 0; i < m_AllAssetDataGroup.Count; ++i)
+            for (int i = 0; i < m_AllAssetDataPackages.Count; ++i)
             {
-                m_AllAssetDataGroup[i].Dump();
+                m_AllAssetDataPackages[i].Dump();
             }
 
             Log.i("#DUMP AssetDataTable END");
         }
 
-        private void SetSerizlizeData(SerializeData data, string path)
+        private AssetDataPackage BuildAssetDataPackage(AssetDataPackage.SerializeData data, string path)
         {
-            if (data == null || data.assetDataGroup == null)
-            {
-                return;
-            }
-
-            for (int i = data.assetDataGroup.Length - 1; i >= 0; --i)
-            {
-                m_AllAssetDataGroup.Add(BuildAssetDataGroup(data.assetDataGroup[i], path));
-            }
+            return new AssetDataPackage(data, path);
         }
 
-        private AssetDataGroup BuildAssetDataGroup(AssetDataGroup.SerializeData data, string path)
+        private AssetDataPackage GetAssetDataPackage(string key)
         {
-            return new AssetDataGroup(data, path);
-        }
-
-        private AssetDataGroup GetAssetDataGroup(string key)
-        {
-            for (int i = m_AllAssetDataGroup.Count - 1; i >= 0; --i)
+            for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
             {
-                if (m_AllAssetDataGroup[i].key.Equals(key))
+                if (m_AllAssetDataPackages[i].key.Equals(key))
                 {
-                    return m_AllAssetDataGroup[i];
+                    return m_AllAssetDataPackages[i];
                 }
             }
 
             return null;
         }
 
-        private string GetKeyFromABName(string name)
+        private void GetPackageKeyFromABName(string name, out string key, out string path)
         {
             int pIndex = name.IndexOf('/');
 
             if (pIndex < 0)
             {
-                return name;
+                key = name;
+                path = name;
+                return;
             }
 
-            string key = name.Substring(0, pIndex);
+            key = name.Substring(0, pIndex);
+            path = key;
+            string keyResult = null;
+            string pathResult = key;
 
-            if (name.Contains("i18res"))
+            if (SpecialFolderProcess(name, "i18res", out keyResult, out pathResult))
             {
-                int i18Start = name.IndexOf("i18res") + 7;
-                name = name.Substring(i18Start);
-                pIndex = name.IndexOf('/');
+                if (!string.IsNullOrEmpty(keyResult))
+                {
+                    key = keyResult;
+                    path = pathResult;
+                }
+            }
+            else if (SpecialFolderProcess(name, "subres", out keyResult, out pathResult))
+            {
+                if (!string.IsNullOrEmpty(keyResult))
+                {
+                    key = keyResult;
+                    path = pathResult;
+                }
+            }
+
+            return;
+        }
+
+        private bool SpecialFolderProcess(string name, string parren, out string keyResult, out string pathResult)
+        {
+            keyResult = null;
+            pathResult = null;
+
+            if (name.Contains(parren))
+            {
+                int parrentStart = name.IndexOf(parren) + parren.Length + 1;
+                string parrenPath = name.Substring(0, parrentStart);
+                string childPath = name.Substring(parrentStart);
+                int pIndex = childPath.IndexOf('/');
+
+                string folder = null;
                 if (pIndex < 0)
                 {
-                    Log.w("Not Valid AB Path:" + name);
-                    return null;
+                    folder = childPath;
+                }
+                else
+                {
+                    folder = childPath.Substring(0, pIndex);
                 }
 
-                string language = string.Format("[{0}]", name.Substring(0, pIndex));
-                key = string.Format("{0}-i18res-{1}", key, language);
+                if (string.IsNullOrEmpty(folder))
+                {
+                    return true;
+                }
+
+                keyResult = string.Format("{0}[{1}]", parrenPath, folder);
+                pathResult = string.Format("{0}{1}", parrenPath, folder);
+
+                return true;
             }
 
-            return key;
+            return false;
         }
 
     }

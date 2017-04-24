@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PTGame.Framework
 {
-    public class AssetDataGroup
+    public class AssetDataPackage
     {
         [Serializable]
         public class SerializeData
@@ -35,6 +35,7 @@ namespace PTGame.Framework
         }
 
         private string m_Key;
+        private string m_ExportPath;//ABConfig文件就导入在该文件夹下
         private string m_FolderPath;
         private List<ABUnit> m_ABUnitArray;
         private Dictionary<string, AssetData> m_AssetDataMap;
@@ -44,12 +45,18 @@ namespace PTGame.Framework
             get { return m_Key; }
         }
 
-        public AssetDataGroup(string key)
+        public string exportPath
+        {
+            get { return m_ExportPath; }
+        }
+        
+        public AssetDataPackage(string key, string exportPath)
         {
             m_Key = key;
+            m_ExportPath = exportPath;
         }
 
-        public AssetDataGroup(SerializeData data, string path)
+        public AssetDataPackage(SerializeData data, string path)
         {
             m_Key = data.key;
             m_FolderPath = path;
@@ -273,22 +280,11 @@ namespace PTGame.Framework
             return sd;
         }
 
-        public void Save(string outPath)
+        public void Save(string outFolder)
         {
-            SerializeData sd = new SerializeData();
-            sd.abUnitArray = m_ABUnitArray.ToArray();
-            if (m_AssetDataMap != null)
-            {
-                AssetData[] acArray = new AssetData[m_AssetDataMap.Count];
+            SerializeData sd = GetSerializeData();
 
-                int index = 0;
-                foreach (var item in m_AssetDataMap)
-                {
-                    acArray[index++] = item.Value;
-                }
-
-                sd.assetDataArray = acArray;
-            }
+            string outPath = string.Format("{0}{1}/{2}", outFolder, m_ExportPath, ProjectPathConfig.abConfigfileName);
 
             if (SerializeHelper.SerializeBinary(outPath, sd))
             {
