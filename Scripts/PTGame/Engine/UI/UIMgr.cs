@@ -85,7 +85,6 @@ namespace PTGame.Framework
             }
 
             GameObject uiRoot = GameObject.Instantiate(prefab);
-            loader.ReleaseAllRes();
             loader.Recycle2Cache();
             return uiRoot.GetComponent<UIRoot>();
         }
