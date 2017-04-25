@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-    public class AudioUnit : ICacheAble
+    public class AudioUnit : ICacheAble, ICacheType
     {
         private ResLoader m_Loader;
         private AudioSource m_Source;
@@ -20,6 +20,11 @@ namespace PTGame.Framework
         private Action m_OnFinishListener;
         private bool m_IsPause = false;
         private float m_LeftDelayTime = -1;
+
+        public AudioUnit Allocate()
+        {
+            return ObjectPool<AudioUnit>.S.Allocate();
+        }
 
         public void SetOnFinishListener(Action l)
         {
@@ -186,7 +191,7 @@ namespace PTGame.Framework
 
             if (m_UsedCache)
             {
-                ObjectPool<AudioUnit>.S.Recycle(this);
+                Recycle2Cache();
             }
         }
 
@@ -225,6 +230,18 @@ namespace PTGame.Framework
         public void OnCacheReset()
         {
             CleanResources();
+        }
+
+        public void Recycle2Cache()
+        {
+            if (!ObjectPool<AudioUnit>.S.Recycle(this))
+            {
+                if (m_Source != null)
+                {
+                    GameObject.Destroy(m_Source);
+                    m_Source = null;
+                }
+            }
         }
     }
 

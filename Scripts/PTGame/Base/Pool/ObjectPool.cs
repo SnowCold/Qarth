@@ -14,6 +14,7 @@ namespace PTGame.Framework
     public interface ICacheAble
     {
         void OnCacheReset();
+
         bool cacheFlag
         {
             get;
@@ -33,13 +34,16 @@ namespace PTGame.Framework
     {
         private int         m_MaxCount = 0;
         private Stack<T>    m_CacheStack;
-
+        private int         m_CreateCount = 0;
+        private int         m_MaxCreateCount = 0;
         public void Init(int maxCount, int initCount)
         {
             if (maxCount > 0)
             {
                 initCount = Mathf.Min(maxCount, initCount);
             }
+
+            m_MaxCount = maxCount;
 
             if (currentCount < initCount)
             {
@@ -61,6 +65,12 @@ namespace PTGame.Framework
 
                 return m_CacheStack.Count;
             }
+        }
+
+        public int maxCreateCount
+        {
+            get { return m_MaxCreateCount; }
+            set { m_MaxCreateCount = value; }
         }
 
         public int maxCacheCount
@@ -93,7 +103,15 @@ namespace PTGame.Framework
             T result;
             if (m_CacheStack == null || m_CacheStack.Count == 0)
             {
-                result = new T();
+                if (m_MaxCreateCount == 0 || (m_MaxCreateCount > 0 && m_CreateCount < m_MaxCreateCount))
+                {
+                    ++m_CreateCount;
+                    result = new T();
+                }
+                else
+                {
+                    return default(T);
+                }
             }
             else
             {
@@ -104,11 +122,11 @@ namespace PTGame.Framework
             return result;
         }
 
-        public void Recycle(T t)
+        public bool Recycle(T t)
         {
             if (t == null || t.cacheFlag)
             {
-                return;
+                return false;
             }
 
             if (m_CacheStack == null)
@@ -120,13 +138,15 @@ namespace PTGame.Framework
                 if (m_CacheStack.Count >= m_MaxCount)
                 {
                     t.OnCacheReset();
-                    return;
+                    return false;
                 }
             }
 
             t.cacheFlag = true;
             t.OnCacheReset();
             m_CacheStack.Push(t);
+
+            return true;
         }
     }
 }

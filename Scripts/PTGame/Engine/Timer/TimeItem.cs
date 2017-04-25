@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-    public class TimeItem : IBinaryHeapElement
+    public class TimeItem : IBinaryHeapElement, ICacheAble, ICacheType
     {
         /*
          * tick:当前第几次
@@ -19,8 +19,16 @@ namespace PTGame.Framework
         private Run<int>                m_Callback;
         private int                     m_CallbackTick;
         private int                     m_HeapIndex;
+        private bool                    m_IsCache;
 
-        public TimeItem(Run<int> callback, float delayTime, int repeatCount = 1)
+        public static TimeItem Allocate(Run<int> callback, float delayTime, int repeatCount = 1)
+        {
+            TimeItem item = ObjectPool<TimeItem>.S.Allocate();
+            item.Set(callback, delayTime, repeatCount);
+            return item;
+        }
+
+        public void Set(Run<int> callback, float delayTime, int repeatCount)
         {
             m_CallbackTick = 0;
             m_Callback = callback;
@@ -63,6 +71,19 @@ namespace PTGame.Framework
             get { return m_IsEnable; }
         }
 
+        public bool cacheFlag
+        {
+            get
+            {
+                return m_IsCache;
+            }
+
+            set
+            {
+                m_IsCache = value;
+            }
+        }
+
         public void Cancel()
         {
             if (m_IsEnable)
@@ -89,6 +110,20 @@ namespace PTGame.Framework
         public void RebuildHeap<T>(BinaryHeap<T> heap) where T : IBinaryHeapElement
         {
             heap.RebuildAtIndex(m_HeapIndex);
+        }
+
+        public void OnCacheReset()
+        {
+            m_CallbackTick = 0;
+            m_Callback = null;
+            m_IsEnable = true;
+            m_HeapIndex = 0;
+    }
+
+        public void Recycle2Cache()
+        {
+            //超出缓存最大值
+            ObjectPool<TimeItem>.S.Recycle(this);
         }
     }
 }

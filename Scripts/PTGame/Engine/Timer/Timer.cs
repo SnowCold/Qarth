@@ -47,14 +47,14 @@ namespace PTGame.Framework
         #region 投递受缩放影响定时器
         public TimeItem Post2Scale(Run<int> callback, float delay, int repeat)
         {
-            TimeItem item = new TimeItem(callback, delay, repeat);
+            TimeItem item = TimeItem.Allocate(callback, delay, repeat);
             Post2Scale(item);
             return item;
         }
 
         public TimeItem Post2Scale(Run<int> callback, float delay)
         {
-            TimeItem item = new TimeItem(callback, delay);
+            TimeItem item = TimeItem.Allocate(callback, delay);
             Post2Scale(item);
             return item;
         }
@@ -82,14 +82,14 @@ namespace PTGame.Framework
 
         public TimeItem Post2Really(Run<int> callback, float delay, int repeat)
         {
-            TimeItem item = new TimeItem(callback, delay, repeat);
+            TimeItem item = TimeItem.Allocate(callback, delay, repeat);
             Post2Really(item);
             return item;
         }
 
         public TimeItem Post2Really(Run<int> callback, float delay)
         {
-            TimeItem item = new TimeItem(callback, delay);
+            TimeItem item = TimeItem.Allocate(callback, delay);
             Post2Really(item);
             return item;
         }
@@ -118,6 +118,7 @@ namespace PTGame.Framework
                 if (!item.isEnable)
                 {
                     m_UnScaleTimeHeap.Pop();
+                    item.Recycle2Cache();
                     continue;
                 }
 
@@ -130,6 +131,10 @@ namespace PTGame.Framework
                     if (item.isEnable && item.NeedRepeat())
                     {
                         Post2Really(item);
+                    }
+                    else
+                    {
+                        item.Recycle2Cache();
                     }
                 }
                 else
@@ -145,6 +150,7 @@ namespace PTGame.Framework
                 if (!item.isEnable)
                 {
                     m_ScaleTimeHeap.Pop();
+                    item.Recycle2Cache();
                     continue;
                 }
 
@@ -157,6 +163,10 @@ namespace PTGame.Framework
                     if (item.isEnable && item.NeedRepeat())
                     {
                         Post2Scale(item);
+                    }
+                    else
+                    {
+                        item.Recycle2Cache();
                     }
                 }
                 else
