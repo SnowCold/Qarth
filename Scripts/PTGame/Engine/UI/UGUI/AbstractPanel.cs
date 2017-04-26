@@ -101,7 +101,7 @@ namespace PTGame.Framework
             }
         }
 
-        public int MaxSortingOrder
+        public int maxSortingOrder
         {
             get { return m_MaxSortingOrder; }
             set { m_MaxSortingOrder = value; }

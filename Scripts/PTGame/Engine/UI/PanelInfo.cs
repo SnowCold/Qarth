@@ -246,7 +246,7 @@ namespace PTGame.Framework
                         return -1;
                     }
 
-                    return m_Panel.MaxSortingOrder;
+                    return m_Panel.maxSortingOrder;
                 }
             }
 
