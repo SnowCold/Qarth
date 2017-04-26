@@ -22,7 +22,7 @@ namespace PTGame.Framework
 
         public override void OnSingletonInit()
         {
-            m_Loader = new ResLoader();
+            m_Loader = ResLoader.Allocate();
         }
 
         protected void AddAssistUI2Holder(EngineUI uiid)

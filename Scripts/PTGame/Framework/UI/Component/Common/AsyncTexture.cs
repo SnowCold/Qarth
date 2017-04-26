@@ -87,7 +87,7 @@ namespace PTGame.Framework
 
             if (m_ResLoader == null)
             {
-                m_ResLoader = new ResLoader();
+                m_ResLoader = ResLoader.Allocate();
             }
 
             m_ResLoader.Add2Load(m_TexturePath, OnResLoadFinish);
@@ -116,6 +116,15 @@ namespace PTGame.Framework
 
             m_RawImage.texture = obj as Texture;
             m_RawImage.enabled = true;
+        }
+
+        private void OnDestroy()
+        {
+            if (m_ResLoader != null)
+            {
+                m_ResLoader.Recycle2Cache();
+                m_ResLoader = null;
+            }
         }
     }
 }
