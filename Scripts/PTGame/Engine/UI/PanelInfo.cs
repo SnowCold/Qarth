@@ -112,7 +112,7 @@ namespace PTGame.Framework
             private bool                m_CacheFlag = false;
             private bool                m_CustomVisibleFlag = true;
 
-            private ResLoader           m_ResLoader = ResLoader.Allocate();
+            private ResLoader           m_ResLoader;
             private Action<AbstractPanel> m_OpenListeners;
             private List<PageWrap>      m_PageWrapList;
 
@@ -134,7 +134,8 @@ namespace PTGame.Framework
                 m_OpenListeners = null;
                 m_CustomVisibleFlag = true;
 
-                m_ResLoader.ReleaseAllRes();
+                m_ResLoader.Recycle2Cache();
+                m_ResLoader = null;
 
                 if (m_PageWrapList != null)
                 {
@@ -606,6 +607,11 @@ namespace PTGame.Framework
                     args = info.Args;
                 }
 
+                if (m_ResLoader == null)
+                {
+                    m_ResLoader = ResLoader.Allocate("PanelInfo");
+                }
+
                 CollectDynamicResource(data, m_ResLoader, args);
 
                 m_ResLoader.Add2Load(data.fullPath, (state, res) =>
@@ -680,6 +686,11 @@ namespace PTGame.Framework
 
                         m_PageWrapList.Add(wrap);
                     }
+                }
+
+                if (m_ResLoader == null)
+                {
+                    m_ResLoader = ResLoader.Allocate("PanelInfo");
                 }
 
                 CollectDynamicResource(data, m_ResLoader);

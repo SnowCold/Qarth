@@ -72,7 +72,7 @@ namespace PTGame.Framework
             m_Loader = null;
             CleanResources();
 
-            m_Loader = ResLoader.Allocate();
+            m_Loader = ResLoader.Allocate("AudioUnit");
 
             m_IsLoop = loop;
             m_Name = name;

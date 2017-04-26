@@ -80,7 +80,7 @@ namespace PTGame.Framework
             {
                 if (m_GlobalResLoader == null)
                 {
-                    m_GlobalResLoader = ResLoader.Allocate();
+                    m_GlobalResLoader = ResLoader.Allocate("AbstractPage");
                 }
 
                 result = m_GlobalResLoader.LoadSync(spriteName) as Sprite;

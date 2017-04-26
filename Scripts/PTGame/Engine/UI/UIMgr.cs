@@ -68,19 +68,21 @@ namespace PTGame.Framework
 
         private UIRoot LoadUIRoot()
         {
-            ResLoader loader = ResLoader.Allocate(null);
+            ResLoader loader = ResLoader.Allocate("UIMgr", null);
             loader.Add2Load(ProjectPathConfig.uiRootPath);
             loader.LoadSync();
 
             IRes res = ResMgr.S.GetRes(ProjectPathConfig.uiRootPath, false);
             if (res == null || res.asset == null)
             {
+                loader.Recycle2Cache();
                 return null;
             }
 
             GameObject prefab = res.asset as GameObject;
             if (prefab == null)
             {
+                loader.Recycle2Cache();
                 return null;
             }
 

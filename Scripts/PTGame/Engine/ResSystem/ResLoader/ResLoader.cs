@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -45,6 +45,9 @@ namespace PTGame.Framework
         private LinkedList<CallBackWrap>        m_CallbackRecardList;
         private static DefaultLoaderStrategy    s_DefaultStrategy;
 
+        private static List<ResLoader>          s_ActiveLoaderList = new List<ResLoader>();
+        private string                          m_LoaderName;
+
         public static IResLoaderStrategy defaultStrategy
         {
             get
@@ -55,6 +58,35 @@ namespace PTGame.Framework
                 }
                 return s_DefaultStrategy;
             }
+        }
+
+        public static ResLoader Allocate(string name = null, IResLoaderStrategy strategy = null)
+        {
+            ResLoader loader = ObjectPool<ResLoader>.S.Allocate();
+            loader.m_LoaderName = name;
+            s_ActiveLoaderList.Add(loader);
+            loader.SetStrategy(strategy);
+            return loader;
+        }
+
+        public static void DumpAllResLoaderState()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("## BEGIN DUMP ALL ResLoader State");
+            builder.AppendLine("# ActiveCount:" + s_ActiveLoaderList.Count);
+
+            for (int i = 0; i < s_ActiveLoaderList.Count; ++i)
+            {
+                builder.AppendLine("    #LoaderName:" + s_ActiveLoaderList[i].loaderName);
+            }
+
+            builder.AppendLine("## END DUMP ALL ResLoader State");
+            Log.i(builder.ToString());
+        }
+
+        public string loaderName
+        {
+            get { return m_LoaderName; }
         }
 
         public float progress
@@ -92,13 +124,6 @@ namespace PTGame.Framework
             {
                 m_CacheFlag = value;
             }
-        }
-
-        public static ResLoader Allocate(IResLoaderStrategy strategy = null)
-        {
-            ResLoader loader = ObjectPool<ResLoader>.S.Allocate();
-            loader.SetStrategy(strategy);
-            return loader;
         }
 
         public ResLoader()
@@ -480,6 +505,7 @@ namespace PTGame.Framework
 
         public void OnCacheReset()
         {
+            s_ActiveLoaderList.Remove(this);
             ReleaseAllRes();
         }
 

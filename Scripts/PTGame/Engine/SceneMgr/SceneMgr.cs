@@ -48,7 +48,7 @@ namespace PTGame.Framework
 
         public bool LoadABSceneFromSync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            ResLoader nextLoader = ResLoader.Allocate();
+            ResLoader nextLoader = ResLoader.Allocate("SceneMgr");
 
             //提前加入可以起到缓存已经加载的资源的作用，防止释放后又加载的重复动作
             if (!AddSceneAB2Loader(sceneName, nextLoader))
@@ -85,7 +85,7 @@ namespace PTGame.Framework
 
         public void LoadABSceneAsync(string sceneName, Action<string, bool> loadCallback = null, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            ResLoader nextLoader = ResLoader.Allocate();
+            ResLoader nextLoader = ResLoader.Allocate("SceneMgr");
 
             //可以起到缓存已经加载的资源的作用，防止释放后又加载的重复动作
             if (!AddSceneAB2Loader(sceneName, nextLoader))

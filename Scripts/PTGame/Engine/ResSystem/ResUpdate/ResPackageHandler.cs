@@ -40,7 +40,7 @@ namespace PTGame.Framework
         public ResPackageHandler(ResPackage package)
         {
             m_Package = package;
-            m_Loader = ResLoader.Allocate();
+            m_Loader = ResLoader.Allocate("ResPackageHolder");
         }
 
         public void CheckUpdateList(Action callBack)

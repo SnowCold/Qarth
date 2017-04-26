@@ -35,39 +35,35 @@ namespace PTGame.Framework
 
 	#region 初始化过程
 		private static AppConfig s_Instance;
-        private static ResLoader m_ResLoader;
 
 		private static AppConfig LoadInstance()
         {
-            if (m_ResLoader != null)
-            {
-                m_ResLoader.ReleaseAllRes();
-            }
+            ResLoader loader = ResLoader.Allocate("AppConfig", null);
 
-            if (m_ResLoader == null)
-            {
-                m_ResLoader = ResLoader.Allocate(null);
-            }
-
-            UnityEngine.Object obj = m_ResLoader.LoadSync(ProjectPathConfig.appConfigPath);
+            UnityEngine.Object obj = loader.LoadSync(ProjectPathConfig.appConfigPath);
             if (obj == null)
             {
                 Log.w("Not Find App Config, Will Use Default App Config.");
-                m_ResLoader.ReleaseAllRes();
-                obj = m_ResLoader.LoadSync(ProjectPathConfig.DEFAULT_APP_CONFIG_PATH);
+                loader.ReleaseAllRes();
+                obj = loader.LoadSync(ProjectPathConfig.DEFAULT_APP_CONFIG_PATH);
                 if (obj == null)
                 {
                     Log.e("Not Find Default App Config File!");
-                    m_ResLoader.Recycle2Cache();
-                    m_ResLoader = null;
+                    loader.Recycle2Cache();
+                    loader = null;
                     return null;
                 }
             }
 
             Log.i("Success Load App Config.");
-
             s_Instance = obj as AppConfig;
 
+            AppConfig newAB = s_Instance.MemberwiseClone() as AppConfig;
+
+            s_Instance = newAB;
+
+            loader.Recycle2Cache();
+            
 			return s_Instance;
 		}
 

@@ -87,7 +87,7 @@ namespace PTGame.Framework
 
             if (m_ResLoader == null)
             {
-                m_ResLoader = ResLoader.Allocate();
+                m_ResLoader = ResLoader.Allocate("AyncTexture");
             }
 
             m_ResLoader.Add2Load(m_TexturePath, OnResLoadFinish);
