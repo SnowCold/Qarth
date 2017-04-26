@@ -335,7 +335,7 @@ System.Reflection.BindingFlags.Public);
             panelInfo.customVisibleFlag = visible;
         }
 
-        public void ShortCachePanel<T>(T uiID, int cacheCount) where T : IConvertible
+        public void ShortCachePanel<T>(T uiID) where T : IConvertible
         {
             UIData data = UIDataTable.Get(uiID.ToInt32(null));
             if (data == null)
@@ -343,7 +343,7 @@ System.Reflection.BindingFlags.Public);
                 return;
             }
 
-            data.shortCacheCount = cacheCount;
+            ++data.shortCacheCount;
         }
 
         public void UnShortCachePanel<T>(T uiID, bool clean = true) where T : IConvertible
@@ -354,7 +354,7 @@ System.Reflection.BindingFlags.Public);
                 return;
             }
 
-            data.shortCacheCount = 0;
+            --data.shortCacheCount;
 
             if (data.cacheCount > 0)
             {
