@@ -10,42 +10,22 @@ namespace PTGame.Framework
     public class ResolutionHelper : TMonoSingleton<ResolutionHelper>
     {
         [SerializeField]
-        private float m_StandardCanvasScale;
+        private CanvasScaler m_CanvasScaler;
         [SerializeField]
-        private float m_CurrentCanvasScale;
-        [SerializeField]
-        private bool m_IsInStandardMode = true;
+        private RectTransform m_CanvasRoot;
 
         public override void OnSingletonInit()
         {
-            Canvas uiCanvas = UIMgr.S.uiRoot.rootCanvas;
-            Camera uiCamera = UIMgr.S.uiRoot.uiCamera;
-            CanvasScaler canvasScaler = uiCanvas.GetComponent<CanvasScaler>();
-            m_StandardCanvasScale = uiCamera.orthographicSize / canvasScaler.referenceResolution.y * 2;
-
-            m_CurrentCanvasScale = uiCanvas.transform.localScale.y;
-
-            float offset = m_StandardCanvasScale - m_CurrentCanvasScale;
-            if (offset < 0.0001 && offset > -0.0001)
-            {
-                m_IsInStandardMode = true;
-            }
-            else
-            {
-                m_IsInStandardMode = false;
-            }
+            m_CanvasScaler = UIMgr.S.uiRoot.rootCanvas.GetComponent<CanvasScaler>();
+            m_CanvasRoot = m_CanvasScaler.GetComponent<RectTransform>();   
         }
 
         public Vector3 TranslateScale(Vector3 standardScale)
         {
-            if (m_IsInStandardMode)
-            {
-                return standardScale;
-            }
+            float scaleX = standardScale.x * m_CanvasRoot.rect.width / m_CanvasScaler.referenceResolution.x * 2;
+            float scaleY = standardScale.y * m_CanvasRoot.rect.height / m_CanvasScaler.referenceResolution.y * 2;
 
-            standardScale.y = m_StandardCanvasScale * standardScale.y / m_CurrentCanvasScale;
-
-            return standardScale;
+            return new Vector3(scaleX, scaleY, 1);
         }
     }
 }
