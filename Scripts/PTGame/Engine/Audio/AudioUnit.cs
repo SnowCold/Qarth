@@ -17,16 +17,17 @@ namespace PTGame.Framework
         private bool m_UsedCache = true;
         private bool m_IsCache = false;
 
-        private Action m_OnFinishListener;
+        private Action<AudioUnit> m_OnFinishListener;
         private bool m_IsPause = false;
         private float m_LeftDelayTime = -1;
+        private int m_PlayCount = 0;
 
         public AudioUnit Allocate()
         {
             return ObjectPool<AudioUnit>.S.Allocate();
         }
 
-        public void SetOnFinishListener(Action l)
+        public void SetOnFinishListener(Action<AudioUnit> l)
         {
             m_OnFinishListener = l;
         }
@@ -35,6 +36,11 @@ namespace PTGame.Framework
         {
             get { return m_UsedCache; }
             set { m_UsedCache = false; }
+        }
+
+        public int playCount
+        {
+            get { return m_PlayCount; }
         }
 
         public bool cacheFlag
@@ -126,10 +132,7 @@ namespace PTGame.Framework
 
             if (m_LeftDelayTime >= 0)
             {
-                if (!m_IsLoop)
-                {
-                    m_TimeItem = Timer.S.Post2Scale(OnSoundPlayFinish, m_LeftDelayTime);
-                }
+                m_TimeItem = Timer.S.Post2Scale(OnResumeTimeTick, m_LeftDelayTime);
             }
 
             m_IsPause = false;
@@ -168,21 +171,40 @@ namespace PTGame.Framework
             m_Source.clip = m_AudioClip;
             m_Source.loop = m_IsLoop;
 
-            if (!m_IsLoop)
+            int loopCount = 1;
+            if (m_IsLoop)
             {
-                m_TimeItem = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length);
+                loopCount = -1;
             }
+
+            m_TimeItem = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, loopCount);
 
             m_Source.Play();
         }
 
+        private void OnResumeTimeTick(int repeatCount)
+        {
+            OnSoundPlayFinish(repeatCount);
+
+            if (m_IsLoop)
+            {
+                m_TimeItem = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, -1);
+            }
+        }
+
         private void OnSoundPlayFinish(int count)
         {
+            ++m_PlayCount;
+
             if (m_OnFinishListener != null)
             {
-                m_OnFinishListener();
+                m_OnFinishListener(this);
             }
-            Release();
+
+            if (!m_IsLoop)
+            {
+                Release();
+            }
         }
 
         private void Release()
@@ -199,6 +221,7 @@ namespace PTGame.Framework
         {
             m_Name = null;
 
+            m_PlayCount = 0;
             m_IsPause = false;
             m_OnFinishListener = null;
             m_LeftDelayTime = -1;

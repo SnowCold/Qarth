@@ -24,7 +24,7 @@ namespace PTGame.Framework
             return m_MainUnit;
         }
 
-        public AudioUnit PlaySound(string name, bool loop)
+        public AudioUnit PlaySound(string name, bool loop = false)
         {
             if (string.IsNullOrEmpty(name))
             {
