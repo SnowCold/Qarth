@@ -687,6 +687,8 @@ System.Reflection.BindingFlags.Public);
 
         private void ReSortPanel()
         {
+
+
             m_IsPanelInfoListChange = false;
             m_PanelSortingOrderDirty = false;
 
@@ -772,6 +774,7 @@ System.Reflection.BindingFlags.Public);
 
             m_ActivePanelInfoList.Add(panelInfo);
             m_ActivePanelInfoMap.Add(panelInfo.panelID, panelInfo);
+            m_IsPanelInfoListChange = true;
         }
 
         private void RemovePanelInfo(PanelInfo panelInfo)
