@@ -14,6 +14,7 @@ namespace PTGame.Framework
             private string m_Key;
             private ABUnit[] m_ABUnitArray;
             private AssetData[] m_AssetDataArray;
+            private long m_BuildTime;
 
             public string key
             {
@@ -32,9 +33,16 @@ namespace PTGame.Framework
                 get { return m_AssetDataArray; }
                 set { m_AssetDataArray = value; }
             }
+
+            public long buildTime
+            {
+                get { return m_BuildTime; }
+                set { m_BuildTime = value; }
+            }
         }
 
         private string m_Key;
+        private long    m_BuildTime;
         private string m_ExportPath;//ABConfig文件就导入在该文件夹下
         private string m_FolderPath;
         private List<ABUnit> m_ABUnitArray;
@@ -45,20 +53,25 @@ namespace PTGame.Framework
             get { return m_Key; }
         }
 
+        public long buildTime
+        {
+            get { return m_BuildTime; }
+        }
+
         public string exportPath
         {
             get { return m_ExportPath; }
         }
         
-        public AssetDataPackage(string key, string exportPath)
+        public AssetDataPackage(string key, string exportPath, long buildTime)
         {
             m_Key = key;
             m_ExportPath = exportPath;
+            m_BuildTime = buildTime;
         }
 
         public AssetDataPackage(SerializeData data, string path)
         {
-            m_Key = data.key;
             m_FolderPath = path;
             SetSerizlizeData(data);
         }
@@ -263,6 +276,7 @@ namespace PTGame.Framework
         {
             SerializeData sd = new SerializeData();
             sd.key = m_Key;
+            sd.buildTime = m_BuildTime;
             sd.abUnitArray = m_ABUnitArray.ToArray();
             if (m_AssetDataMap != null)
             {
@@ -334,6 +348,8 @@ namespace PTGame.Framework
                 return;
             }
 
+            m_Key = data.key;
+            m_BuildTime = data.buildTime;
             m_ABUnitArray = new List<ABUnit>(data.abUnitArray);
 
             if (data.assetDataArray != null)

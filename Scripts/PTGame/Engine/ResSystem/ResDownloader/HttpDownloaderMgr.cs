@@ -283,6 +283,12 @@ namespace PTGame.Framework
                 }
                 else
                 {
+
+                    string folder = m_TmpFile.Substring(0, m_TmpFile.LastIndexOf('/'));
+                    if (!Directory.Exists(folder))
+                    {
+                        Directory.CreateDirectory(folder);
+                    }
                     m_FileStream = new FileStream(m_TmpFile, FileMode.Create);
                     m_StartPosition = 0;
                     //Log.i("NOT exist tmp file:" + m_TmpFile + ", IsAsync:" + m_FileStream.IsAsync);

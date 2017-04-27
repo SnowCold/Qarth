@@ -71,7 +71,7 @@ namespace PTGame.Framework
 
             if (package == null)
             {
-                package = new AssetDataPackage(key, path);
+                package = new AssetDataPackage(key, path, System.DateTime.Now.Ticks);
                 m_AllAssetDataPackages.Add(package);
                 Log.i("#Create Config Group:" + key);
             }
@@ -206,12 +206,33 @@ namespace PTGame.Framework
             }
 
             string parentFolder = PathHelper.GetFolderPath(path);
-            m_AllAssetDataPackages.Add(BuildAssetDataPackage(sd, path));
+
+            AssetDataPackage package = BuildAssetDataPackage(sd, path);
+
+            string key = package.key;
+
+            for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
+            {
+                if (m_AllAssetDataPackages[i].key.Equals(key))
+                {
+                    var oldConfig = m_AllAssetDataPackages[i];
+                    if (oldConfig.buildTime > package.buildTime)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        m_AllAssetDataPackages.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+
+            m_AllAssetDataPackages.Add(package);
         }
 
         public void Save(string outFolder)
         {
-
             for (int i = 0; i < m_AllAssetDataPackages.Count; ++i)
             {
                 m_AllAssetDataPackages[i].Save(outFolder);

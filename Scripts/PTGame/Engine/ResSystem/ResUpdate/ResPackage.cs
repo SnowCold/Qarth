@@ -19,7 +19,7 @@ namespace PTGame.Framework
         //TODO：处理远程路径，资源包和更新文件地址
         private static string ABName2URL(string assetName)
         {
-            return string.Format("http://xczxczxczc/{0}", assetName);
+            return string.Format("http://localhost:8080/ptupdate/pailogic/res/new/{0}", assetName);
         }
 
         public string GetAssetUrl(string assetName)
@@ -32,28 +32,34 @@ namespace PTGame.Framework
             get { return m_PackageName; }
         }
 
-        //相对路径
+        //本地config的相对路径
         public string configFile
         {
-            get { return ""; }
+            get { return string.Format("{0}{1}/{2}", ProjectPathConfig.abRelativePath ,m_PackageName, "asset_bindle_config.bin"); }
         }
+
+        public string GetABLocalRelativePath(string abName)
+        {
+            return string.Format("{0}{1}", ProjectPathConfig.abRelativePath, abName);
+        }
+
 
         //资源包更新地址
         public string updateUrl
         {
-            get { return ""; }
+            get { return "http://localhost:8080/ptupdate/pailogic/res/"; }
         }
 
         //资源包整包下载zip地址
         public string zipUrl
         {
-            get { return ""; }
+            get { return "http://localhost:8080/ptupdate/pailogic/res/"; }
         }
 
         //资源包在本地的文件路径
         public string localPath
         {
-            get { return ""; }
+            get { return ProjectPathConfig.abRelativePath + m_PackageName; }
         }
     }
 }

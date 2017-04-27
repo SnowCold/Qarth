@@ -339,6 +339,19 @@ namespace PTGame.Framework
             }
         }
 
+        public bool IsAllResLoadSuccess()
+        {
+            for (int i = m_ResArray.Count - 1; i >= 0; --i)
+            {
+                if (m_ResArray[i].resState != eResState.kReady)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void SetStrategy(IResLoaderStrategy strategy)
         {
             m_Strategy = strategy;

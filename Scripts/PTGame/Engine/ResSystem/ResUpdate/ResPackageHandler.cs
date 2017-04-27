@@ -2,17 +2,24 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PTGame.Framework
 {
     public class ResPackageHandler
     {
+        private bool m_UpdateResult;
         private ResPackage m_Package;
         private List<ABUnit> m_UpdateUnitList;
         private ResLoader m_Loader;
-        private Action m_CheckListener;
-        private Action m_DownloadListener;
-        private Action m_UpdateListener;
+        private Action<ResPackageHandler> m_CheckListener;
+        private Action<ResPackageHandler> m_DownloadListener;
+        private Action<ResPackageHandler> m_UpdateListener;
+
+        public bool updateResult
+        {
+            get { return m_UpdateResult; }
+        }
 
         public ResPackage package
         {
@@ -40,11 +47,18 @@ namespace PTGame.Framework
         public ResPackageHandler(ResPackage package)
         {
             m_Package = package;
-            m_Loader = ResLoader.Allocate("ResPackageHolder");
         }
 
-        public void CheckUpdateList(Action callBack)
+        public void CheckUpdateList(Action<ResPackageHandler> callBack)
         {
+            if (m_Loader != null)
+            {
+                Log.w("Package Handler is Working.");
+                return;
+            }
+
+            m_Loader = ResLoader.Allocate("ResPackageHolder");
+
             m_CheckListener = callBack;
             string resName = ResUpdateMgr.AssetName2ResName(m_Package.configFile);
             m_Loader.Add2Load(resName, OnRemoteABConfigDownloadFinish);
@@ -52,14 +66,29 @@ namespace PTGame.Framework
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
 
             hotUpdateRes.SetUpdateInfo(m_Package.configFile, m_Package.GetAssetUrl(m_Package.configFile), true);
+
+            if (m_Loader != null)
+            {
+                m_Loader.LoadAsync();
+            }
         }
 
-        public void StartUpdate(Action callBack)
+        public void StartUpdate(Action<ResPackageHandler> callBack)
         {
             if (m_UpdateUnitList == null || m_UpdateUnitList.Count == 0)
             {
+                Log.i("No Update List For Update");
+                callBack(this);
                 return;
             }
+
+            if (m_Loader != null)
+            {
+                Log.w("Package Handler is Working.");
+                return;
+            }
+
+            m_Loader = ResLoader.Allocate("ResPackageHolder");
 
             m_UpdateListener = callBack;
 
@@ -68,13 +97,14 @@ namespace PTGame.Framework
                 string resName = ResUpdateMgr.AssetName2ResName(m_UpdateUnitList[i].abName);
                 m_Loader.Add2Load(resName);
                 HotUpdateRes res = ResMgr.S.GetRes<HotUpdateRes>(resName);
-                res.SetUpdateInfo(m_UpdateUnitList[i].abName, string.Format("http://{0}", m_UpdateUnitList[i].abName), false);
+                string relativePath = m_Package.GetABLocalRelativePath(m_UpdateUnitList[i].abName);
+                res.SetUpdateInfo(relativePath, m_Package.GetAssetUrl(relativePath), false);
             }
 
             m_Loader.LoadAsync(OnPackageUpdateFinish);
         }
 
-        public void DownloadPackage(Action callback)
+        public void DownloadPackage(Action<ResPackageHandler> callback)
         {
             m_DownloadListener = callback;
             string resName = ResUpdateMgr.AssetName2ResName(m_Package.packageName);
@@ -90,16 +120,30 @@ namespace PTGame.Framework
         {
             if (m_DownloadListener != null)
             {
-                m_DownloadListener();
+                m_DownloadListener(this);
                 m_DownloadListener = null;
             }
         }
 
         private void OnPackageUpdateFinish()
         {
+            m_UpdateResult = false;
+            if (m_Loader != null)
+            {
+                m_UpdateResult = m_Loader.IsAllResLoadSuccess();
+
+                if (m_UpdateResult)
+                {
+                    m_UpdateUnitList.Clear();
+                    m_UpdateUnitList = null;
+                }
+            }
+
+            ClearLoader();
+
             if (m_UpdateListener != null)
             {
-                m_UpdateListener();
+                m_UpdateListener(this);
                 m_UpdateListener = null;
             }
         }
@@ -108,6 +152,8 @@ namespace PTGame.Framework
         {
             if (!result)
             {
+                Log.e("Download remote abConfig File Failed.");
+                ClearLoader();
                 return;
             }
 
@@ -115,6 +161,7 @@ namespace PTGame.Framework
 
             if (hotUpdateRes == null)
             {
+                ClearLoader();
                 return;
             }
 
@@ -122,17 +169,28 @@ namespace PTGame.Framework
             ProcessRemoteABConfig(hotUpdateRes);
         }
 
+        private void ClearLoader()
+        {
+            if (m_Loader != null)
+            {
+                m_Loader.Recycle2Cache();
+                m_Loader = null;
+            }
+        }
+
         private void ProcessRemoteABConfig(HotUpdateRes res)
         {
             AssetDataTable remoteDataTable = new AssetDataTable();
 
-            remoteDataTable.LoadPackageFromFile(res.destionResPath);
+            remoteDataTable.LoadPackageFromFile(res.localResPath);
 
             m_UpdateUnitList = CalculateUpdateList(AssetDataTable.S, remoteDataTable);
 
+            ClearLoader();
+
             if (m_CheckListener != null)
             {
-                m_CheckListener();
+                m_CheckListener(this);
                 m_CheckListener = null;
             }
         }
@@ -207,6 +265,22 @@ namespace PTGame.Framework
             }
 
             return downloadABList;
+        }
+
+        public void Dump()
+        {
+            if (m_UpdateUnitList == null)
+            {
+                Log.i("Not Need 2 Update");
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.Append("#Package:" + m_Package.packageName);
+            for (int i = 0; i < m_UpdateUnitList.Count; ++i)
+            {
+                builder.AppendLine("    :" + m_UpdateUnitList[i].ToString());
+            }
+            Log.i(builder.ToString());
         }
     }
 }

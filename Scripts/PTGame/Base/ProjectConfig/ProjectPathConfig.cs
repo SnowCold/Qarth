@@ -122,16 +122,23 @@ namespace PTGame.Framework
 
         #region AssetBundle 相关
 
+        public static string abRelativePath
+        {
+            get { return S.m_ABRelativePath; }
+        }
+
         public static string AssetBundleUrl2Name(string url)
         {
             string parren = FilePath.streamingAssetsPath + S.m_ABRelativePath;
             return url.Replace(parren, "");
         }
 
+        //1.默认先去外存找，然后在内部查找
         public static string AssetBundleName2Url(string name)
         {
-            string parren = FilePath.streamingAssetsPath + S.m_ABRelativePath;
-            return parren + name;
+            name = S.m_ABRelativePath + name;
+            string dependURL = FilePath.GetResPathInPersistentOrStream(name);
+            return dependURL;
         }
 
         //导出目录

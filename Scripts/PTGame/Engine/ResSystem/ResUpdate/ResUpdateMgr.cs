@@ -8,8 +8,7 @@ namespace PTGame.Framework
     public class ResUpdateMgr : TSingleton<ResUpdateMgr>
     {
         protected Action m_CheckListener;
-        protected Dictionary<string, ResPackageHandler> m_PackageMap;
-        protected List<ResLoader> m_ResLoaderList;
+        protected Dictionary<string, ResPackageHandler> m_PackageMap = new Dictionary<string, ResPackageHandler>();
 
         public override void OnSingletonInit()
         {
@@ -36,9 +35,14 @@ namespace PTGame.Framework
             return m_PackageMap[packageName].needUpdate;
         }
 
-        public void CheckPackage(ResPackage package, Action checkCallback)
+        public void CheckPackage(ResPackage package, Action<ResPackageHandler> checkCallback)
         {
             ResPackageHandler handler = new ResPackageHandler(package);
+
+            if (m_PackageMap.ContainsKey(package.packageName))
+            {
+                m_PackageMap.Remove(package.packageName);
+            }
 
             m_PackageMap.Add(package.packageName, handler);
 
@@ -46,14 +50,14 @@ namespace PTGame.Framework
         }
 
         //下载资源zip包:完成后解压
-        public void DownloadPackage(string packageName, Action downloadCallback)
+        public void DownloadPackage(string packageName, Action<ResPackageHandler> downloadCallback)
         {
             ResPackageHandler handler = m_PackageMap[packageName];
 
             handler.DownloadPackage(downloadCallback);
         }
 
-        public void StartUpdatePackage(string packageName, Action updateListener)
+        public void StartUpdatePackage(string packageName, Action<ResPackageHandler> updateListener)
         {
             if (!IsPackageNeedUpdate(packageName))
             {

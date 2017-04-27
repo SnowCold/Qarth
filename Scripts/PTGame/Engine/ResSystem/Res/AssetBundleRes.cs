@@ -115,6 +115,7 @@ namespace PTGame.Framework
             }
 
             string url = ProjectPathConfig.AssetBundleName2Url(m_Name);
+
             AssetBundleCreateRequest abcR = AssetBundle.LoadFromFileAsync(url);
 
             m_AssetBundleCreateRequest = abcR;

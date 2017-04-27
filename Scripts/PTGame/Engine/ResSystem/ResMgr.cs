@@ -25,18 +25,32 @@ namespace PTGame.Framework
 
         #endregion
 
-        public void InitResMgr()
+        public override void OnSingletonInit()
         {
             AssetDataTable.S.Reset();
             List<string> outResult = new List<string>();
+            //首先加载内存中的Config
             FilePath.GetFileInFolder(FilePath.streamingAssetsPath, "asset_bindle_config.bin", outResult);
             for (int i = 0; i < outResult.Count; ++i)
             {
                 AssetDataTable.S.LoadPackageFromFile(outResult[i]);
             }
-            AssetDataTable.S.SwitchLanguage("cn");
-            Log.i("Init[ResMgr]");
 
+            //然后加载外存中的，如果存在同名Package则直接替换
+            outResult.Clear();
+
+            FilePath.GetFileInFolder(FilePath.persistentDataPath4Res, "asset_bindle_config.bin", outResult);
+            for (int i = 0; i < outResult.Count; ++i)
+            {
+                AssetDataTable.S.LoadPackageFromFile(outResult[i]);
+            }
+            
+            AssetDataTable.S.SwitchLanguage("cn");
+        }
+
+        public void InitResMgr()
+        {
+            Log.i("Init[ResMgr]");
         }
 
         #region 属性
