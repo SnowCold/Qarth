@@ -7,6 +7,8 @@ namespace PTGame.Framework
 {
     public class AudioUnit : ICacheAble, ICacheType
     {
+        private static int s_EventID = (int)EngineEventID.EngineAudioEventIDMin + 1;
+
         private ResLoader m_Loader;
         private AudioSource m_Source;
         private string m_Name;
@@ -21,10 +23,23 @@ namespace PTGame.Framework
         private bool m_IsPause = false;
         private float m_LeftDelayTime = -1;
         private int m_PlayCount = 0;
+        private int m_EventID;
+        private bool m_SendEvent;
+
+
+        private static int nextEventID
+        {
+            get { return s_EventID++; }
+        }
 
         public AudioUnit Allocate()
         {
             return ObjectPool<AudioUnit>.S.Allocate();
+        }
+
+        public AudioUnit()
+        {
+            m_EventID = nextEventID;
         }
 
         public void SetOnFinishListener(Action<AudioUnit> l)
@@ -32,6 +47,16 @@ namespace PTGame.Framework
             m_OnFinishListener = l;
         }
 
+        public bool sendEvent
+        {
+            get { return m_SendEvent; }
+            set { m_SendEvent = value; }
+        }
+
+        public int eventID
+        {
+            get { return m_EventID; }
+        }
         public bool usedCache
         {
             get { return m_UsedCache; }
@@ -201,6 +226,11 @@ namespace PTGame.Framework
                 m_OnFinishListener(this);
             }
 
+            if (m_SendEvent)
+            {
+                EventSystem.S.Send(m_EventID, this);
+            }
+
             if (!m_IsLoop)
             {
                 Release();
@@ -225,6 +255,7 @@ namespace PTGame.Framework
             m_IsPause = false;
             m_OnFinishListener = null;
             m_LeftDelayTime = -1;
+            m_SendEvent = false;
 
             if (m_TimeItem != null)
             {

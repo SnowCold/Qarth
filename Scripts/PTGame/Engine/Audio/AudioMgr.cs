@@ -18,13 +18,14 @@ namespace PTGame.Framework
             m_MainUnit.usedCache = false;
         }
 
-        public AudioUnit PlayBg(string name)
+        public AudioUnit PlayBg(string name, bool loop = true, Action<AudioUnit> callBack = null)
         {
-            m_MainUnit.SetAudio(gameObject, name, true);
+            m_MainUnit.SetAudio(gameObject, name, loop);
+            m_MainUnit.SetOnFinishListener(callBack);
             return m_MainUnit;
         }
 
-        public AudioUnit PlaySound(string name, bool loop = false)
+        public AudioUnit PlaySound(string name, bool loop = false, Action<AudioUnit> callBack = null)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -34,6 +35,7 @@ namespace PTGame.Framework
             AudioUnit unit = ObjectPool<AudioUnit>.S.Allocate();
 
             unit.SetAudio(gameObject, name, loop);
+            m_MainUnit.SetOnFinishListener(callBack);
 
             return unit;
         }

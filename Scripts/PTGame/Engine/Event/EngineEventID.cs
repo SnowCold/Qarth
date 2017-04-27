@@ -9,5 +9,7 @@ namespace PTGame.Framework
     {
         EngineEventIDMin = 1000000,
         OnPanelUpdate,
+
+        EngineAudioEventIDMin = 2000000,
     }
 }
