@@ -31,7 +31,7 @@ namespace PTGame.Framework
             List<string> outResult = new List<string>();
 
             //首先加载Inner的Config
-            FilePath.GetFileInFolder(FilePath.streamingAssetsPath, ProjectPathConfig.abConfigfileName, outResult);
+            FileMgr.S.GetFileInInner(ProjectPathConfig.abConfigfileName, outResult);
             for (int i = 0; i < outResult.Count; ++i)
             {
                 AssetDataTable.S.LoadPackageFromFile(outResult[i]);

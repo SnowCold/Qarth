@@ -101,9 +101,18 @@ namespace PTGame.Framework
             {
                 return OpenStreamInZip(absFilePath);
             }
-#else
+#endif
             FileInfo fileInfo = new FileInfo(absFilePath);
             return fileInfo.OpenRead();
+        }
+
+        public void GetFileInInner(string fileName, List<string> outResult)
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            //Android 包内
+            GetFileInZip(m_ZipFile, fileName, outResult);
+#endif
+            FilePath.GetFileInFolder(FilePath.streamingAssetsPath, fileName, outResult); 
         }
 
         public byte[] ReadSync(string fileRelativePath)
@@ -228,7 +237,7 @@ namespace PTGame.Framework
             string relativePath = absPath.Substring(startIndex, absPath.Length - startIndex);
 
             ZipEntry zipEntry = m_ZipFile.GetEntry(string.Format("assets/{0}", relativePath));
-
+            
             if (zipEntry != null)
             {
                 return m_ZipFile.GetInputStream(zipEntry);
@@ -240,6 +249,36 @@ namespace PTGame.Framework
 
             return null;
         }
+
+        public void GetFileInZip(ZipFile zipFile, string fileName, List<string> outResult)
+        {
+            outResult = new List<string>();
+
+            int totalCount = 0;
+
+            TimeDebugger.S.Begin("######### zip");
+            foreach (var entry in zipFile)
+            {
+                ++totalCount;
+                ICSharpCode.SharpZipLib.Zip.ZipEntry e = entry as ICSharpCode.SharpZipLib.Zip.ZipEntry;
+                if (e != null)
+                {
+                    if (e.IsFile)
+                    {
+                        if (e.Name.EndsWith(fileName))
+                        {
+                            outResult.Add(zipFile.Name + "/" + e.Name);
+                            Log.i("####### Find:" + e.Name);
+                        }
+                    }
+                }
+            }
+            TimeDebugger.S.End();
+            Log.i("Total Count:" + totalCount);
+
+            TimeDebugger.S.Dump(-1);
+        }
+
 
         private byte[] ReadDataInAndriodApk(string fileRelativePath)
         {
