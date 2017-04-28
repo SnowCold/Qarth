@@ -32,6 +32,31 @@ namespace PTGame.Framework
             }
         }
 
+        public static object DeserializeBinary(Stream stream)
+        {
+            if (stream == null)
+            {
+                Log.w("DeserializeBinary Failed!");
+                return null;
+            }
+
+            using (stream)
+            {
+                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                object data = bf.Deserialize(stream);
+
+                if (data != null)
+                {
+                    return data;
+                }
+
+                stream.Close();
+            }
+
+            Log.w("DeserializeBinary Failed!");
+            return null;
+        }
+
         public static object DeserializeBinary(string path)
         {
             if (string.IsNullOrEmpty(path))

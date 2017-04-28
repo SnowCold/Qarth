@@ -88,6 +88,24 @@ namespace PTGame.Framework
 #endif
         }
 
+        public Stream OpenReadStream(string absFilePath)
+        {
+            if (string.IsNullOrEmpty(absFilePath))
+            {
+                return null;
+            }
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            //Android 包内
+            if (absFilePath.Contains("jar:file:"))
+            {
+                return OpenStreamInZip(absFilePath);
+            }
+#else
+            FileInfo fileInfo = new FileInfo(absFilePath);
+            return fileInfo.OpenRead();
+        }
+
         public byte[] ReadSync(string fileRelativePath)
         {
             string absoluteFilePath = FindFilePathInExteral(fileRelativePath);
@@ -195,6 +213,29 @@ namespace PTGame.Framework
             if (File.Exists(filePath))
             {
                 return filePath;
+            }
+
+            return null;
+        }
+
+
+        private Stream OpenStreamInZip(string absPath)
+        {
+            string tag = "!/assets/";
+            string androidFolder = absPath.Substring(0, absPath.IndexOf(tag));
+
+            int startIndex = androidFolder.Length + tag.Length;
+            string relativePath = absPath.Substring(startIndex, absPath.Length - startIndex);
+
+            ZipEntry zipEntry = m_ZipFile.GetEntry(string.Format("assets/{0}", relativePath));
+
+            if (zipEntry != null)
+            {
+                return m_ZipFile.GetInputStream(zipEntry);
+            }
+            else
+            {
+                Log.e(string.Format("Can't Find File {0}", absPath));
             }
 
             return null;

@@ -189,7 +189,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            object data = SerializeHelper.DeserializeBinary(path);
+            object data = SerializeHelper.DeserializeBinary(FileMgr.S.OpenReadStream(path));
 
             if (data == null)
             {
