@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace PTGame.Framework
 {
@@ -72,6 +73,19 @@ namespace PTGame.Framework
             {
                 m_Loader.LoadAsync();
             }
+        }
+
+        public void MoveABConfig2Use()
+        {
+            string sourceFile = FilePath.persistentDownloadCachePath + m_Package.configFile;
+            string destFile = FilePath.persistentDataPath4Res + m_Package.configFile;
+
+            if (File.Exists(destFile))
+            {
+                File.Delete(destFile);
+            }
+
+            File.Move(sourceFile, destFile);
         }
 
         public void StartUpdate(Action<ResPackageHandler> callBack)

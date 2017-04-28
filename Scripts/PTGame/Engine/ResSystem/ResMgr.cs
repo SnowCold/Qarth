@@ -27,6 +27,11 @@ namespace PTGame.Framework
 
         public override void OnSingletonInit()
         {
+            ReloadABTable();
+        }
+
+        public void ReloadABTable()
+        {
             AssetDataTable.S.Reset();
             List<string> outResult = new List<string>();
 
@@ -47,7 +52,7 @@ namespace PTGame.Framework
             {
                 AssetDataTable.S.LoadPackageFromFile(outResult[i]);
             }
-            
+
             AssetDataTable.S.SwitchLanguage("cn");
         }
 

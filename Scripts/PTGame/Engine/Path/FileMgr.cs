@@ -255,7 +255,6 @@ namespace PTGame.Framework
         {
             int totalCount = 0;
 
-            TimeDebugger.S.Begin("######### zip");
             foreach (var entry in zipFile)
             {
                 ++totalCount;
@@ -267,15 +266,10 @@ namespace PTGame.Framework
                         if (e.Name.EndsWith(fileName))
                         {
                             outResult.Add(zipFile.Name + "/!/" + e.Name);
-                            Log.i("####### Find:" + e.Name);
                         }
                     }
                 }
             }
-            TimeDebugger.S.End();
-            Log.i("Total Count:" + totalCount);
-
-            TimeDebugger.S.Dump(-1);
         }
 
 
