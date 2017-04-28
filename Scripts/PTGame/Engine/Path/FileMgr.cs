@@ -111,6 +111,7 @@ namespace PTGame.Framework
 #if UNITY_ANDROID && !UNITY_EDITOR
             //Android 包内
             GetFileInZip(m_ZipFile, fileName, outResult);
+            return;
 #endif
             FilePath.GetFileInFolder(FilePath.streamingAssetsPath, fileName, outResult); 
         }
