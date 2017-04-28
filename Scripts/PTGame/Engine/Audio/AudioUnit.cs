@@ -23,13 +23,12 @@ namespace PTGame.Framework
         private bool m_IsPause = false;
         private float m_LeftDelayTime = -1;
         private int m_PlayCount = 0;
-        private int m_EventID;
-        private bool m_SendEvent;
+        private int m_CustomEventID;
 
-
-        private static int nextEventID
+        public int customEventID
         {
-            get { return s_EventID++; }
+            get { return m_CustomEventID; }
+            set { m_CustomEventID = -1; }
         }
 
         public AudioUnit Allocate()
@@ -37,26 +36,11 @@ namespace PTGame.Framework
             return ObjectPool<AudioUnit>.S.Allocate();
         }
 
-        public AudioUnit()
-        {
-            m_EventID = nextEventID;
-        }
-
         public void SetOnFinishListener(Action<AudioUnit> l)
         {
             m_OnFinishListener = l;
         }
 
-        public bool sendEvent
-        {
-            get { return m_SendEvent; }
-            set { m_SendEvent = value; }
-        }
-
-        public int eventID
-        {
-            get { return m_EventID; }
-        }
         public bool usedCache
         {
             get { return m_UsedCache; }
@@ -226,9 +210,9 @@ namespace PTGame.Framework
                 m_OnFinishListener(this);
             }
 
-            if (m_SendEvent)
+            if (m_CustomEventID > 0)
             {
-                EventSystem.S.Send(m_EventID, this);
+                EventSystem.S.Send(m_CustomEventID, this);
             }
 
             if (!m_IsLoop)
@@ -255,7 +239,7 @@ namespace PTGame.Framework
             m_IsPause = false;
             m_OnFinishListener = null;
             m_LeftDelayTime = -1;
-            m_SendEvent = false;
+            m_CustomEventID = -1;
 
             if (m_TimeItem != null)
             {
