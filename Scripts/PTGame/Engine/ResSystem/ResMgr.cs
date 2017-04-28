@@ -9,7 +9,7 @@ namespace PTGame.Framework
     [TMonoSingletonAttribute("[Tools]/ResMgr")]
     public class ResMgr : TMonoSingleton<ResMgr>, IEnumeratorTaskMgr
     {
-
+        private const string INNER_RES_BUILDTIME = "res_version";
 #region 字段
         private Dictionary<string, IRes>    m_ResDictionary = new Dictionary<string, IRes>();
         private List<IRes>                  m_ResList = new List<IRes>();
@@ -29,23 +29,32 @@ namespace PTGame.Framework
         {
             AssetDataTable.S.Reset();
             List<string> outResult = new List<string>();
-            //首先加载内存中的Config
-            FilePath.GetFileInFolder(FilePath.streamingAssetsPath, "asset_bindle_config.bin", outResult);
+
+            //首先加载Inner的Config
+            FilePath.GetFileInFolder(FilePath.streamingAssetsPath, ProjectPathConfig.abConfigfileName, outResult);
             for (int i = 0; i < outResult.Count; ++i)
             {
                 AssetDataTable.S.LoadPackageFromFile(outResult[i]);
             }
 
+            CheckAppVersion();
+
             //然后加载外存中的，如果存在同名Package则直接替换
             outResult.Clear();
 
-            FilePath.GetFileInFolder(FilePath.persistentDataPath4Res, "asset_bindle_config.bin", outResult);
+            FilePath.GetFileInFolder(FilePath.persistentDataPath4Res, ProjectPathConfig.abConfigfileName, outResult);
             for (int i = 0; i < outResult.Count; ++i)
             {
                 AssetDataTable.S.LoadPackageFromFile(outResult[i]);
             }
             
             AssetDataTable.S.SwitchLanguage("cn");
+        }
+
+        //检测当前版本是否是新装版本,如果安装了新版本，则需要对比内外部资源
+        private void CheckAppVersion()
+        {
+            float buildTime = PlayerPrefs.GetFloat(INNER_RES_BUILDTIME);
         }
 
         public void InitResMgr()

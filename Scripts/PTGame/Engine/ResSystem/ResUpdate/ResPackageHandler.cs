@@ -65,7 +65,8 @@ namespace PTGame.Framework
 
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
 
-            hotUpdateRes.SetUpdateInfo(m_Package.configFile, m_Package.GetAssetUrl(m_Package.configFile), true);
+            string fullPath = FilePath.persistentDownloadCachePath + m_Package.configFile;
+            hotUpdateRes.SetUpdateInfo(fullPath, m_Package.GetAssetUrl(m_Package.configFile));
 
             if (m_Loader != null)
             {
@@ -98,7 +99,8 @@ namespace PTGame.Framework
                 m_Loader.Add2Load(resName);
                 HotUpdateRes res = ResMgr.S.GetRes<HotUpdateRes>(resName);
                 string relativePath = m_Package.GetABLocalRelativePath(m_UpdateUnitList[i].abName);
-                res.SetUpdateInfo(relativePath, m_Package.GetAssetUrl(relativePath), false);
+                string fullPath = FilePath.persistentDataPath4Res + relativePath;
+                res.SetUpdateInfo(fullPath, m_Package.GetAssetUrl(relativePath));
             }
 
             m_Loader.LoadAsync(OnPackageUpdateFinish);
@@ -106,18 +108,42 @@ namespace PTGame.Framework
 
         public void DownloadPackage(Action<ResPackageHandler> callback)
         {
+            if (m_Loader != null)
+            {
+                Log.w("Package Handler is Working.");
+                return;
+            }
+
+            m_Loader = ResLoader.Allocate("ResPackageHolder");
+
             m_DownloadListener = callback;
             string resName = ResUpdateMgr.AssetName2ResName(m_Package.packageName);
             m_Loader.Add2Load(resName, OnPackageDownloadFinish);
 
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
 
-            hotUpdateRes.SetUpdateInfo(m_Package.localPath, m_Package.zipUrl, true);
-            m_Loader.LoadAsync();
+            //这里换文件地址
+
+            string fullPath = FilePath.persistentDownloadCachePath + m_Package.relativeLcalParentFolder + m_Package.zipFileName;
+            hotUpdateRes.SetUpdateInfo(fullPath, m_Package.zipUrl);
+            if (m_Loader != null)
+            {
+                m_Loader.LoadAsync();
+            }
+        }
+
+        public void UnZipPackage(Action<ResPackageHandler> callback)
+        {
+            string zipFilePath = FilePath.persistentDownloadCachePath + m_Package.relativeLcalParentFolder + m_Package.zipFileName;
+            string targetFolder = FilePath.persistentDataPath4Res + m_Package.relativeLcalParentFolder;
+            
+            ZipMgr.S.UnZip(zipFilePath, targetFolder, null, null, null);
         }
 
         private void OnPackageDownloadFinish(bool result, IRes res)
         {
+            ClearLoader();
+
             if (m_DownloadListener != null)
             {
                 m_DownloadListener(this);

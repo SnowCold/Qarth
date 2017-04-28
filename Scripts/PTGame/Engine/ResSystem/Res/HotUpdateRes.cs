@@ -11,7 +11,6 @@ namespace PTGame.Framework
         private string  m_Url;
         private int     m_TotalSize = 1;
         private int     m_DownloadSize;
-        private bool    m_IsCacheMode = false;
         private string  m_LocalPath;
 
         public static HotUpdateRes Allocate(string name)
@@ -24,10 +23,9 @@ namespace PTGame.Framework
             return res;
         }
 
-        public void SetUpdateInfo(string localPath, string url, bool cacheMode)
+        public void SetUpdateInfo(string localPath, string url)
         {
             m_LocalPath = localPath;
-            m_IsCacheMode = cacheMode;
             m_Url = url;
         }
 
@@ -35,37 +33,8 @@ namespace PTGame.Framework
         {
             get
             {
-                if (m_IsCacheMode)
-                {
-                    return FilePath.persistentDownloadCachePath + m_LocalPath;
-                }
-                return destionResPath;
+                return m_LocalPath;
             }
-        }
-
-        public string destionResPath
-        {
-            get { return FilePath.persistentDataPath4Res + m_LocalPath; }
-        }
-
-        public void MoveCacheFile2Destion()
-        {
-            if (!m_IsCacheMode)
-            {
-                return;
-            }
-
-            if (resState != eResState.kReady)
-            {
-                return;
-            }
-
-            if (!File.Exists(localResPath))
-            {
-                return;
-            }
-
-            File.Move(localResPath, destionResPath);
         }
 
         public void SetDownloadProgress(int totalSize, int download)
@@ -129,13 +98,11 @@ namespace PTGame.Framework
             m_TotalSize = 1;
             //OnDownLoadResult(true);
 
-            if (m_IsCacheMode)
+            
+            if (File.Exists(localResPath))
             {
-                if (File.Exists(localResPath))
-                {
-                    //如果cache中文件存在，则删除,避免断点续传
-                    File.Delete(localResPath);
-                }
+                //如果cache中文件存在，则删除,避免断点续传
+                File.Delete(localResPath);
             }
 
             ResDownloader.S.AddDownloadTask(this);
@@ -143,11 +110,7 @@ namespace PTGame.Framework
 
         protected override void OnReleaseRes()
         {
-            if (File.Exists(localResPath))
-            {
-                //如果cache中文件存在，则删除
-                File.Delete(localResPath);
-            }
+            ResDownloader.S.RemoveDownloadTask(this);
         }
 
         public override void Recycle2Cache()
@@ -158,7 +121,6 @@ namespace PTGame.Framework
         public override void OnCacheReset()
         {
             m_LocalPath = null;
-            m_IsCacheMode = false;
             m_Url = null;
         }
 
