@@ -7,8 +7,6 @@ namespace PTGame.Framework
 {
     public class AudioUnit : ICacheAble, ICacheType
     {
-        private static int s_EventID = (int)EngineEventID.EngineAudioEventIDMin + 1;
-
         private ResLoader m_Loader;
         private AudioSource m_Source;
         private string m_Name;
