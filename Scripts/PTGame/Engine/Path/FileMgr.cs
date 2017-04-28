@@ -97,7 +97,7 @@ namespace PTGame.Framework
 
 #if UNITY_ANDROID && !UNITY_EDITOR
             //Android 包内
-            if (absFilePath.Contains("jar:file:"))
+            if (absFilePath.Contains(".apk/"))
             {
                 return OpenStreamInZip(absFilePath);
             }
@@ -253,8 +253,6 @@ namespace PTGame.Framework
 
         public void GetFileInZip(ZipFile zipFile, string fileName, List<string> outResult)
         {
-            outResult = new List<string>();
-
             int totalCount = 0;
 
             TimeDebugger.S.Begin("######### zip");
@@ -268,7 +266,7 @@ namespace PTGame.Framework
                     {
                         if (e.Name.EndsWith(fileName))
                         {
-                            outResult.Add(zipFile.Name + "/" + e.Name);
+                            outResult.Add(zipFile.Name + "/!/" + e.Name);
                             Log.i("####### Find:" + e.Name);
                         }
                     }
