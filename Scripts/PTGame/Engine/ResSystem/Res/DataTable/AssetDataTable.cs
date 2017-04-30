@@ -205,7 +205,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            string parentFolder = PathHelper.GetFolderPath(path);
+            //string parentFolder = PathHelper.GetFolderPath(path);
 
             AssetDataPackage package = BuildAssetDataPackage(sd, path);
 

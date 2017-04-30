@@ -55,7 +55,7 @@ namespace PTGame.Framework
                 }
             }
 
-            Log.i("Success Load App Config.");
+            //Log.i("Success Load App Config.");
             s_Instance = obj as AppConfig;
 
             AppConfig newAB = GameObject.Instantiate(s_Instance);

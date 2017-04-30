@@ -59,7 +59,7 @@ namespace PTGame.Framework
         //检测当前版本是否是新装版本,如果安装了新版本，则需要对比内外部资源
         private void CheckAppVersion()
         {
-            float buildTime = PlayerPrefs.GetFloat(INNER_RES_BUILDTIME);
+            //float buildTime = PlayerPrefs.GetFloat(INNER_RES_BUILDTIME);
         }
 
         public void InitResMgr()

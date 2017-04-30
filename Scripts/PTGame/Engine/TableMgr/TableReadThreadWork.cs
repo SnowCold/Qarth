@@ -109,26 +109,7 @@ namespace PTGame.Framework
                     byte[] fileData = FileMgr.S.ReadSync(readparm.filePath);
                     readparm.fileData = fileData;
                     bool isReadTxtSuccess = false;
-#if UNITY_ANDROID && !UNITY_EDITOR
-                     /*
-                    if (readparm.tableInfo.fileName.StartsWith("Language")
-                    && (PlatDefine.PlatformType == (int)PlatDelegateFactory.PlatformType.Android_AviaNA))
-                    {
-                    string languageAbsPath = m_SdcardPath + "/Download/com.lingren.ttzj/Config/" + readparm.tableInfo.fileName + ".PTGame.Frameworkgb";
-                    if (File.Exists(languageAbsPath))
-                    {
-                    byte[] langData = FileMgr.S.ReadSyncByAbsoluteFilePath(languageAbsPath);
-                    if (langData != null && langData.Length > 0)
-                    {
-                    ReadTable(readparm.tableInfo, langData);
-                    isReadTxtSuccess = true;
-                    Log.i("Read sdcard Language.txt success");
-                    }
-                    }
-                    Log.i(languageAbsPath);
-                    }
-*/
-#endif
+
                     //多国版优先读取 txt文件
                     if (isReadTxtSuccess == false)
                     {

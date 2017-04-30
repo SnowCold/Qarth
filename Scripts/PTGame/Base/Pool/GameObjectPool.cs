@@ -46,6 +46,7 @@ namespace PTGame.Framework
             m_Strategy.ProcessContainer(container);
 
             m_Prefab = prefab;
+
             //Prefab 自己玩去
             //m_Prefab.transform.SetParent(m_Root, true);
 
