@@ -24,6 +24,7 @@ namespace PTGame.Framework
         //对技能列表的增删操作优化空间比较大
         private List<SkillReleaseFilter>    m_SkillFilterList;  //技能释放过滤器列表
         private List<SkillInfo>             m_SkillInfoList;    //释放技能列表
+        private bool                        m_IsPause = false;
 
         public AbstractSkillSystem()
         {
@@ -31,9 +32,20 @@ namespace PTGame.Framework
             m_SkillInfoList = new List<SkillInfo>();
         }
 
+        public bool isPause
+        {
+            get { return m_IsPause; }
+            set { m_IsPause = value; }
+        }
+
         #region Public Func
         public bool ReleaseSkill(ISkill skill, ISkillReleaser releaser)
         {
+            if (m_IsPause)
+            {
+                return false;
+            }
+
             if (skill == null)
             {
                 return false;
@@ -75,6 +87,18 @@ namespace PTGame.Framework
             DoSkillRemove(skill.skillInfo);
         }
 
+        public void RemoveAllSkill()
+        {
+            for (int i = m_SkillInfoList.Count - 1; i >= 0; --i)
+            {
+                if (m_SkillInfoList[i].skill != null)
+                {
+                    ISkill skill = m_SkillInfoList[i].skill;
+                    DoSkillRemove(m_SkillInfoList[i]);
+                }
+            }
+        }
+
         public void RemoveSkillByReleaser(ISkillReleaser releaser)
         {
             if(releaser == null)
@@ -97,6 +121,11 @@ namespace PTGame.Framework
 
         public void Update(float time)
         {
+            if (m_IsPause)
+            {
+                return;
+            }
+
             for (int i = m_SkillInfoList.Count - 1; i >= 0; --i)
             {
                 SkillInfo info = m_SkillInfoList[i];
