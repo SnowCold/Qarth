@@ -19,7 +19,7 @@ namespace PTGame.Framework.Editor
             scroll.totalCount = EditorGUILayout.IntField("Total Count", scroll.totalCount);
             scroll.threshold = Mathf.Max(10, EditorGUILayout.FloatField("Threshold", scroll.threshold));
             scroll.reverseDirection = EditorGUILayout.Toggle("Reverse Direction", scroll.reverseDirection);
-            scroll.rubberScale = Mathf.Max(0.01f, EditorGUILayout.FloatField("Rubber Scale", scroll.rubberScale));
+            scroll.rubberScale = Mathf.Max(0, EditorGUILayout.FloatField("Rubber Scale", scroll.rubberScale));
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Clear"))
             {

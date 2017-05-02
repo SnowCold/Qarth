@@ -8,6 +8,35 @@ namespace PTGame.Framework
 {
     public class UIHelper
     {
+        public static void AttachUI(GameObject go, Transform parent)
+        {
+            if (go == null)
+            {
+                return;
+            }
+
+            Vector3 anchorPos = Vector3.zero;
+            Vector2 sizeDel = Vector2.zero;
+            Vector3 scale = Vector3.one;
+
+            RectTransform rtTr = go.GetComponent<RectTransform>();
+            if (rtTr != null)
+            {
+                anchorPos = rtTr.anchoredPosition;
+                sizeDel = rtTr.sizeDelta;
+                scale = rtTr.localScale;
+            }
+
+            rtTr.SetParent(parent, false);
+
+            if (rtTr != null)
+            {
+                rtTr.anchoredPosition = anchorPos;
+                rtTr.sizeDelta = sizeDel;
+                rtTr.localScale = scale;
+            }
+        }
+
         public static void SetUINodeGrey(GameObject uiObj)
         {
             SetUINodeColor(uiObj, Color.gray);

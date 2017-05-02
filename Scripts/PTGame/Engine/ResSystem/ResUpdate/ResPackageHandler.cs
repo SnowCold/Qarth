@@ -75,7 +75,7 @@ namespace PTGame.Framework
             }
         }
 
-        public void MoveABConfig2Use()
+        private void MoveABConfig2Use()
         {
             string sourceFile = FilePath.persistentDownloadCachePath + m_Package.configFile;
             string destFile = FilePath.persistentDataPath4Res + m_Package.configFile;
@@ -136,8 +136,6 @@ namespace PTGame.Framework
 
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
 
-            //这里换文件地址
-
             string fullPath = FilePath.persistentDownloadCachePath + m_Package.relativeLcalParentFolder + m_Package.zipFileName;
             hotUpdateRes.SetUpdateInfo(fullPath, m_Package.zipUrl);
             if (m_Loader != null)
@@ -165,6 +163,11 @@ namespace PTGame.Framework
             }
         }
 
+        private void OnResUpdateFinish(bool result, IRes res)
+        {
+
+        }
+
         private void OnPackageUpdateFinish()
         {
             m_UpdateResult = false;
@@ -180,6 +183,8 @@ namespace PTGame.Framework
             }
 
             ClearLoader();
+
+            MoveABConfig2Use();
 
             if (m_UpdateListener != null)
             {

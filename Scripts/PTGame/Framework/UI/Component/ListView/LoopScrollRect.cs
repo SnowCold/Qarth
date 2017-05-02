@@ -43,6 +43,14 @@ namespace PTGame.Framework
         private float m_ContentSpacing = -1;
         protected GridLayoutGroup m_GridLayout = null;
 
+        private bool m_HasCustomDrag = false;
+
+        public bool hasCustomDrag
+        {
+            get { return m_HasCustomDrag; }
+            set { m_HasCustomDrag = value; }
+        }
+
         protected float contentSpacing
         {
             get
@@ -722,6 +730,8 @@ namespace PTGame.Framework
 
         public virtual void OnDrag(PointerEventData eventData)
         {
+            m_HasCustomDrag = true;
+
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 

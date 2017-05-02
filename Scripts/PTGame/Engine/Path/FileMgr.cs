@@ -103,6 +103,12 @@ namespace PTGame.Framework
             }
 #endif
             FileInfo fileInfo = new FileInfo(absFilePath);
+
+            if (!fileInfo.Exists)
+            {
+                return null;
+            }
+
             return fileInfo.OpenRead();
         }
 

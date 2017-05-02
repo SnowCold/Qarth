@@ -72,6 +72,21 @@ namespace PTGame.Framework
             }
         }
 
+        public static string GetPersistentPath(string subFolder)
+        {
+            string resultPath = persistentDataPath + subFolder;
+
+            if (!Directory.Exists(resultPath))
+            {
+                Directory.CreateDirectory(resultPath);
+#if UNITY_IPHONE && !UNITY_EDITOR
+                        UnityEngine.iOS.Device.SetNoBackupFlag(resultPath);
+#endif
+            }
+
+            return resultPath;
+        }
+
         // 外部资源目录
         public static string persistentDataPath4Res
         {
