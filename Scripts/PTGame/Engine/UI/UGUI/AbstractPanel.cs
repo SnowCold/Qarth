@@ -199,7 +199,7 @@ namespace PTGame.Framework
                     canvas[i].overrideSorting = true;
                     canvas[i].pixelPerfect = false;
                     canvas[i].sortingOrder = m_SortingOrder + offset;
-                    offset += 2;
+                    offset += UIMgr.CANVAS_OFFSET;
                 }
 
                 m_MaxSortingOrder += offset;

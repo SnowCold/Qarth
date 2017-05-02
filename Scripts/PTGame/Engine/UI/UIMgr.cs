@@ -10,6 +10,7 @@ namespace PTGame.Framework
     [TMonoSingletonAttribute("[Tools]/UIMgr")]
     public partial class UIMgr : TMonoSingleton<UIMgr>
     {
+        public static int CANVAS_OFFSET = 10;
         public delegate bool PanelCloseFilter(int panelID);
 
         #region 字段
