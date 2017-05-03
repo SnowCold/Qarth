@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 namespace PTGame.Framework
 {
+    public enum ResolutionMode
+    {
+        Normal,
+        KeepRatio,
+    }
+
     [TMonoSingletonAttribute("[Tools]/ResolttionHelper")]
     public class ResolutionHelper : TMonoSingleton<ResolutionHelper>
     {
@@ -22,12 +28,38 @@ namespace PTGame.Framework
             m_CanvasRoot = m_CanvasScaler.GetComponent<RectTransform>();   
         }
 
-        public Vector3 TranslateScale(Vector3 standardScale)
+        public Vector3 TranslateScale(Vector3 standardScale, ResolutionMode mode)
         {
-            float scaleX = standardScale.x * m_CanvasRoot.rect.width / m_CanvasScaler.referenceResolution.x;
-            float scaleY = standardScale.y * m_CanvasRoot.rect.height / m_CanvasScaler.referenceResolution.y;
+            Vector2 scale = new Vector2();
+            scale.x = m_CanvasRoot.rect.width / m_CanvasScaler.referenceResolution.x;
+            scale.y = m_CanvasRoot.rect.height / m_CanvasScaler.referenceResolution.y;
 
-            return new Vector3(scaleX, scaleY, 1);
+            if (mode == ResolutionMode.KeepRatio)
+            {
+                float scaleValue = Mathf.Min(scale.x, scale.y);
+                scale.Set(scaleValue, scaleValue);
+            }
+
+            return new Vector3(scale.x * standardScale.x, scale.y * standardScale.y);
+        }
+
+        public void AdapterResolution(RectTransform target, ResolutionMode mode)
+        {
+            Vector2 scale = new Vector2();
+            scale.x = m_CanvasRoot.rect.width / m_CanvasScaler.referenceResolution.x;
+            scale.y = m_CanvasRoot.rect.height / m_CanvasScaler.referenceResolution.y;
+
+            if (mode == ResolutionMode.KeepRatio)
+            {
+                float scaleValue = Mathf.Min(scale.x, scale.y);
+                scale.Set(scaleValue, scaleValue);
+            }
+            Vector3 standardScale = target.localScale;
+
+            target.localScale = new Vector3(standardScale.x * scale.x, standardScale.y * scale.y, standardScale.z);
+
+            Vector2 anchoredPos = target.anchoredPosition;
+            target.anchoredPosition = new Vector2(anchoredPos.x * scale.x, anchoredPos.y * scale.y);
         }
     }
 }

@@ -9,12 +9,20 @@ namespace PTGame.Framework
 {
     public class TimeLabel : MonoBehaviour
     {
+        public enum TimeMode
+        {
+            Normal,
+            CoundDown,
+        }
+
         public delegate string TimeFormater(long time);
 
         [SerializeField]
         private Text m_TimeLabel;
         [SerializeField]
         private bool m_ZeroPretect = false;
+        [SerializeField]
+        private TimeMode m_TimeMode = TimeMode.CoundDown;
 
         public Run OnTimeReach;
         public TimeFormater CustomFormater;
@@ -30,6 +38,12 @@ namespace PTGame.Framework
             set { m_ZeroPretect = value; }
         }
 
+        public TimeMode timeMode
+        {
+            get { return m_TimeMode; }
+            set { m_TimeMode = value; }
+        }
+
         public bool isRunning
         {
             get { return m_IsRunning; }
@@ -39,6 +53,11 @@ namespace PTGame.Framework
         public Text textLabel
         {
             get { return m_TimeLabel; }
+        }
+
+        public int time
+        {
+            get { return m_Time; }
         }
 
         void Awake()
@@ -67,7 +86,16 @@ namespace PTGame.Framework
 
             if (m_TimeLabel != null)
             {
-                int leftTime = --m_Time;
+                int leftTime = 0;
+
+                if (m_TimeMode == TimeMode.CoundDown)
+                {
+                    leftTime = --m_Time;
+                }
+                else
+                {
+                    leftTime = ++m_Time;
+                }
 
                 int displayLeftTime = leftTime;
                 if (leftTime < 0 && m_ZeroPretect)

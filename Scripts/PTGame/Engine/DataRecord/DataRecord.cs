@@ -18,6 +18,18 @@ namespace PTGame.Framework
                 set { m_Value = value; }
             }
 
+            public int intValue
+            {
+                get { return int.Parse(m_Value); }
+                set { m_Value = value.ToString(); }
+            }
+
+            public float floatValue
+            {
+                get { return float.Parse(m_Value); }
+                set { m_Value = value.ToString(); }
+            }
+
             public string key
             {
                 get { return m_Key; }
@@ -90,6 +102,12 @@ namespace PTGame.Framework
             SetSerizlizeData(sd);
         }
 
+        public void Reset()
+        {
+            m_DataMap.Clear();
+            m_IsMapDirty = true;
+        }
+
         public void Save()
         {
             if (!m_IsMapDirty)
@@ -108,6 +126,8 @@ namespace PTGame.Framework
             {
                 Log.e("Failed Save AssetDataTable:" + path);
             }
+
+            m_IsMapDirty = false;
         }
 
         public SerializeData GetSerializeData()
@@ -138,6 +158,26 @@ namespace PTGame.Framework
             return cell.stringValue;
         }
 
+        public float GetFloat(string key, float defaultValue = 0)
+        {
+            RecordCell cell = null;
+            if (!m_DataMap.TryGetValue(key, out cell))
+            {
+                return defaultValue;
+            }
+            return cell.floatValue;
+        }
+
+        public int GetInt(string key, int defaultValue = 0)
+        {
+            RecordCell cell = null;
+            if (!m_DataMap.TryGetValue(key, out cell))
+            {
+                return defaultValue;
+            }
+            return cell.intValue;
+        }
+
         public void SetString(string key, string value)
         {
             RecordCell cell = null;
@@ -152,14 +192,32 @@ namespace PTGame.Framework
             m_IsMapDirty = true;
         }
 
-        public void SetFloat(string key, float v)
+        public void SetFloat(string key, float value)
         {
+            RecordCell cell = null;
+            if (!m_DataMap.TryGetValue(key, out cell))
+            {
+                cell = new RecordCell();
+                cell.key = key;
+                m_DataMap.Add(key, cell);
+            }
 
+            cell.floatValue = value;
+            m_IsMapDirty = true;
         }
 
-        public void SetInt(int v)
+        public void SetInt(string key, int value)
         {
+            RecordCell cell = null;
+            if (!m_DataMap.TryGetValue(key, out cell))
+            {
+                cell = new RecordCell();
+                cell.key = key;
+                m_DataMap.Add(key, cell);
+            }
 
+            cell.intValue = value;
+            m_IsMapDirty = true;
         }
 
         protected new void OnApplicationQuit()
