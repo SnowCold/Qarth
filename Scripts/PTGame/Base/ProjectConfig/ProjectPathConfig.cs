@@ -70,7 +70,7 @@ namespace PTGame.Framework
                 }
             }
 
-            Log.i("Success Load Project Config.");
+            //Log.i("Success Load Project Config.");
 
             s_Instance = obj as ProjectPathConfig;
 

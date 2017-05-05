@@ -92,7 +92,7 @@ namespace PTGame.Framework
             #if UNITY_ANDROID && !UNITY_EDITOR
             //m_SdcardPath = AndroidSDKHelper.sdcardAbsPath;
             #endif
-            Log.i("SDCardPath:" + m_SdcardPath);
+            //Log.i("SDCardPath:" + m_SdcardPath);
             m_Thread = new Thread(Work);
             m_Thread.Start();
         }
