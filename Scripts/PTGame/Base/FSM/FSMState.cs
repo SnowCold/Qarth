@@ -15,7 +15,7 @@ namespace PTGame.Framework
 
         }
 
-        public virtual void Execute(T entity)
+        public virtual void Execute(T entity, float dt)
         {
 
         }

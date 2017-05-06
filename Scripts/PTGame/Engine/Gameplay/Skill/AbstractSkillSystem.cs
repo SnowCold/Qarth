@@ -6,29 +6,31 @@ using System.Collections.Generic;
 
 namespace PTGame.Framework
 {
-    public class AbstractSkillSystem
+    #region 技能释放过滤器
+    public interface ISkillReleaseFilter
     {
-        #region 技能释放过滤器
-        public interface SkillReleaseFilter
+        //过滤器的排序
+        int filterSort
         {
-            //过滤器的排序
-            int FilterSort
-            {
-                get;
-            }
-
-            bool CheckSkillReleaseAble(ISkill skill, ISkillReleaser releaser);
+            get;
         }
 
-        #endregion
+        bool CheckSkillReleaseAble(ISkill skill, ISkillReleaser releaser);
+    }
+    #endregion
+
+    public class AbstractSkillSystem
+    {
         //对技能列表的增删操作优化空间比较大
-        private List<SkillReleaseFilter>    m_SkillFilterList;  //技能释放过滤器列表
+        private List<ISkillReleaseFilter>    m_SkillFilterList;  //技能释放过滤器列表
+        private Dictionary<ISkillReleaseFilter, bool> m_skillFilterMap;
         private List<SkillInfo>             m_SkillInfoList;    //释放技能列表
         private bool                        m_IsPause = false;
 
         public AbstractSkillSystem()
         {
-            m_SkillFilterList = new List<SkillReleaseFilter>();
+            m_SkillFilterList = new List<ISkillReleaseFilter>();
+            m_skillFilterMap = new Dictionary<ISkillReleaseFilter, bool>();
             m_SkillInfoList = new List<SkillInfo>();
         }
 
@@ -38,14 +40,31 @@ namespace PTGame.Framework
             set { m_IsPause = value; }
         }
 
+        public void RegisterSkillFilter(ISkillReleaseFilter filter)
+        {
+            if (m_skillFilterMap.ContainsKey(filter))
+            {
+                return;
+            }
+
+            m_skillFilterMap.Add(filter, true);
+            m_SkillFilterList.Add(filter);
+        }
+
+        public void UnRegisterSkillFilter(ISkillReleaseFilter filter)
+        {
+            if (!m_skillFilterMap.ContainsKey(filter))
+            {
+                return;
+            }
+
+            m_skillFilterMap.Remove(filter);
+            m_SkillFilterList.Remove(filter);
+        }
+
         #region Public Func
         public bool ReleaseSkill(ISkill skill, ISkillReleaser releaser)
         {
-            if (m_IsPause)
-            {
-                return false;
-            }
-
             if (skill == null)
             {
                 return false;

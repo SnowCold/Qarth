@@ -35,7 +35,7 @@ namespace PTGame.Framework
         private bool                m_IsDone;
         private int                 m_FinishedCount;
         private int                 m_ReadMaxCount;
-        private string              m_SdcardPath = string.Empty;
+        //private string              m_SdcardPath = string.Empty;
         public bool                 IsDone = false;
 
         public int finishedCount

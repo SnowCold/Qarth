@@ -38,7 +38,7 @@ namespace PTGame.Framework
 
                 float duration = Mathf.Abs(distancePos.magnitude) / m_AnimSpeed;
 
-                Tweener tw = m_ContextRoot.DOLocalMove(m_EndPos, duration);
+                m_ContextRoot.DOLocalMove(m_EndPos, duration);
 
                 RotateDirImage(Vector3.zero, duration);
                 return duration;
@@ -52,7 +52,7 @@ namespace PTGame.Framework
 
                 float duration = Mathf.Abs(distancePos.magnitude) / m_AnimSpeed;
 
-                Tweener tw = m_ContextRoot.DOLocalMove(m_StartPos, duration);
+                m_ContextRoot.DOLocalMove(m_StartPos, duration);
 
                 RotateDirImage(new Vector3(0, 0, 180), duration);
 

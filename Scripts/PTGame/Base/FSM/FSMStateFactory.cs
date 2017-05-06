@@ -47,32 +47,66 @@ namespace PTGame.Framework
             }
         }
 
-        public FSMState<T> GetState<K>(K k, bool forceCreate = false) where K : IConvertible
+        public void RegisterState<K>(K k, FSMState<T> state) where K : IConvertible
         {
-            if (m_CreatorMap == null)
+            if (state == null)
             {
-                return null;
+                return;
+            }
+
+            if (m_StateCache == null)
+            {
+                m_StateCache = new Dictionary<int, FSMState<T>>();
             }
 
             int key = k.ToInt32(null);
 
-            StateCreator creator = null;
-            if (!m_CreatorMap.TryGetValue(key, out creator))
+            if (m_StateCache.ContainsKey(key))
             {
-                Log.w("Not Find State Creator For: " + k);
-                return null;
+                return;
             }
+
+            m_StateCache.Add(key, state);
+        }
+
+        public FSMState<T> GetState<K>(K k, bool forceCreate = false) where K : IConvertible
+        {
+            int key = k.ToInt32(null);
 
             if (forceCreate || m_AlwaysCreate)
             {
+                if (m_CreatorMap == null)
+                {
+                    return null;
+                }
+
+                StateCreator creator = null;
+                if (!m_CreatorMap.TryGetValue(key, out creator))
+                {
+                    Log.w("Not Find State Creator For: " + k);
+                    return null;
+                }
+
                 return creator();
             }
 
             FSMState<T> result = GetStateFromCache(key);
             if (result == null)
             {
+                if (m_CreatorMap == null)
+                {
+                    return null;
+                }
+
+                StateCreator creator = null;
+                if (!m_CreatorMap.TryGetValue(key, out creator))
+                {
+                    Log.w("Not Find State Creator For: " + k);
+                    return null;
+                }
+
                 result = creator();
-                AddState2Cache(key, result);
+                RegisterState(key, result);
             }
 
             return result;
@@ -89,26 +123,6 @@ namespace PTGame.Framework
             m_StateCache.TryGetValue(key, out result);
 
             return result;
-        }
-
-        private void AddState2Cache(int key, FSMState<T> state)
-        {
-            if (state == null)
-            {
-                return;
-            }
-
-            if (m_StateCache == null)
-            {
-                m_StateCache = new Dictionary<int, FSMState<T>>();
-            }
-
-            if (m_StateCache.ContainsKey(key))
-            {
-                return;
-            }
-
-            m_StateCache.Add(key, state);
         }
     }
 }

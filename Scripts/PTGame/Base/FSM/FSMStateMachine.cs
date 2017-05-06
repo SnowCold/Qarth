@@ -7,12 +7,12 @@ namespace PTGame.Framework
 {
     public class FSMStateMachine<T>
     {
-        protected T                     m_Entity;
-        protected FSMState<T>           m_CurrentState;
-        protected FSMState<T>           m_PreviousState;
-        protected FSMState<T>           m_GlobalState;
-        protected FSMStateFactory<T>    m_StateFactory;
-
+        private T                     m_Entity;
+        private FSMState<T>           m_CurrentState;
+        private FSMState<T>           m_PreviousState;
+        private FSMState<T>           m_GlobalState;
+        private FSMStateFactory<T>    m_StateFactory;
+        private bool                  m_IsRunning = true;
         #region 属性
 
         public FSMState<T> currentState
@@ -34,6 +34,12 @@ namespace PTGame.Framework
         {
             get { return m_StateFactory; }
             set { m_StateFactory = value; }
+        }
+
+        public bool isRunning
+        {
+            get { return m_IsRunning; }
+            set { m_IsRunning = false; }
         }
 
         #endregion
@@ -82,16 +88,21 @@ namespace PTGame.Framework
             //#endif
         }
 
-        public void UpdateState()
+        public void UpdateState(float dt)
         {
+            if (!m_IsRunning)
+            {
+                return;
+            }
+
             if (m_GlobalState != null)
             {
-                m_GlobalState.Execute(m_Entity);
+                m_GlobalState.Execute(m_Entity, dt);
             }
 
             if (m_CurrentState != null)
             {
-                m_CurrentState.Execute(m_Entity);
+                m_CurrentState.Execute(m_Entity, dt);
             }
         }
 
