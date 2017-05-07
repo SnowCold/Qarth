@@ -8,21 +8,16 @@ namespace PTGame.Framework
 {
     public class ResHolder : TSingleton<ResHolder>
     {
-        protected string[] CommonRes =
-        {
-
-        };
-
-        protected EngineUI[] CommonUI =
-        {
-
-        };
-
         protected ResLoader m_Loader;
 
         public override void OnSingletonInit()
         {
             m_Loader = ResLoader.Allocate("ResHolder");
+        }
+
+        public void AddRes(string res)
+        {
+            m_Loader.Add2Load(res);
         }
 
         protected void AddAssistUI2Holder(EngineUI uiid)
