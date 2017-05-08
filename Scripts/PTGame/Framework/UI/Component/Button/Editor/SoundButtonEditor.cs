@@ -15,10 +15,13 @@ namespace PTGame.Framework.Editor
     {
         SerializedProperty m_ClickSoundProperty;
         SerializedProperty m_UseDefaultSoundProperty;
+        SerializedProperty m_IsSoundEnableProperty;
 
         protected override void OnEnable()
         {
             base.OnEnable();
+
+            m_IsSoundEnableProperty = serializedObject.FindProperty("m_IsSoundEnable");
             m_ClickSoundProperty = serializedObject.FindProperty("m_ClickSound");
             m_UseDefaultSoundProperty = serializedObject.FindProperty("m_UseDefaultSound");
         }
@@ -30,6 +33,8 @@ namespace PTGame.Framework.Editor
             EditorGUILayout.Space();
 
             serializedObject.Update();
+
+            EditorGUILayout.PropertyField(m_IsSoundEnableProperty);
             EditorGUILayout.PropertyField(m_ClickSoundProperty);
             EditorGUILayout.PropertyField(m_UseDefaultSoundProperty);
             serializedObject.ApplyModifiedProperties();

@@ -20,10 +20,5 @@ namespace PTGame.Framework
             m_Loader.Add2Load(res);
         }
 
-        protected void AddAssistUI2Holder(EngineUI uiid)
-        {
-            var data = UIDataTable.Get(uiid);
-            m_Loader.Add2Load(data.fullPath);
-        }
     }
 }

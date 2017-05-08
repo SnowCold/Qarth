@@ -10,6 +10,7 @@ namespace PTGame.Framework
 {
     public class SoundButton : Button
     {
+        private static bool s_EnableSoundButton;
         private static string s_defaultClickSound;
 
         public static string defaultClickSound
@@ -18,21 +19,39 @@ namespace PTGame.Framework
             set { s_defaultClickSound = value; }
         }
 
+        public static bool enableSoundButton
+        {
+            get { return s_EnableSoundButton; }
+            set { s_EnableSoundButton = value; }
+        }
+
+        [SerializeField]
+        private bool m_IsSoundEnable = true;
         [SerializeField]
         private string m_ClickSound;
         [SerializeField]
-        private bool m_UseDefaultSound;
+        private bool m_UseDefaultSound = true;
+
+        public bool isSoundEnable
+        {
+            get { return m_IsSoundEnable; }
+            set { m_IsSoundEnable = value; }
+        }
 
         public override void OnPointerClick(PointerEventData eventData)
         {
             base.OnPointerClick(eventData);
-            if (!string.IsNullOrEmpty(m_ClickSound))
+
+            if (isSoundEnable && s_EnableSoundButton)
             {
-                AudioMgr.S.PlaySound(m_ClickSound);
-            }
-            else if (m_UseDefaultSound)
-            {
-                AudioMgr.S.PlaySound(s_defaultClickSound);
+                if (!string.IsNullOrEmpty(m_ClickSound))
+                {
+                    AudioMgr.S.PlaySound(m_ClickSound);
+                }
+                else if (m_UseDefaultSound)
+                {
+                    AudioMgr.S.PlaySound(s_defaultClickSound);
+                }
             }
         }
     }
