@@ -11,6 +11,7 @@ namespace PTGame.Framework
         {
             private string m_Key;
             private string m_Value;
+            private float m_FloatValue;
 
             public string stringValue
             {
@@ -20,14 +21,14 @@ namespace PTGame.Framework
 
             public int intValue
             {
-                get { return int.Parse(m_Value); }
-                set { m_Value = value.ToString(); }
+                get { return (int)m_FloatValue; }
+                set { m_FloatValue = value; }
             }
 
             public float floatValue
             {
-                get { return float.Parse(m_Value); }
-                set { m_Value = value.ToString(); }
+                get { return m_FloatValue; }
+                set { m_FloatValue = value; }
             }
 
             public string key
@@ -217,6 +218,20 @@ namespace PTGame.Framework
             }
 
             cell.intValue = value;
+            m_IsMapDirty = true;
+        }
+        
+        public void AddInt(string key, int offset)
+        {
+            RecordCell cell = null;
+            if (!m_DataMap.TryGetValue(key, out cell))
+            {
+                cell = new RecordCell();
+                cell.key = key;
+                m_DataMap.Add(key, cell);
+            }
+
+            cell.intValue += offset;
             m_IsMapDirty = true;
         }
 
