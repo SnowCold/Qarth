@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 namespace PTGame.Framework
 {
-    public class LRProgressBar : MonoBehaviour
+    public class MultiStepProgressBar : MonoBehaviour
     {
+        [SerializeField]
+        private bool m_AutoBiild = false;
         [SerializeField]
         private Image[] m_TargetImages;
         [SerializeField, Range(0, 1)]
@@ -26,6 +28,19 @@ namespace PTGame.Framework
             }
         }
 
+        public Image[] targetImages
+        {
+            get { return m_TargetImages; }
+            set { m_TargetImages = value; }
+        }
+
+        public float[] precents
+        {
+            get { return m_Precents; }
+            set { m_Precents = value; }
+        }
+
+
         private void Awake()
         {
             InitPrecentData();
@@ -33,6 +48,11 @@ namespace PTGame.Framework
 
         private void InitPrecentData()
         {
+            if (!m_AutoBiild)
+            {
+                return;
+            }
+
             RectTransform selfTransform = GetComponent<RectTransform>();
             float totalWidth = selfTransform.rect.width;
 
@@ -54,6 +74,11 @@ namespace PTGame.Framework
             float preValue = 0;
             for (int i = 0; i < m_TargetImages.Length; ++i)
             {
+                if (i >= m_Precents.Length)
+                {
+                    continue;
+                }
+
                 if (m_TargetImages[i] != null)
                 {
                     float v = (m_Progress - preValue) / m_Precents[i];
@@ -67,16 +92,20 @@ namespace PTGame.Framework
         private void OnValidate()
         {
             UpdateUI();
-            if (m_TargetImages == null || m_TargetImages.Length == 0)
-            {
-                int childCount = transform.childCount;
-                m_TargetImages = new Image[childCount];
-                for (int i = 0; i < childCount; ++i)
-                {
-                    m_TargetImages[i] = transform.GetChild(i).GetComponent<Image>();
-                }
 
-                InitPrecentData();
+            if (m_AutoBiild)
+            {
+                if (m_TargetImages == null || m_TargetImages.Length == 0)
+                {
+                    int childCount = transform.childCount;
+                    m_TargetImages = new Image[childCount];
+                    for (int i = 0; i < childCount; ++i)
+                    {
+                        m_TargetImages[i] = transform.GetChild(i).GetComponent<Image>();
+                    }
+
+                    InitPrecentData();
+                }
             }
         }
     }
