@@ -1119,24 +1119,5 @@ namespace PTGame.Framework
             _filterdName = _methodName = null;
             return _fullName.TrimEnd('-', '>');
         }
-
-        public static string ArabToCnWord(int arabNum)
-        {
-            const string str = "零一二三四五六七八九";
-            const string str1 = "十百千万十百千亿十百千万";
-
-            string cn="";
-
-            string arabNumStr = arabNum.ToString();
-
-            for(int i=arabNumStr.Length-1;i>-1;i--)
-            {
-                cn = str.Substring(int.Parse(arabNumStr.Substring(i,1)),1)+cn;
-                cn = str1.Substring(arabNumStr.Length-i-1,1)+cn;
-            }
-
-            return cn.Remove(0,1).Trim('零');
-        }
-
     }
 }
