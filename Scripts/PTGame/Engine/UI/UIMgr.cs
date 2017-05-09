@@ -261,7 +261,7 @@ System.Reflection.BindingFlags.Public);
             }
         }
 
-        public void ClosePanel<T>(T uiID) where T : IConvertible
+        public void ClosePanelAsUIID<T>(T uiID) where T : IConvertible
         {
             int eID = uiID.ToInt32(null);
             bool hasChange = false;
