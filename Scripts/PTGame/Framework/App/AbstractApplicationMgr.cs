@@ -15,7 +15,6 @@ namespace PTGame.Framework
 
         protected void Start()
         {
-            MemoryMgr.S.Init();
             StartApp();
         }
 

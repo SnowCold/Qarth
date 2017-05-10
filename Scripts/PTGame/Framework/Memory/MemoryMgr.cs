@@ -11,21 +11,16 @@ namespace PTGame.Framework
     [TMonoSingletonAttribute("[App]/MemoryMgr")]
     public class MemoryMgr : TMonoSingleton<MemoryMgr>
     {
-        /// <summary>
-        /// 最大允许的内存使用量
-        /// </summary>
-        public int s_MaxMemoryUse = 170;
-
-        /// <summary>
-        /// 最大允许的堆内存使用量
-        /// </summary>
-        public int s_MaxHeapMemoryUse = 50;
-
-        public bool s_enable = true;
+        [SerializeField]
+        private int m_MaxMemoryUse = 170;
+        [SerializeField]
+        private int m_MaxHeapMemoryUse = 50;
+        [SerializeField]
+        private bool m_DisplayOnGUI = true;
 
         public void Init()
         {
-
+            Log.i("InitMrmoryMgr");
         }
 
 #if !UNITY_EDITOR
@@ -38,7 +33,7 @@ namespace PTGame.Framework
 
         void OnGUI()
         {
-            if (s_enable)
+            if (m_DisplayOnGUI)
             {
                 float totalAllocatedMemory = ByteToM(Profiler.GetTotalAllocatedMemory());
                 float reservedMemory = ByteToM(Profiler.GetTotalReservedMemory());
@@ -69,14 +64,14 @@ namespace PTGame.Framework
         /// <param name="tag"></param>
         void MonitorMemorySize()
         {
-            if (ByteToM(Profiler.GetTotalReservedMemory()) > s_MaxMemoryUse * 0.7f)
+            if (ByteToM(Profiler.GetTotalReservedMemory()) > m_MaxMemoryUse * 0.7f)
             {
                 if (!s_isFreeMemory)
                 {
                     s_isFreeMemory = true;
                 }
 
-                if (ByteToM(Profiler.GetMonoHeapSize()) > s_MaxMemoryUse)
+                if (ByteToM(Profiler.GetMonoHeapSize()) > m_MaxMemoryUse)
                 {
                     if (!s_isFreeMemory2)
                     {
@@ -94,14 +89,14 @@ namespace PTGame.Framework
                 s_isFreeMemory = false;
             }
 
-            if (ByteToM(Profiler.GetMonoUsedSize()) > s_MaxHeapMemoryUse * 0.7f)
+            if (ByteToM(Profiler.GetMonoUsedSize()) > m_MaxHeapMemoryUse * 0.7f)
             {
                 if (!s_isFreeHeapMemory)
                 {
                     s_isFreeHeapMemory = true;
                 }
 
-                if (ByteToM(Profiler.GetMonoUsedSize()) > s_MaxHeapMemoryUse)
+                if (ByteToM(Profiler.GetMonoUsedSize()) > m_MaxHeapMemoryUse)
                 {
                     if (!s_isFreeHeapMemory2)
                     {

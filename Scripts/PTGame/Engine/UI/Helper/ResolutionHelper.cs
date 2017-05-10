@@ -12,7 +12,7 @@ namespace PTGame.Framework
         KeepRatio,
     }
 
-    [TMonoSingletonAttribute("[Tools]/ResolttionHelper")]
+    [TMonoSingletonAttribute("[Tools]/ResolutionHelper")]
     public class ResolutionHelper : TMonoSingleton<ResolutionHelper>
     {
         [SerializeField]

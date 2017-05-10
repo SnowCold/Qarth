@@ -12,5 +12,6 @@ namespace PTGame.Framework
         FloatMessagePanel,
         LightMessagePanel,
         MsgBoxPanel,
+        TransitionPanel,
     }
 }

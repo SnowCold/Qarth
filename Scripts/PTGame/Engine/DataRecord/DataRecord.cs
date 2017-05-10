@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace PTGame.Framework
 {
+    [TMonoSingletonAttribute("[Tools]/DataRecord")]
     public class DataRecord : TMonoSingleton<DataRecord>
     {
         [Serializable]
