@@ -9,6 +9,7 @@ namespace PTGame.Framework
 
     public class AssetBundleRes : AbstractRes
     {
+        public static int s_ActiveCount = 0;
         private bool        m_UnloadFlag = true;
         private string[]    m_DependResList;
         private AssetBundleCreateRequest m_AssetBundleCreateRequest;
@@ -85,7 +86,7 @@ namespace PTGame.Framework
 
             assetBundle = bundle;
             resState = eResState.kReady;
-
+            ++s_ActiveCount;
             //Log.i(string.Format("Load AssetBundle Success.ID:{0}, Name:{1}", bundle.GetInstanceID(), bundle.name));
 
             //timer.Dump(-1);
@@ -98,7 +99,7 @@ namespace PTGame.Framework
             {
                 return;
             }
-
+            
             resState = eResState.kLoading;
 
             ResMgr.S.PostIEnumeratorTask(this);
@@ -133,6 +134,8 @@ namespace PTGame.Framework
             assetBundle = abcR.assetBundle;
 
             resState = eResState.kReady;
+            ++s_ActiveCount;
+
             finishCallback();
         }
 
@@ -180,6 +183,7 @@ namespace PTGame.Framework
                 //ResMgr.S.timeDebugger.Begin("Unload AssetBundle:" + m_Name);
                 assetBundle.Unload(m_UnloadFlag);
                 assetBundle = null;
+                --s_ActiveCount;
                 //ResMgr.S.timeDebugger.End();
             }
         }

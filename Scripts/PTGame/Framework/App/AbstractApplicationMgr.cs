@@ -7,8 +7,15 @@ namespace PTGame.Framework
 {
     public class AbstractApplicationMgr<T> : TMonoSingleton<T> where T : TMonoSingleton<T>
     {
+        public static Action s_OnApplicationQuit = null;
+        public static Action<bool> s_OnApplicationPause = null;
+        public static Action<bool> s_OnApplicationFocus = null;
+        public static Action s_OnApplicationUpdate = null;
+        public static Action s_OnApplicationOnGUI = null;
+
         protected void Start()
         {
+            MemoryMgr.S.Init();
             StartApp();
         }
 
@@ -37,5 +44,68 @@ namespace PTGame.Framework
         }
 
         #endregion
+
+        void OnApplicationQuit()
+        {
+            MonoSingleton.isApplicationQuit = true;
+
+            if (s_OnApplicationQuit != null)
+            {
+                try
+                {
+                    s_OnApplicationQuit();
+                }
+                catch (Exception e)
+                {
+                    Log.e(e);
+                }
+            }
+        }
+
+        void OnApplicationPause(bool pauseStatus)
+        {
+            if (s_OnApplicationPause != null)
+            {
+                try
+                {
+                    s_OnApplicationPause(pauseStatus);
+                }
+                catch (Exception e)
+                {
+                    Log.e(e);
+                }
+            }
+        }
+
+        void OnApplicationFocus(bool focusStatus)
+        {
+            if (s_OnApplicationFocus != null)
+            {
+                try
+                {
+                    s_OnApplicationFocus(focusStatus);
+                }
+                catch (Exception e)
+                {
+                    Log.e(e);
+                }
+            }
+        }
+
+        void Update()
+        {
+            if (s_OnApplicationUpdate != null)
+            {
+                s_OnApplicationUpdate();
+            }
+        }
+
+        void OnGUI()
+        {
+            if (s_OnApplicationOnGUI != null)
+            {
+                s_OnApplicationOnGUI();
+            } 
+        }
     }
 }

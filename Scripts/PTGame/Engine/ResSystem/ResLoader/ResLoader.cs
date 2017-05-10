@@ -84,6 +84,11 @@ namespace PTGame.Framework
             Log.i(builder.ToString());
         }
 
+        public static int activeResLoaderCount
+        {
+            get { return s_ActiveLoaderList.Count; }
+        }
+
         public string loaderName
         {
             get { return m_LoaderName; }

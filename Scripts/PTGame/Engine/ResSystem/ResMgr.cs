@@ -25,6 +25,11 @@ namespace PTGame.Framework
 
         #endregion
 
+        public int totalResCount
+        {
+            get { return m_ResList.Count; }
+        }
+
         public override void OnSingletonInit()
         {
             ReloadABTable();

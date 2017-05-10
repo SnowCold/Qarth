@@ -12,6 +12,7 @@ namespace PTGame.Framework
         public static bool isApplicationQuit
         {
             get { return m_IsApplicationQuit; }
+            set { m_IsApplicationQuit = value; }
         }
 
         public static K CreateMonoSingleton<K>() where K : MonoBehaviour, ISingleton
@@ -68,11 +69,6 @@ namespace PTGame.Framework
             }
 
             return obj.AddComponent<K>();
-        }
-
-        protected void OnApplicationQuit()
-        {
-            m_IsApplicationQuit = true;
         }
     }
 }
