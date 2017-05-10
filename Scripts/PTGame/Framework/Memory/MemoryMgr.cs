@@ -48,8 +48,7 @@ namespace PTGame.Framework
                 
                 GUILayout.TextField(string.Format("Reserved：{0}M, TotalAllocated:{1}M", reservedMemory, totalAllocatedMemory));
                 GUILayout.TextField(string.Format("Heap：{0}M, HeadUsed:{1}M", monoHeapSize, monoUsedSize));
-                GUILayout.TextField(string.Format("ResCount:{0}, ABCount:{1}", ResMgr.S.totalResCount, AssetBundleRes.s_ActiveCount));
-                GUILayout.TextField("ResLoaderCount：" + ResLoader.activeResLoaderCount);
+                GUILayout.TextField(string.Format("ResLoader:{0}, Res:{1}, AB:{2}", ResLoader.activeResLoaderCount, ResMgr.S.totalResCount, AssetBundleRes.s_ActiveCount));
             }
         }
 
