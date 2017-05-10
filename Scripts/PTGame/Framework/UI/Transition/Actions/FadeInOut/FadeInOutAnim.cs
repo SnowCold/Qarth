@@ -70,7 +70,7 @@ namespace PTGame.Framework
 
             m_Effect = node.GetComponent<SwitchAnimShaderEffect>();
 
-            m_Handler.OnTransitionPrepareFiish();
+            m_Handler.OnTransitionPrepareFinish();
         }
 
         public void TransitionIn(AbstractPanel panel)

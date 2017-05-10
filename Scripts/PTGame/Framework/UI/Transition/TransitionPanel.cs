@@ -112,7 +112,7 @@ namespace PTGame.Framework
             }
         }
 
-        public void OnTransitionPrepareFiish()
+        public void OnTransitionPrepareFinish()
         {
             if (m_Action.transitionSameTime)
             {

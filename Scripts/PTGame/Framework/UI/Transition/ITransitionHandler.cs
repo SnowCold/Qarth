@@ -11,7 +11,7 @@ namespace PTGame.Framework
         {
             get;
         }
-        void OnTransitionPrepareFiish();
+        void OnTransitionPrepareFinish();
         void OnTransitionInFinish();
         void OnTransitionOutFinish();
     }
