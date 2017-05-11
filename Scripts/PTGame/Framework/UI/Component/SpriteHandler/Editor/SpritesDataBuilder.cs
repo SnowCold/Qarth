@@ -81,6 +81,7 @@ namespace PTGame.Framework.Editor
                 return;
             }
             import.spritePackingTag = folderPath.ToLower();
+            import.textureCompression = TextureImporterCompression.Uncompressed;
             AssetDatabase.ImportAsset(texPath);
             //EditorUtility.SetDirty(import);
         }
