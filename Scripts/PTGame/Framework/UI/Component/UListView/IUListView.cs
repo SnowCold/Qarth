@@ -85,6 +85,7 @@ namespace PTGame.Framework
         public void Jump2Index(int index)
         {
             float precent = (float)index / GetDataCount();
+            precent = Mathf.Min(0.999f, precent);
             Vector2 oldPrecent = m_ScrollRect.normalizedPosition;
             oldPrecent.y = precent;
             m_ScrollRect.normalizedPosition = oldPrecent;
@@ -101,7 +102,6 @@ namespace PTGame.Framework
             lastStartInex = -1;
 			this.lstData = lstData;
 			RefreshListView();
-            Jump2Index(0);
 		}
 
 		private void OnValueChanged(Vector2 pos)
