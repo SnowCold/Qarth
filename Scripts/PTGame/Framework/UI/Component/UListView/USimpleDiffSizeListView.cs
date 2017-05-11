@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace NSUListView
+namespace PTGame.Framework
 {
 	public class USimpleDiffSizeListView : IUListView
 	{
@@ -169,7 +169,7 @@ namespace NSUListView
 			return size;
 		}
 		
-		public override GameObject GetItemGameObject(int index)
+		public override GameObject GetItemGameObject(Transform content, int index)
 		{
 			if(index < lstItems.Count)
 			{
@@ -182,7 +182,7 @@ namespace NSUListView
 			}
 			else 
 			{
-				GameObject go = GameObject.Instantiate(itemPrefab) as GameObject;
+				GameObject go = GameObject.Instantiate(itemPrefab, content, false) as GameObject;
 				lstItems.Add (go);
 				return go;
 			}

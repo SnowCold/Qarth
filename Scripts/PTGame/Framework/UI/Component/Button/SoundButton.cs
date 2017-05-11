@@ -10,7 +10,7 @@ namespace PTGame.Framework
 {
     public class SoundButton : Button
     {
-        private static bool s_EnableSoundButton;
+        private static bool s_EnableSoundButton = true;
         private static string s_defaultClickSound;
 
         public static string defaultClickSound

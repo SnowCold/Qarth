@@ -951,6 +951,7 @@ System.Reflection.BindingFlags.Public);
             Vector3 anchorPos = Vector3.zero;
             Vector2 sizeDel = Vector2.zero;
             Vector3 scale = Vector3.one;
+            Quaternion rotate = Quaternion.identity;
 
             RectTransform rtTr = go.GetComponent<RectTransform>();
             if (rtTr != null)
@@ -958,6 +959,7 @@ System.Reflection.BindingFlags.Public);
                 anchorPos = rtTr.anchoredPosition;
                 sizeDel = rtTr.sizeDelta;
                 scale = rtTr.localScale;
+                rotate = rtTr.rotation;
             }
 
             rtTr.SetParent(parent, false);
@@ -967,6 +969,7 @@ System.Reflection.BindingFlags.Public);
                 rtTr.anchoredPosition = anchorPos;
                 rtTr.sizeDelta = sizeDel;
                 rtTr.localScale = scale;
+                rtTr.rotation = rotate;
             }
         }
 

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
-namespace NSUListView
+namespace PTGame.Framework
 {	
 	public enum Layout
 	{
@@ -18,7 +18,7 @@ namespace NSUListView
 		public Vector2				spacing;
 		public bool					needMask;
 
-		protected ScrollRect 		scrollRect;
+		protected ScrollRect 		m_ScrollRect;
 		protected bool				initialized = false;
 		protected RectTransform		content;
 		protected Vector2			scrollRectSize;
@@ -27,22 +27,30 @@ namespace NSUListView
 		protected Vector2			leftTopCorner = Vector2.zero;
 		private bool				leftTopCornerInit = false;
 
+        public Vector2 normalizedPosition
+        {
+            get { return m_ScrollRect.normalizedPosition; }
+        }
+
 		public virtual void Init()
 		{
-			// set attributes of scrollrect
-			scrollRect = GetComponent<ScrollRect> ();
-			scrollRect.onValueChanged.AddListener (OnValueChanged);
+            if (m_ScrollRect == null)
+            {
+                m_ScrollRect = GetComponent<ScrollRect>();
+            }
+            // set attributes of scrollrect
+            m_ScrollRect.onValueChanged.AddListener(OnValueChanged);
 
 			// set the scroll direction
 			switch (layout) 
 			{
 			case Layout.Horizontal:
-				scrollRect.horizontal = true;
-				scrollRect.vertical = false;
+				m_ScrollRect.horizontal = true;
+				m_ScrollRect.vertical = false;
 				break;
 			case Layout.Vertical:
-				scrollRect.horizontal = false;
-				scrollRect.vertical = true;
+				m_ScrollRect.horizontal = false;
+				m_ScrollRect.vertical = true;
 				break;
 			}
 
@@ -51,14 +59,18 @@ namespace NSUListView
 			go.name = "content";
 			content = go.AddComponent (typeof(RectTransform)) as RectTransform;
 			content.SetParent (transform);
+            go.layer = LayerDefine.LAYER_UI;
 			content.pivot = new Vector2 (0, 1);
 			content.anchorMin = content.anchorMax = content.pivot;
 			content.anchoredPosition = Vector2.zero;
+            Vector3 localPos = content.transform.localPosition;
+            localPos.z = 0;
+            content.transform.localPosition = localPos;
 			content.localScale = Vector3.one;
-			scrollRect.content = content;
+			m_ScrollRect.content = content;
 
 			// record some sizes
-			RectTransform scrollRectTransform = scrollRect.transform as RectTransform;
+			RectTransform scrollRectTransform = m_ScrollRect.transform as RectTransform;
 			scrollRectSize = scrollRectTransform.rect.size;
 
 			// add mask
@@ -70,7 +82,15 @@ namespace NSUListView
 			}
 		}
 
-		public void  SetData(List<object> lstData)
+        public void Jump2Index(int index)
+        {
+            float precent = (float)index / GetDataCount();
+            Vector2 oldPrecent = m_ScrollRect.normalizedPosition;
+            oldPrecent.y = precent;
+            m_ScrollRect.normalizedPosition = oldPrecent;
+        }
+
+		public void SetData(List<object> lstData)
 		{
 			if (false == initialized) 
 			{
@@ -84,7 +104,7 @@ namespace NSUListView
 
 		private void OnValueChanged(Vector2 pos)
 		{
-			int startIndex = GetStartIndex ();
+			int startIndex = GetStartIndex();
 			if (startIndex != lastStartInex 
 			    && startIndex >= 0)
 			{
@@ -100,20 +120,26 @@ namespace NSUListView
 			RectTransform contentRectTransform = content.transform as RectTransform;
 			contentRectTransform.sizeDelta = size;
 
-			// set the item postion and data
-			int startIndex = GetStartIndex ();
+            // set the item postion and data
+            int startIndex = GetStartIndex();
+
 			if (startIndex < 0)	startIndex = 0;
 
-			for (int i=0; i<GetCurrentShowItemNum(); ++i)
+			for (int i = 0; i < GetCurrentShowItemNum(); ++i)
 			{
-				GameObject go = GetItemGameObject(i);
+                int dataIndex = startIndex + i;
+                if (dataIndex >= lstData.Count)
+                {
+                    break;
+                }
+
+				GameObject go = GetItemGameObject(content, i);
 				RectTransform trans = go.transform as RectTransform;
-				trans.SetParent(content);
 				trans.pivot = trans.anchorMin = trans.anchorMax = new Vector2(0.5f, 0.5f);
 				trans.anchoredPosition = GetItemAnchorPos(startIndex + i);
 				trans.localScale = Vector3.one;
 				IUListItemView itemView = go.GetComponent<IUListItemView>();
-				itemView.SetData(lstData[startIndex + i]);
+				itemView.SetData(startIndex + i, lstData[startIndex + i]);
 			}
 
 			// dont show the extra items shown before
@@ -148,7 +174,7 @@ namespace NSUListView
 		{
 			if (false == leftTopCornerInit) 
 			{
-				RectTransform rectTrans = scrollRect.transform as RectTransform;
+				RectTransform rectTrans = m_ScrollRect.transform as RectTransform;
 				Vector3[] corners = new Vector3[4];
 				rectTrans.GetWorldCorners (corners);
 				Canvas canvas = GetComponentInParent<Canvas> ();
@@ -246,7 +272,7 @@ namespace NSUListView
 		/// </summary>
 		/// <returns>The item game object.</returns>
 		/// <param name="index">Index.</param>
-		public abstract GameObject	GetItemGameObject(int index);
+		public abstract GameObject	GetItemGameObject(Transform content, int index);
 		/// <summary>
 		/// Hides the nonuseable items.
 		/// </summary>
