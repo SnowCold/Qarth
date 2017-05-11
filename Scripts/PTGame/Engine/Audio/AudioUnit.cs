@@ -147,6 +147,11 @@ namespace PTGame.Framework
             m_Source.Play();
         }
 
+		public void SetVolume(float volume)
+		{
+			m_Source.volume = volume;
+		}
+
         private void OnResLoadFinish(bool result, IRes res)
         {
             if (!result)
@@ -177,6 +182,7 @@ namespace PTGame.Framework
 
             m_Source.clip = m_AudioClip;
             m_Source.loop = m_IsLoop;
+			m_Source.volume = 1.0f;
 
             int loopCount = 1;
             if (m_IsLoop)

@@ -40,5 +40,10 @@ namespace PTGame.Framework
             unit.customEventID = customEventID;
             return unit;
         }
+
+		public AudioUnit GetBGUnit()
+		{
+			return m_MainUnit;
+		}
     }
 }
