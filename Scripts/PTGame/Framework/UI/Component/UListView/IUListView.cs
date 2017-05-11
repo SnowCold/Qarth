@@ -127,7 +127,9 @@ namespace PTGame.Framework
 
 			if (startIndex < 0)	startIndex = 0;
 
-			for (int i = 0; i < GetCurrentShowItemNum(); ++i)
+            int showItemNum = GetCurrentShowItemNum();
+
+			for (int i = 0; i < showItemNum; ++i)
 			{
                 int dataIndex = startIndex + i;
                 if (dataIndex >= lstData.Count)
@@ -138,10 +140,10 @@ namespace PTGame.Framework
 				GameObject go = GetItemGameObject(content, i);
 				RectTransform trans = go.transform as RectTransform;
 				trans.pivot = trans.anchorMin = trans.anchorMax = new Vector2(0.5f, 0.5f);
-				trans.anchoredPosition = GetItemAnchorPos(startIndex + i);
+				trans.anchoredPosition = GetItemAnchorPos(dataIndex);
 				trans.localScale = Vector3.one;
 				IUListItemView itemView = go.GetComponent<IUListItemView>();
-				itemView.SetData(startIndex + i, lstData[startIndex + i]);
+				itemView.SetData(dataIndex, lstData[dataIndex]);
 			}
 
 			// dont show the extra items shown before
