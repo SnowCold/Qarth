@@ -10,10 +10,27 @@ namespace PTGame.Framework.Editor
     public class SpritesDataBuilder
     {
         [MenuItem("Assets/SpritesBuilder/Build SpritesData")]
-        public static void BuildSpritesData()
+        private static void BuildSpritesDataInFolder()
+        {
+            string folderPath = EditorUtils.GetSelectedDirAssetsPath();
+            DirectoryInfo dInfo = new DirectoryInfo(EditorUtils.AssetsPath2ABSPath(folderPath));
+            DirectoryInfo[] subFolders = dInfo.GetDirectories();
+            if (subFolders == null || subFolders.Length == 0)
+            {
+                BuildSpritesData(folderPath);
+            }
+            else
+            {
+                for (int i = 0; i < subFolders.Length; ++i)
+                {
+                    BuildSpritesData(EditorUtils.ABSPath2AssetsPath(subFolders[i].FullName));
+                }
+            }
+        }
+
+        public static void BuildSpritesData(string folderPath)
         {
             SpritesData data = null;
-            string folderPath = EditorUtils.GetSelectedDirAssetsPath();
 
             string folderName = PathHelper.FullAssetPath2Name(folderPath);
             string spriteDataPath = folderPath + "/" + folderName + "SpritesData.asset";

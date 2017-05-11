@@ -98,8 +98,10 @@ namespace PTGame.Framework
 				initialized = true;
 			}
 
+            lastStartInex = -1;
 			this.lstData = lstData;
-			RefreshListView ();
+			RefreshListView();
+            Jump2Index(0);
 		}
 
 		private void OnValueChanged(Vector2 pos)
