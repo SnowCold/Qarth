@@ -149,6 +149,19 @@ namespace PTGame.Framework
             }
         }
 
+        public void Add2Load(string[] list)
+        {
+            if (list == null)
+            {
+                return;
+            }
+
+            for (int i = list.Length - 1; i >= 0; --i)
+            {
+                Add2Load(list[i]);
+            }
+        }
+
         public void Add2Load(string name, Action<bool, IRes> listener = null, bool lastOrder = true)
         {
             if (string.IsNullOrEmpty(name))
