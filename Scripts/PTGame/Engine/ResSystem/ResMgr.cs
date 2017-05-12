@@ -3,6 +3,7 @@ using UnityEngine;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PTGame.Framework
 {
@@ -33,6 +34,26 @@ namespace PTGame.Framework
         public override void OnSingletonInit()
         {
             ReloadABTable();
+        }
+
+        public void Dump()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append("## BEGIN DUMP ALL AssetBundle State");
+            builder.AppendLine("# ActiveCount:" + AssetBundleRes.s_ActiveCount);
+
+            for (int i = 0; i < m_ResList.Count; ++i)
+            {
+                if (m_ResList[i] is AssetBundleRes)
+                {
+                    builder.AppendLine("    #ABName:" + m_ResList[i].name);
+                }
+            }
+
+            builder.AppendLine("## END DUMP ALL AssetBundle State");
+
+            Log.i(builder.ToString());
         }
 
         public void ReloadABTable()

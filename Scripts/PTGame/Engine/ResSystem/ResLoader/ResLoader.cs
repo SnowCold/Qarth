@@ -81,6 +81,7 @@ namespace PTGame.Framework
             }
 
             builder.AppendLine("## END DUMP ALL ResLoader State");
+
             Log.i(builder.ToString());
         }
 
