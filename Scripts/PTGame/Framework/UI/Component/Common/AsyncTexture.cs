@@ -120,10 +120,13 @@ namespace PTGame.Framework
 
         private void OnDestroy()
         {
-            if (m_ResLoader != null)
+            if (!MonoSingleton.isApplicationQuit)
             {
-                m_ResLoader.Recycle2Cache();
-                m_ResLoader = null;
+                if (m_ResLoader != null)
+                {
+                    m_ResLoader.Recycle2Cache();
+                    m_ResLoader = null;
+                }
             }
         }
     }

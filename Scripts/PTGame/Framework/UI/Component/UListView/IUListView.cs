@@ -54,13 +54,17 @@ namespace PTGame.Framework
 				break;
 			}
 
-			// add a scrollrect content
-			GameObject go = new GameObject ();
-			go.name = "content";
-			content = go.AddComponent (typeof(RectTransform)) as RectTransform;
-			content.SetParent (transform);
-            go.layer = LayerDefine.LAYER_UI;
-			content.pivot = new Vector2 (0, 1);
+            // add a scrollrect content
+            if (content == null)
+            {
+                GameObject go = new GameObject();
+                go.name = "content";
+                content = go.AddComponent(typeof(RectTransform)) as RectTransform;
+                content.SetParent(transform);
+                go.layer = LayerDefine.LAYER_UI;
+            }
+
+			content.pivot = new Vector2(0, 1);
 			content.anchorMin = content.anchorMax = content.pivot;
 			content.anchoredPosition = Vector2.zero;
             Vector3 localPos = content.transform.localPosition;
@@ -86,6 +90,7 @@ namespace PTGame.Framework
         {
             float precent = (float)index / GetDataCount();
             precent = Mathf.Min(0.999f, precent);
+            precent = Mathf.Max(0.001f, precent);
             Vector2 oldPrecent = m_ScrollRect.normalizedPosition;
             oldPrecent.y = precent;
             m_ScrollRect.normalizedPosition = oldPrecent;
@@ -138,7 +143,11 @@ namespace PTGame.Framework
                 }
 
 				GameObject go = GetItemGameObject(content, i);
-				RectTransform trans = go.transform as RectTransform;
+                if (false == go.activeSelf)
+                {
+                    go.SetActive(true);
+                }
+                RectTransform trans = go.transform as RectTransform;
 				trans.pivot = trans.anchorMin = trans.anchorMax = new Vector2(0.5f, 0.5f);
 				trans.anchoredPosition = GetItemAnchorPos(dataIndex);
 				trans.localScale = Vector3.one;
