@@ -109,6 +109,18 @@ namespace PTGame.Framework
 			RefreshListView();
 		}
 
+        public void ForceUpdateList()
+        {
+            if (false == initialized)
+            {
+                return;
+            }
+
+            int startIndex = GetStartIndex();
+            RefreshListView();
+            lastStartInex = startIndex;
+        }
+
 		private void OnValueChanged(Vector2 pos)
 		{
 			int startIndex = GetStartIndex();
