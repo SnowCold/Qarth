@@ -188,23 +188,19 @@ namespace PTGame.Framework
             if (day >= 1)
             {
                 // X天Y小时
-                return string.Format("{0}:{1}", day, hours);
+                return string.Format("{0}:{1:D2}", day, hours);
             }
             else
             {
                 if (hours >= 1)
                 {
                     // X小时Y分
-                    return string.Format("{0}:{1}", hours, minute);
-                }
-                else if (minute >= 1)
-                {
-                    // X分Y秒
-                    return string.Format("{0}:{1}", minute, second);
+                    return string.Format("{0:D2}:{1:D2}", hours, minute);
                 }
                 else
                 {
-                    return string.Format("{0}", second);
+                    // X分Y秒
+                    return string.Format("{0:D2}:{1:D2}", minute, second);
                 }
             }
         }
