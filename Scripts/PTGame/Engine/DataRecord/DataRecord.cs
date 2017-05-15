@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PTGame.Framework
 {
@@ -12,7 +13,6 @@ namespace PTGame.Framework
         {
             private string m_Key;
             private string m_Value;
-            private float m_FloatValue;
 
             public string stringValue
             {
@@ -22,14 +22,29 @@ namespace PTGame.Framework
 
             public int intValue
             {
-                get { return (int)m_FloatValue; }
-                set { m_FloatValue = value; }
+                get
+                {
+                    if (string.IsNullOrEmpty(m_Value))
+                    {
+                        return 0;
+                    }
+
+                    return int.Parse(m_Value);
+                }
+                set { m_Value = value.ToString(); }
             }
 
             public float floatValue
             {
-                get { return m_FloatValue; }
-                set { m_FloatValue = value; }
+                get
+                {
+                    if (string.IsNullOrEmpty(m_Value))
+                    {
+                        return 0;
+                    }
+                    return float.Parse(m_Value);
+                }
+                set { m_Value = value.ToString(); }
             }
 
             public string key
@@ -38,30 +53,31 @@ namespace PTGame.Framework
                 set { m_Key = value; }
             }
 
+            public void SetData(string data)
+            {
+                m_Key = data.Substring(0, data.IndexOf(':'));
+                m_Value = data.Substring(data.IndexOf(':') + 1);
+                Log.i("###@#");
+            }
+
+            public void WriteData(StringBuilder builder)
+            {
+                builder.Append("|");
+                builder.Append(m_Key);
+                builder.Append(":");
+                builder.Append(m_Value);
+            }
         }
-        
-        /*
-        [StructLayout(LayoutKind.Explicit)]
-        public struct RecordField
-        {
-            [FieldOffset(0)]
-            private int intVal;
-            [FieldOffset(0)]
-            private float floatVal;
-            [FieldOffset(0)]
-            private string stringVal;
-        }
-        */
 
         [Serializable]
         public class SerializeData
         {
-            private List<RecordCell> m_RecordCellList;
+            private string m_Data;
 
-            public List<RecordCell> recordCellList
+            public string data
             {
-                get { return m_RecordCellList; }
-                set { m_RecordCellList = value; }
+                get { return m_Data; }
+                set { m_Data = value; }
             }
         }
 
@@ -137,14 +153,14 @@ namespace PTGame.Framework
             SerializeData sd = new SerializeData();
             if (m_DataMap != null)
             {
-                List<RecordCell> list = new List<RecordCell>();
+                StringBuilder builder = new StringBuilder();
 
                 foreach (var item in m_DataMap)
                 {
-                    list.Add(item.Value);
+                    item.Value.WriteData(builder);
                 }
 
-                sd.recordCellList = list;
+                sd.data = builder.ToString();
             }
 
             return sd;
@@ -236,22 +252,32 @@ namespace PTGame.Framework
             m_IsMapDirty = true;
         }
 
-        protected new void OnApplicationQuit()
+        protected void OnApplicationQuit()
         {
             Save();
         }
 
         private void SetSerizlizeData(SerializeData sd)
         {
-            var list = sd.recordCellList;
-            if (list == null)
+            string data = sd.data;
+            if (data == null)
             {
                 return;
             }
 
-            for (int i = 0; i < list.Count; ++i)
+            string[] values = data.Split('|');
+
+            for (int i = 0; i < values.Length; ++i)
             {
-                m_DataMap.Add(list[i].key, list[i]);
+                if (string.IsNullOrEmpty(values[i]))
+                {
+                    continue;
+                }
+
+                RecordCell cell = new RecordCell();
+                cell.SetData(values[i]);
+
+                m_DataMap.Add(cell.key, cell);
             }
         }
     }
