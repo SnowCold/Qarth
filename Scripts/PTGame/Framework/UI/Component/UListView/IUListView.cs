@@ -20,7 +20,8 @@ namespace PTGame.Framework
 
 		protected ScrollRect 		m_ScrollRect;
 		protected bool				initialized = false;
-		protected RectTransform		content;
+
+        public RectTransform		content;
 		protected Vector2			scrollRectSize;
 		protected int				lastStartInex = 0;
 		protected List<object>		lstData;
@@ -59,7 +60,7 @@ namespace PTGame.Framework
             {
                 GameObject go = new GameObject();
                 go.name = "content";
-                content = go.AddComponent(typeof(RectTransform)) as RectTransform;
+                content =  go.AddComponent<RectTransform>();//go.AddComponent(typeof(RectTransform)) as RectTransform;
                 content.SetParent(transform);
                 go.layer = LayerDefine.LAYER_UI;
             }
