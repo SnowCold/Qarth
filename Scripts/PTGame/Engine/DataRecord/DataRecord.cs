@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace PTGame.Framework
 {
@@ -57,7 +58,6 @@ namespace PTGame.Framework
             {
                 m_Key = data.Substring(0, data.IndexOf(':'));
                 m_Value = data.Substring(data.IndexOf(':') + 1);
-                Log.i("###@#");
             }
 
             public void WriteData(StringBuilder builder)
@@ -66,18 +66,6 @@ namespace PTGame.Framework
                 builder.Append(m_Key);
                 builder.Append(":");
                 builder.Append(m_Value);
-            }
-        }
-
-        [Serializable]
-        public class SerializeData
-        {
-            private string m_Data;
-
-            public string data
-            {
-                get { return m_Data; }
-                set { m_Data = value; }
             }
         }
 
@@ -98,6 +86,7 @@ namespace PTGame.Framework
 
         public void LoadFromFile()
         {
+            /*
             string path = GetLocalFilePath();
             object data = SerializeHelper.DeserializeBinary(FileMgr.S.OpenReadStream(path));
 
@@ -106,16 +95,17 @@ namespace PTGame.Framework
                 Log.w("Failed Deserialize DataRecord:" + path);
                 return;
             }
+            */
 
-            SerializeData sd = data as SerializeData;
+            m_DataMap.Clear();
+
+            string sd  = PlayerPrefs.GetString("DataRecord", "");
 
             if (sd == null)
             {
-                Log.w("Failed Load AssetDataTable:" + path);
+                //Log.w("Failed Load AssetDataTable:" + path);
                 return;
             }
-
-            m_DataMap.Clear();
 
             SetSerizlizeData(sd);
         }
@@ -133,24 +123,18 @@ namespace PTGame.Framework
                 return;
             }
 
-            SerializeData sd = GetSerializeData();
-            string path = GetLocalFilePath();
+            //SerializeData sd = GetSerializeData();
+            //string path = GetLocalFilePath();
 
-            if (SerializeHelper.SerializeBinary(path, sd))
-            {
-                Log.i("Success Save AssetDataTable:" + path);
-            }
-            else
-            {
-                Log.e("Failed Save AssetDataTable:" + path);
-            }
+            string sd = GetSerializeData();
+            PlayerPrefs.SetString("DataRecord", sd);
 
+            PlayerPrefs.Save();
             m_IsMapDirty = false;
         }
 
-        public SerializeData GetSerializeData()
+        public string GetSerializeData()
         {
-            SerializeData sd = new SerializeData();
             if (m_DataMap != null)
             {
                 StringBuilder builder = new StringBuilder();
@@ -160,10 +144,10 @@ namespace PTGame.Framework
                     item.Value.WriteData(builder);
                 }
 
-                sd.data = builder.ToString();
+                return builder.ToString();
             }
 
-            return sd;
+            return "";
         }
 
         public string GetString(string key, string defaultValue = "")
@@ -257,14 +241,8 @@ namespace PTGame.Framework
             Save();
         }
 
-        private void SetSerizlizeData(SerializeData sd)
+        private void SetSerizlizeData(string data)
         {
-            string data = sd.data;
-            if (data == null)
-            {
-                return;
-            }
-
             string[] values = data.Split('|');
 
             for (int i = 0; i < values.Length; ++i)
