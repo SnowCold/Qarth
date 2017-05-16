@@ -28,7 +28,27 @@ namespace PTGame.Framework
             set { m_UIID = value; }
         }
 
-        public bool hasOpen
+        public string uiName
+        {
+            get
+            {
+                if (m_UIID < 0)
+                {
+                    return "";
+                }
+
+                var data = UIDataTable.Get(m_UIID);
+                if (data == null)
+                {
+                    return "";
+                }
+
+                return data.shortName;
+            }
+        }
+
+
+            public bool hasOpen
         {
             get { return m_HasOpen; }
         }
