@@ -92,5 +92,10 @@ namespace PTGame.Framework
             }
 
         }
+
+        public void OnNextPanelReady()
+        {
+            
+        }
     }
 }

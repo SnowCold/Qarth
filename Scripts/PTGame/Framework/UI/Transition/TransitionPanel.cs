@@ -93,8 +93,8 @@ namespace PTGame.Framework
 
         private void OnNextPanelResLoadFinish()
         {
-
             UIMgr.S.OpenPanel(m_OpenParam.nextPanelUIID, OnNextPanelOpen, m_OpenParam.args);
+            m_Action.OnNextPanelReady();
         }
 
         protected override void OnClose()

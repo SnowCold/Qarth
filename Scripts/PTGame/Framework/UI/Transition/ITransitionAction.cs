@@ -23,6 +23,8 @@ namespace PTGame.Framework
         void TransitionOut(AbstractPanel panel);
 
         void OnTransitionDestroy();
+
+        void OnNextPanelReady();
     }
 
 }
