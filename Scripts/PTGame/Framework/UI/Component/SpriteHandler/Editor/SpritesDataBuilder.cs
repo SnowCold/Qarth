@@ -85,5 +85,58 @@ namespace PTGame.Framework.Editor
             AssetDatabase.ImportAsset(texPath);
             //EditorUtility.SetDirty(import);
         }
+
+        [MenuItem("Assets/SpritesBuilder/Readable Setting")]
+        private static void ReadableSetting()
+        {
+            string folderPath = EditorUtils.GetSelectedDirAssetsPath();
+            DirectoryInfo dInfo = new DirectoryInfo(EditorUtils.AssetsPath2ABSPath(folderPath));
+            DirectoryInfo[] subFolders = dInfo.GetDirectories();
+            if (subFolders == null || subFolders.Length == 0)
+            {
+                ProcessTexture(folderPath);
+            }
+            else
+            {
+                for (int i = 0; i < subFolders.Length; ++i)
+                {
+                    ProcessTexture(EditorUtils.ABSPath2AssetsPath(subFolders[i].FullName));
+                }
+            }
+        }
+
+        private static void ProcessTexture(string folderPath)
+        {
+            string workPath = EditorUtils.AssetsPath2ABSPath(folderPath);
+            var filePaths = Directory.GetFiles(workPath);
+            for (int i = 0; i < filePaths.Length; ++i)
+            {
+                string relPath = EditorUtils.ABSPath2AssetsPath(filePaths[i]);
+                UnityEngine.Object[] objs = AssetDatabase.LoadAllAssetsAtPath(relPath);
+
+                if (objs != null)
+                {
+                    for (int j = 0; j < objs.Length; ++j)
+                    {
+                        if (objs[j] is Texture2D)
+                        {
+                            ProcessTextureImport(relPath);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ProcessTextureImport(string texPath)
+        {
+            TextureImporter import = AssetImporter.GetAtPath(texPath) as TextureImporter;
+            if (import == null)
+            {
+                return;
+            }
+
+            import.isReadable = false;
+            AssetDatabase.ImportAsset(texPath, ImportAssetOptions.ForceUpdate);
+        }
     }
 }
