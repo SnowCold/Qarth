@@ -141,6 +141,13 @@ namespace PTGame.Framework
             return dependURL;
         }
 
+        public static string AssetBundleName2ExterUrl(string name)
+        {
+            name = S.m_ABRelativePath + name;
+            string dependURL = FilePath.persistentDataPath4Res + name;
+            return dependURL;
+        }
+
         //导出目录
         public static string exportRootFolder
         {

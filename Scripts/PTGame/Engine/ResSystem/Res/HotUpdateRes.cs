@@ -41,7 +41,7 @@ namespace PTGame.Framework
         {
             m_TotalSize = totalSize + 1;
             m_DownloadSize = download;
-            Log.i(string.Format("#>> {0}:{1}", m_Name, CalculateProgress()));
+            //Log.i(string.Format("#>> {0}:{1}", m_Name, CalculateProgress()));
         }
 
         public bool needDownload

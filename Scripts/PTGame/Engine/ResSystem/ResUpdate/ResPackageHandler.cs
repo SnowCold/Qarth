@@ -11,11 +11,15 @@ namespace PTGame.Framework
     {
         private bool m_UpdateResult;
         private ResPackage m_Package;
-        private List<ABUnit> m_UpdateUnitList;
+        private List<ABUnit> m_NeedUpdateFileList;
+        private Dictionary<string, ABUnit> m_UpdateUnitMap;
+
         private ResLoader m_Loader;
         private Action<ResPackageHandler> m_CheckListener;
         private Action<ResPackageHandler> m_DownloadListener;
         private Action<ResPackageHandler> m_UpdateListener;
+        private ResUpdateRecord m_Record;
+        private List<ABUnit> m_UpdateFailedList = new List<ABUnit>();
 
         public bool updateResult
         {
@@ -27,16 +31,11 @@ namespace PTGame.Framework
             get { return m_Package; }
         }
 
-        public List<ABUnit> updateList
-        {
-            get { return m_UpdateUnitList; }
-        }
-
         public bool needUpdate
         {
             get
             {
-                if (m_UpdateUnitList == null || m_UpdateUnitList.Count == 0)
+                if (m_NeedUpdateFileList == null || m_NeedUpdateFileList.Count == 0)
                 {
                     return false;
                 }
@@ -58,6 +57,8 @@ namespace PTGame.Framework
                 return;
             }
 
+            ApplyUpdateRecord();
+
             m_Loader = ResLoader.Allocate("ResPackageHolder");
 
             m_CheckListener = callBack;
@@ -75,6 +76,23 @@ namespace PTGame.Framework
             }
         }
 
+        //使用已更新状态修正本地清单
+        private void ApplyUpdateRecord()
+        {
+            if (m_Record != null)
+            {
+                m_Record.Close();
+                m_Record = null;
+            }
+
+            m_Record = new ResUpdateRecord(m_Package);
+            m_Record.Load();
+
+            m_Record.ModifyAssetDataTable(AssetDataTable.S);
+
+            m_Record.Close();
+        }
+
         private void MoveABConfig2Use()
         {
             string sourceFile = FilePath.persistentDownloadCachePath + m_Package.configFile;
@@ -88,12 +106,57 @@ namespace PTGame.Framework
             File.Move(sourceFile, destFile);
         }
 
-        public void StartUpdate(Action<ResPackageHandler> callBack)
+        private float m_NeedUpdateFileSize;
+        private float m_AlreadyUpdateFileSize;
+        private int m_AlreadyUpdateFileCount;
+
+        public int needUpdateFileCount
         {
-            if (m_UpdateUnitList == null || m_UpdateUnitList.Count == 0)
+            get
             {
-                Log.i("No Update List For Update");
-                callBack(this);
+                if (m_NeedUpdateFileList == null)
+                {
+                    return 0;
+                }
+
+                return m_NeedUpdateFileList.Count;
+            }
+        }
+
+        public int alreadyUpdateFileCount
+        {
+            get { return m_AlreadyUpdateFileCount; }
+        }
+
+        public float alreadyUpdateFileSize
+        {
+            get
+            {
+                if (alreadyUpdateFileCount < needUpdateFileCount)
+                {
+                    return m_AlreadyUpdateFileSize + HttpDownloaderMgr.S.alreadyDownloadByte;
+                }
+                return m_AlreadyUpdateFileSize;
+            }
+        }
+
+        public float needUpdateFileSize
+        {
+            get { return m_NeedUpdateFileSize; }
+        }
+
+        public string currentUpdateFile
+        {
+            get
+            {
+                return HttpDownloaderMgr.S.targetFile;
+            }
+        }
+
+        private void InnerStartUpdate(List<ABUnit> updateList)
+        {
+            if (updateList == null || updateList.Count == 0)
+            {
                 return;
             }
 
@@ -105,19 +168,52 @@ namespace PTGame.Framework
 
             m_Loader = ResLoader.Allocate("ResPackageHolder");
 
-            m_UpdateListener = callBack;
-
-            for (int i = 0; i < m_UpdateUnitList.Count; ++i)
+            if (m_UpdateUnitMap == null)
             {
-                string resName = ResUpdateMgr.AssetName2ResName(m_UpdateUnitList[i].abName);
-                m_Loader.Add2Load(resName);
+                m_UpdateUnitMap = new Dictionary<string, ABUnit>();
+            }
+            else
+            {
+                m_UpdateUnitMap.Clear();
+            }
+
+            for (int i = 0; i < updateList.Count; ++i)
+            {
+                string resName = ResUpdateMgr.AssetName2ResName(updateList[i].abName);
+
+                m_UpdateUnitMap.Add(resName, updateList[i]);
+
+                m_Loader.Add2Load(resName, OnResUpdateFinish);
                 HotUpdateRes res = ResMgr.S.GetRes<HotUpdateRes>(resName);
-                string relativePath = m_Package.GetABLocalRelativePath(m_UpdateUnitList[i].abName);
+                string relativePath = m_Package.GetABLocalRelativePath(updateList[i].abName);
                 string fullPath = FilePath.persistentDataPath4Res + relativePath;
                 res.SetUpdateInfo(fullPath, m_Package.GetAssetUrl(relativePath));
             }
 
             m_Loader.LoadAsync(OnPackageUpdateFinish);
+        }
+
+        public void StartUpdate(Action<ResPackageHandler> callBack)
+        {
+            if (m_NeedUpdateFileList == null || m_NeedUpdateFileList.Count == 0)
+            {
+                Log.i("No Update List For Update");
+                callBack(this);
+                return;
+            }
+
+            m_UpdateListener = callBack;
+
+            m_AlreadyUpdateFileCount = 0;
+            m_AlreadyUpdateFileSize = 0;
+            m_NeedUpdateFileSize = 0;
+
+            for (int i = 0; i < m_NeedUpdateFileList.Count; ++i)
+            {
+                m_NeedUpdateFileSize += m_NeedUpdateFileList[i].fileSize;
+            }
+
+            InnerStartUpdate(m_NeedUpdateFileList);
         }
 
         public void DownloadPackage(Action<ResPackageHandler> callback)
@@ -136,7 +232,7 @@ namespace PTGame.Framework
 
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
 
-            string fullPath = FilePath.persistentDownloadCachePath + m_Package.relativeLcalParentFolder + m_Package.zipFileName;
+            string fullPath = FilePath.persistentDownloadCachePath + m_Package.relativeLocalParentFolder + m_Package.zipFileName;
             hotUpdateRes.SetUpdateInfo(fullPath, m_Package.zipUrl);
             if (m_Loader != null)
             {
@@ -146,8 +242,8 @@ namespace PTGame.Framework
 
         public void UnZipPackage(Action<ResPackageHandler> callback)
         {
-            string zipFilePath = FilePath.persistentDownloadCachePath + m_Package.relativeLcalParentFolder + m_Package.zipFileName;
-            string targetFolder = FilePath.persistentDataPath4Res + m_Package.relativeLcalParentFolder;
+            string zipFilePath = FilePath.persistentDownloadCachePath + m_Package.relativeLocalParentFolder + m_Package.zipFileName;
+            string targetFolder = FilePath.persistentDataPath4Res + m_Package.relativeLocalParentFolder;
             
             ZipMgr.S.UnZip(zipFilePath, targetFolder, null, null, null);
         }
@@ -165,26 +261,66 @@ namespace PTGame.Framework
 
         private void OnResUpdateFinish(bool result, IRes res)
         {
+            ABUnit unit = null;
+            if (m_UpdateUnitMap.TryGetValue(res.name, out unit))
+            {
 
+                if (!result)
+                {
+                    Log.e("Update Res Failed:" + res.name);
+                    m_UpdateFailedList.Add(unit);
+                    return;
+                }
+
+                m_AlreadyUpdateFileSize += unit.fileSize;
+                ++m_AlreadyUpdateFileCount;
+
+                m_Record.AddRecord(unit.abName, unit.md5, unit.fileSize, unit.buildTime);
+            }
+        }
+
+        private void OnFailedStartTimeReach(int count)
+        {
+            Log.w("## Try Start Update Failed Res.");
+            InnerStartUpdate(m_UpdateFailedList);
+            m_UpdateFailedList.Clear();
         }
 
         private void OnPackageUpdateFinish()
         {
+            if (m_UpdateFailedList.Count > 0)
+            {
+                ClearLoader();
+                Timer.S.Post2Really(OnFailedStartTimeReach, 0.05f);
+                return;
+            }
+
             m_UpdateResult = false;
+
             if (m_Loader != null)
             {
                 m_UpdateResult = m_Loader.IsAllResLoadSuccess();
 
                 if (m_UpdateResult)
                 {
-                    m_UpdateUnitList.Clear();
-                    m_UpdateUnitList = null;
+                    m_NeedUpdateFileList.Clear();
+                    m_NeedUpdateFileList = null;
+
+                    m_UpdateUnitMap.Clear();
+                    m_UpdateUnitMap = null;
                 }
             }
 
             ClearLoader();
 
             MoveABConfig2Use();
+
+            ResMgr.S.ReloadABTable();
+
+            if (m_Record != null)
+            {
+                m_Record.Delete();
+            }
 
             if (m_UpdateListener != null)
             {
@@ -199,6 +335,12 @@ namespace PTGame.Framework
             {
                 Log.e("Download remote abConfig File Failed.");
                 ClearLoader();
+
+                if (m_CheckListener != null)
+                {
+                    m_CheckListener(this);
+                    m_CheckListener = null;
+                }
                 return;
             }
 
@@ -207,11 +349,22 @@ namespace PTGame.Framework
             if (hotUpdateRes == null)
             {
                 ClearLoader();
+
+                if (m_CheckListener != null)
+                {
+                    m_CheckListener(this);
+                    m_CheckListener = null;
+                }
                 return;
             }
 
-            //所有AB更新完成后需要替换当前的Config文件，启用独立的ResLoader来完成
             ProcessRemoteABConfig(hotUpdateRes);
+
+            if (m_CheckListener != null)
+            {
+                m_CheckListener(this);
+                m_CheckListener = null;
+            }
         }
 
         private void ClearLoader()
@@ -229,15 +382,9 @@ namespace PTGame.Framework
 
             remoteDataTable.LoadPackageFromFile(res.localResPath);
 
-            m_UpdateUnitList = CalculateUpdateList(AssetDataTable.S, remoteDataTable);
+            m_NeedUpdateFileList = ABUnitHelper.CalculateLateList(AssetDataTable.S, remoteDataTable, true);
 
             ClearLoader();
-
-            if (m_CheckListener != null)
-            {
-                m_CheckListener(this);
-                m_CheckListener = null;
-            }
         }
 
 
@@ -275,55 +422,18 @@ namespace PTGame.Framework
             return deleteABList;
         }
 
-        private List<ABUnit> CalculateUpdateList(AssetDataTable local, AssetDataTable remote)
-        {
-            if (remote == null || local == null)
-            {
-                return null;
-            }
-
-            List<ABUnit> remoteABUnitList = remote.GetAllABUnit();
-
-            List<ABUnit> downloadABList = new List<ABUnit>();
-
-            for (int i = remoteABUnitList.Count - 1; i >= 0; --i)
-            {
-                ABUnit remoteUnit = remoteABUnitList[i];
-                ABUnit localABUnit = local.GetABUnit(remoteUnit.abName);
-
-                if (localABUnit == null)
-                {
-                    //更新的新资源
-                    downloadABList.Add(remoteUnit);
-                    continue;
-                }
-
-                if (localABUnit.md5.Equals(remoteUnit.md5))
-                {
-                    continue;
-                }
-
-                if (localABUnit.buildTime < remoteUnit.buildTime)
-                {
-                    downloadABList.Add(remoteUnit);
-                }
-            }
-
-            return downloadABList;
-        }
-
         public void Dump()
         {
-            if (m_UpdateUnitList == null)
+            if (m_NeedUpdateFileList == null)
             {
                 Log.i("Not Need 2 Update");
             }
 
             StringBuilder builder = new StringBuilder();
             builder.Append("#Package:" + m_Package.packageName);
-            for (int i = 0; i < m_UpdateUnitList.Count; ++i)
+            for (int i = 0; i < m_NeedUpdateFileList.Count; ++i)
             {
-                builder.AppendLine("    :" + m_UpdateUnitList[i].ToString());
+                builder.AppendLine("    :" + m_NeedUpdateFileList[i].ToString());
             }
             Log.i(builder.ToString());
         }

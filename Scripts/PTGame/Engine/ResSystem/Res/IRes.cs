@@ -61,6 +61,9 @@ namespace PTGame.Framework
         void RegisteResListener(Action<bool, IRes> listener);
         void UnRegisteResListener(Action<bool, IRes> listener);
 
+        void LoaderRegisteListener(Action<bool, IRes> listener);
+        void LoaderUnRegisteListener(Action<bool, IRes> listener);
+
         bool UnloadImage(bool flag);
 
         bool LoadSync();

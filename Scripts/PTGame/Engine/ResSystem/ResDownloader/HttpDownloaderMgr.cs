@@ -68,6 +68,16 @@ namespace PTGame.Framework
         // 在等待是否下载和退出
         bool m_IsWaitDownloadOrExit;
 
+        public int alreadyDownloadByte
+        {
+            get { return m_CurrentDownloadByte; }
+        }
+
+        public string targetFile
+        {
+            get { return m_SaveFile; }
+        }
+
         // 添加下载任务，目前只支持一个任务同时进行
         public bool AddDownloadTask(string uri, string localPath, OnDownloadProgress onProgress, OnDownloadError onError, OnDownloadFinished onFinshed, OnDownloadBegin onBegin = null)
         {
@@ -330,7 +340,7 @@ namespace PTGame.Framework
             }
             catch (Exception exception)
             {
-                HandleError(exception.Message);
+                HandleError("#OnResponeCallback" + exception.Message);
                 return;
             }
 
@@ -373,7 +383,7 @@ namespace PTGame.Framework
             }
             catch (Exception exception)
             {
-                HandleError(exception.Message);
+                HandleError("#ReadData:" + exception.Message);
             }
         }
 
@@ -437,7 +447,7 @@ namespace PTGame.Framework
             }
             catch (Exception exception)
             {
-                HandleError(exception.Message);
+                HandleError("#OnReadCallback:" + exception.Message);
             }
         }
 
@@ -510,7 +520,7 @@ namespace PTGame.Framework
             }
             catch (Exception ex)
             {
-                HandleError(ex.Message);
+                HandleError("#StartHttpWebRequest:" + ex.Message);
                 return;
             }
         }

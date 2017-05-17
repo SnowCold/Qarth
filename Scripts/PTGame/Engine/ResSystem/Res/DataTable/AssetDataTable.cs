@@ -7,12 +7,16 @@ using System.Text;
 
 namespace PTGame.Framework
 {
-
     public class AssetDataTable : TSingleton<AssetDataTable>
     {
 
         private List<AssetDataPackage> m_ActiveAssetDataPackages = new List<AssetDataPackage>();
         private List<AssetDataPackage> m_AllAssetDataPackages = new List<AssetDataPackage>();
+
+        public List<AssetDataPackage> allAssetDataPackages
+        {
+            get { return m_AllAssetDataPackages; }
+        }
 
         public void SwitchLanguage(string key)
         {
@@ -211,11 +215,13 @@ namespace PTGame.Framework
 
             string key = package.key;
 
+
             for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
             {
                 if (m_AllAssetDataPackages[i].key.Equals(key))
                 {
                     var oldConfig = m_AllAssetDataPackages[i];
+                    
                     if (oldConfig.buildTime > package.buildTime)
                     {
                         return;
@@ -225,10 +231,24 @@ namespace PTGame.Framework
                         m_AllAssetDataPackages.RemoveAt(i);
                         break;
                     }
+                    
                 }
             }
 
             m_AllAssetDataPackages.Add(package);
+        }
+
+        public AssetDataPackage GetAssetDataPackage(string key)
+        {
+            for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
+            {
+                if (m_AllAssetDataPackages[i].key.Equals(key))
+                {
+                    return m_AllAssetDataPackages[i];
+                }
+            }
+
+            return null;
         }
 
         public void Save(string outFolder)
@@ -256,19 +276,6 @@ namespace PTGame.Framework
         private AssetDataPackage BuildAssetDataPackage(AssetDataPackage.SerializeData data, string path)
         {
             return new AssetDataPackage(data, path);
-        }
-
-        private AssetDataPackage GetAssetDataPackage(string key)
-        {
-            for (int i = m_AllAssetDataPackages.Count - 1; i >= 0; --i)
-            {
-                if (m_AllAssetDataPackages[i].key.Equals(key))
-                {
-                    return m_AllAssetDataPackages[i];
-                }
-            }
-
-            return null;
         }
 
         private void GetPackageKeyFromABName(string name, out string key, out string path)

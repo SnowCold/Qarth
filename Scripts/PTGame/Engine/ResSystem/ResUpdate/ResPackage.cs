@@ -25,7 +25,7 @@ namespace PTGame.Framework
         //本地config的相对路径
         public string configFile
         {
-            get { return string.Format("{0}{1}/{2}", ProjectPathConfig.abRelativePath ,m_PackageName, ProjectPathConfig.abConfigfileName); }
+            get { return string.Format("{0}{1}/{2}", ProjectPathConfig.abRelativePath, m_PackageName, ProjectPathConfig.abConfigfileName); }
         }
 
         //资源包整包下载zip地址
@@ -51,12 +51,20 @@ namespace PTGame.Framework
         }
 
         //资源包在本地的文件路径
-        public string relativeLcalParentFolder
+        public string relativeLocalParentFolder
         {
             get
             {
                 string parentFolder = m_PackageName.Substring(0, m_PackageName.LastIndexOf('/') + 1);
                 return ProjectPathConfig.abRelativePath + parentFolder;
+            }
+        }
+
+        public string relativeLocalPackageFolder
+        {
+            get
+            {
+                return ProjectPathConfig.abRelativePath + m_PackageName;
             }
         }
 

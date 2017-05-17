@@ -277,7 +277,7 @@ namespace PTGame.Framework
 
             if (m_ResArray.Remove(res))
             {
-                res.UnRegisteResListener(OnResLoadFinish);
+                res.LoaderUnRegisteListener(OnResLoadFinish);
                 res.SubRef();
                 ResMgr.S.SetResMapDirty();
             }
@@ -309,7 +309,7 @@ namespace PTGame.Framework
 
                 for (int i = m_ResArray.Count - 1; i >= 0; --i)
                 {
-                    m_ResArray[i].UnRegisteResListener(OnResLoadFinish);
+                    m_ResArray[i].LoaderUnRegisteListener(OnResLoadFinish);
                     m_ResArray[i].SubRef();
                 }
 
@@ -335,7 +335,7 @@ namespace PTGame.Framework
 
                         RemoveCallback(m_ResArray[i], true);
 
-                        m_ResArray[i].UnRegisteResListener(OnResLoadFinish);
+                        m_ResArray[i].LoaderUnRegisteListener(OnResLoadFinish);
                         m_ResArray[i].SubRef();
                         m_ResArray.RemoveAt(i);
                     }
@@ -408,7 +408,7 @@ namespace PTGame.Framework
 
                     if (res.resState != eResState.kReady)
                     {
-                        res.RegisteResListener(OnResLoadFinish);
+                        res.LoaderRegisteListener(OnResLoadFinish);
                         res.LoadAsync();
                     }
                     else
@@ -463,7 +463,7 @@ namespace PTGame.Framework
             --m_LoadingCount;
 
             res.AcceptLoaderStrategyAsync(this, m_Strategy);
-            DoLoadAsync();
+
             if (m_LoadingCount == 0)
             {
                 RemoveAllCallbacks(false);
@@ -477,6 +477,10 @@ namespace PTGame.Framework
                 }
 
                 m_Strategy.OnAllTaskFinish(this);
+            }
+            else
+            {
+                DoLoadAsync();
             }
         }
 

@@ -13,7 +13,7 @@ namespace PTGame.Framework
         private bool                        m_CacheFlag = false;
         protected UnityEngine.Object        m_Asset;
         private event Action<bool, IRes>    m_ResListener;
-
+        private event Action<bool, IRes>    m_LoaderListener;
         public string name
         {
             get { return m_Name; }
@@ -106,6 +106,22 @@ namespace PTGame.Framework
             m_ResListener += listener;
         }
 
+        public void LoaderRegisteListener(Action<bool, IRes> listener)
+        {
+            if (listener == null)
+            {
+                return;
+            }
+
+            if (m_ResState == eResState.kReady)
+            {
+                listener(true, this);
+                return;
+            }
+
+            m_LoaderListener += listener;
+        }
+
         public void UnRegisteResListener(Action<bool, IRes> listener)
         {
             if (listener == null)
@@ -121,6 +137,21 @@ namespace PTGame.Framework
             m_ResListener -= listener;
         }
 
+        public void LoaderUnRegisteListener(Action<bool, IRes> listener)
+        {
+            if (listener == null)
+            {
+                return;
+            }
+
+            if (m_LoaderListener == null)
+            {
+                return;
+            }
+
+            m_LoaderListener -= listener;
+        }
+
         protected void OnResLoadFaild()
         {
             m_ResState = eResState.kWaiting;
@@ -133,6 +164,12 @@ namespace PTGame.Framework
             {
                 m_ResListener(result, this);
                 m_ResListener = null;
+            }
+
+            if (m_LoaderListener != null)
+            {
+                m_LoaderListener(result, this);
+                m_LoaderListener = null;
             }
         }
 

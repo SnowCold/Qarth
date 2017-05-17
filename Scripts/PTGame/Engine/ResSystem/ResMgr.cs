@@ -10,7 +10,9 @@ namespace PTGame.Framework
     [TMonoSingletonAttribute("[Tools]/ResMgr")]
     public class ResMgr : TMonoSingleton<ResMgr>, IEnumeratorTaskMgr
     {
-        private const string INNER_RES_BUILDTIME = "res_version";
+        private const string INNER_RES_BUILDTIME = "eirv_1988520905";
+        private const string INNER_RES_PACKAGE = "eirp_1988520905";
+
 #region 字段
         private Dictionary<string, IRes>    m_ResDictionary = new Dictionary<string, IRes>();
         private List<IRes>                  m_ResList = new List<IRes>();
@@ -68,7 +70,7 @@ namespace PTGame.Framework
                 AssetDataTable.S.LoadPackageFromFile(outResult[i]);
             }
 
-            CheckAppVersion();
+            ProcessNewInstall();
 
             //然后加载外存中的，如果存在同名Package则直接替换
             outResult.Clear();
@@ -82,10 +84,82 @@ namespace PTGame.Framework
             AssetDataTable.S.SwitchLanguage("cn");
         }
 
-        //检测当前版本是否是新装版本,如果安装了新版本，则需要对比内外部资源
-        private void CheckAppVersion()
+        private void ProcessNewInstall()
         {
-            //float buildTime = PlayerPrefs.GetFloat(INNER_RES_BUILDTIME);
+            bool isNewInstall = CheckIsNewInstall();
+            Log.i("Check Is New Install:" + isNewInstall);
+
+            if (isNewInstall)
+            {
+                //对比外部文件
+                List<string> outResult = new List<string>();
+                FilePath.GetFileInFolder(FilePath.persistentDataPath4Res, ProjectPathConfig.abConfigfileName, outResult);
+
+                AssetDataTable exterTable = new AssetDataTable();
+                for (int i = 0; i < outResult.Count; ++i)
+                {
+                    exterTable.LoadPackageFromFile(outResult[i]);
+                }
+
+                //生成差异文件列表:
+                List<ABUnit> needDeleteList = ABUnitHelper.CalculateLateList(exterTable, AssetDataTable.S, false);
+
+                for (int i = 0; i < needDeleteList.Count; ++i)
+                {
+                    ABUnit unit = needDeleteList[i];
+                    string exterFilePath = ProjectPathConfig.AssetBundleName2ExterUrl(unit.abName);
+                    if (File.Exists(exterFilePath))
+                    {
+                        File.Delete(exterFilePath);
+                    }
+                }
+
+                var packages = AssetDataTable.S.allAssetDataPackages;
+                if (packages.Count > 0)
+                {
+                    var package = packages[0];
+                    PlayerPrefs.SetString(INNER_RES_PACKAGE, package.key);
+                    PlayerPrefs.SetInt(INNER_RES_BUILDTIME, (int)package.buildTime);
+                    PlayerPrefs.Save();
+                }
+            }
+        }
+
+        //检测当前版本是否是新装版本,如果安装了新版本，则需要对比内外部资源
+        //使用默认assetpackage的创建时间来
+        private bool CheckIsNewInstall()
+        {
+            string defaultPackage = PlayerPrefs.GetString(INNER_RES_PACKAGE, "");
+
+            bool isNewPackage = false;
+            if (string.IsNullOrEmpty(defaultPackage))
+            {
+                //重来没装过，或者卸载过，那么此时一定是新装版本
+                isNewPackage = true;
+            }
+            else
+            {
+                int buildTime = PlayerPrefs.GetInt(INNER_RES_BUILDTIME);
+
+                AssetDataPackage package = AssetDataTable.S.GetAssetDataPackage(defaultPackage);
+                if (package == null)
+                {
+                    //新包连这个package都没了，那么一定重新装过
+                    isNewPackage = true;
+                }
+                else
+                {
+                    int pBuildTime = (int)package.buildTime;
+                    int offset = pBuildTime - buildTime;
+
+                    if (offset < -1 || offset > 1)
+                    {
+                        isNewPackage = true;
+                    }
+                }
+            }
+
+            return isNewPackage;
         }
 
         public void InitResMgr()

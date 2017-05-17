@@ -188,7 +188,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            Log.i("ResDownloader: Downloading Success:" + fileName);
+            //Log.i("ResDownloader: Downloading Success:" + fileName);
             RemoveTask(m_DownloadingTask);
 
             m_DownloadingTask.OnDownLoadResult(true);
