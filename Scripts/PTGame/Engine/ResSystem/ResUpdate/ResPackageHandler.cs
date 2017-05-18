@@ -20,6 +20,14 @@ namespace PTGame.Framework
         private Action<ResPackageHandler> m_UpdateListener;
         private ResUpdateRecord m_Record;
         private List<ABUnit> m_UpdateFailedList = new List<ABUnit>();
+        private float m_NeedUpdateFileSize = -1;
+        private float m_AlreadyUpdateFileSize;
+        private int m_AlreadyUpdateFileCount;
+
+        public static string AssetName2ResName(string assetName)
+        {
+            return string.Format("HotUpdateRes:{0}", assetName);
+        }
 
         public bool updateResult
         {
@@ -44,6 +52,62 @@ namespace PTGame.Framework
             }
         }
 
+        public int needUpdateFileCount
+        {
+            get
+            {
+                if (m_NeedUpdateFileList == null)
+                {
+                    return 0;
+                }
+
+                return m_NeedUpdateFileList.Count;
+            }
+        }
+
+        public int alreadyUpdateFileCount
+        {
+            get { return m_AlreadyUpdateFileCount; }
+        }
+
+        public float alreadyUpdateFileSize
+        {
+            get
+            {
+                if (alreadyUpdateFileCount < needUpdateFileCount)
+                {
+                    return m_AlreadyUpdateFileSize + WWWDownloader.S.alreadyDownloadByte;
+                }
+                return m_AlreadyUpdateFileSize;
+            }
+        }
+
+        public float needUpdateFileSize
+        {
+            get
+            {
+                if (m_NeedUpdateFileSize < 0)
+                {
+                    m_NeedUpdateFileSize = 0;
+
+                    for (int i = 0; i < m_NeedUpdateFileList.Count; ++i)
+                    {
+                        m_NeedUpdateFileSize += m_NeedUpdateFileList[i].fileSize;
+                    }
+                }
+
+                return m_NeedUpdateFileSize;
+            }
+        }
+
+        public string currentUpdateFile
+        {
+            get
+            {
+                return WWWDownloader.S.targetFile;
+            }
+        }
+
         public ResPackageHandler(ResPackage package)
         {
             m_Package = package;
@@ -62,7 +126,7 @@ namespace PTGame.Framework
             m_Loader = ResLoader.Allocate("ResPackageHolder");
 
             m_CheckListener = callBack;
-            string resName = ResUpdateMgr.AssetName2ResName(m_Package.configFile);
+            string resName = AssetName2ResName(m_Package.configFile);
             m_Loader.Add2Load(resName, OnRemoteABConfigDownloadFinish);
 
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
@@ -106,53 +170,6 @@ namespace PTGame.Framework
             File.Move(sourceFile, destFile);
         }
 
-        private float m_NeedUpdateFileSize;
-        private float m_AlreadyUpdateFileSize;
-        private int m_AlreadyUpdateFileCount;
-
-        public int needUpdateFileCount
-        {
-            get
-            {
-                if (m_NeedUpdateFileList == null)
-                {
-                    return 0;
-                }
-
-                return m_NeedUpdateFileList.Count;
-            }
-        }
-
-        public int alreadyUpdateFileCount
-        {
-            get { return m_AlreadyUpdateFileCount; }
-        }
-
-        public float alreadyUpdateFileSize
-        {
-            get
-            {
-                if (alreadyUpdateFileCount < needUpdateFileCount)
-                {
-                    return m_AlreadyUpdateFileSize + HttpDownloaderMgr.S.alreadyDownloadByte;
-                }
-                return m_AlreadyUpdateFileSize;
-            }
-        }
-
-        public float needUpdateFileSize
-        {
-            get { return m_NeedUpdateFileSize; }
-        }
-
-        public string currentUpdateFile
-        {
-            get
-            {
-                return HttpDownloaderMgr.S.targetFile;
-            }
-        }
-
         private void InnerStartUpdate(List<ABUnit> updateList)
         {
             if (updateList == null || updateList.Count == 0)
@@ -179,7 +196,7 @@ namespace PTGame.Framework
 
             for (int i = 0; i < updateList.Count; ++i)
             {
-                string resName = ResUpdateMgr.AssetName2ResName(updateList[i].abName);
+                string resName = AssetName2ResName(updateList[i].abName);
 
                 m_UpdateUnitMap.Add(resName, updateList[i]);
 
@@ -206,12 +223,7 @@ namespace PTGame.Framework
 
             m_AlreadyUpdateFileCount = 0;
             m_AlreadyUpdateFileSize = 0;
-            m_NeedUpdateFileSize = 0;
-
-            for (int i = 0; i < m_NeedUpdateFileList.Count; ++i)
-            {
-                m_NeedUpdateFileSize += m_NeedUpdateFileList[i].fileSize;
-            }
+            m_NeedUpdateFileSize = -1;
 
             InnerStartUpdate(m_NeedUpdateFileList);
         }
@@ -227,7 +239,7 @@ namespace PTGame.Framework
             m_Loader = ResLoader.Allocate("ResPackageHolder");
 
             m_DownloadListener = callback;
-            string resName = ResUpdateMgr.AssetName2ResName(m_Package.packageName);
+            string resName = AssetName2ResName(m_Package.packageName);
             m_Loader.Add2Load(resName, OnPackageDownloadFinish);
 
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
@@ -291,7 +303,9 @@ namespace PTGame.Framework
             if (m_UpdateFailedList.Count > 0)
             {
                 ClearLoader();
-                Timer.S.Post2Really(OnFailedStartTimeReach, 0.05f);
+                Log.w("## Try Start Update Failed Res.");
+                InnerStartUpdate(m_UpdateFailedList);
+                m_UpdateFailedList.Clear();
                 return;
             }
 
@@ -314,8 +328,6 @@ namespace PTGame.Framework
             ClearLoader();
 
             MoveABConfig2Use();
-
-            ResMgr.S.ReloadABTable();
 
             if (m_Record != null)
             {
@@ -380,13 +392,35 @@ namespace PTGame.Framework
         {
             AssetDataTable remoteDataTable = new AssetDataTable();
 
-            remoteDataTable.LoadPackageFromFile(res.localResPath);
-
+            try
+            {
+                remoteDataTable.LoadPackageFromFile(res.localResPath);
+            }
+            catch (Exception e)
+            {
+                Log.e(e);
+            }
             m_NeedUpdateFileList = ABUnitHelper.CalculateLateList(AssetDataTable.S, remoteDataTable, true);
+
+            if (m_Package.updateBlackList != null)
+            {
+                var list = m_Package.updateBlackList;
+
+                for (int i = 0; i < list.Count; ++i)
+                {
+                    for (int j = m_NeedUpdateFileList.Count - 1; j >= 0; --j)
+                    {
+                        if (m_NeedUpdateFileList[j].abName.Equals(list[i]))
+                        {
+                            m_NeedUpdateFileList.RemoveAt(j);
+                            break;
+                        }
+                    }
+                }
+            }
 
             ClearLoader();
         }
-
 
         private List<ABUnit> CalculateDeleteList(AssetDataTable local, AssetDataTable remote)
         {

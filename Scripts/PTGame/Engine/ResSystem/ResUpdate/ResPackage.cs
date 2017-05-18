@@ -9,13 +9,15 @@ namespace PTGame.Framework
     {
         //上层直接和ResPackage交互
         private string m_PackageName;
+        private string m_RelativePath;
         private string m_ZipFileName;
+        private List<string> m_UpdateBlackList;
 
-        public ResPackage(string packageName)
+        public ResPackage(string packageName, string relativePath)
         {
             m_PackageName = packageName;
+            m_RelativePath = relativePath;
         }
-
 
         public string packageName
         {
@@ -25,7 +27,7 @@ namespace PTGame.Framework
         //本地config的相对路径
         public string configFile
         {
-            get { return string.Format("{0}{1}/{2}", ProjectPathConfig.abRelativePath, m_PackageName, ProjectPathConfig.abConfigfileName); }
+            get { return string.Format("{0}{1}/{2}", m_RelativePath, m_PackageName, ProjectPathConfig.abConfigfileName); }
         }
 
         //资源包整包下载zip地址
@@ -33,7 +35,7 @@ namespace PTGame.Framework
         {
             get
             {
-                return string.Format("http://localhost:8080/ptupdate/pailogic/zip/{0}", zipFileName);
+                return ResUpdateConfig.ZIP_WEB_URL + zipFileName;
             }
         }
 
@@ -56,7 +58,7 @@ namespace PTGame.Framework
             get
             {
                 string parentFolder = m_PackageName.Substring(0, m_PackageName.LastIndexOf('/') + 1);
-                return ProjectPathConfig.abRelativePath + parentFolder;
+                return m_RelativePath + parentFolder;
             }
         }
 
@@ -64,18 +66,31 @@ namespace PTGame.Framework
         {
             get
             {
-                return ProjectPathConfig.abRelativePath + m_PackageName;
+                return m_RelativePath + m_PackageName;
             }
         }
 
         public string GetABLocalRelativePath(string abName)
         {
-            return string.Format("{0}{1}", ProjectPathConfig.abRelativePath, abName);
+            return string.Format("{0}{1}", m_RelativePath, abName);
         }
 
         public string GetAssetUrl(string assetName)
         {
-            return string.Format("http://localhost:8080/ptupdate/pailogic/res/new/{0}", assetName);
+            return ResUpdateConfig.RES_WEB_URL + assetName;
+        }
+
+        public List<string> updateBlackList
+        {
+            get
+            {
+                return m_UpdateBlackList;
+            }
+
+            set
+            {
+                m_UpdateBlackList = value;
+            }
         }
     }
 }

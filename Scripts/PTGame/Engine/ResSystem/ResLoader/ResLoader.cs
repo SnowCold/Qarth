@@ -388,8 +388,9 @@ namespace PTGame.Framework
                 //ResMgr.S.timeDebugger.Dump(-1);
                 if (m_Listener != null)
                 {
-                    m_Listener();
+                    Action callback = m_Listener;
                     m_Listener = null;
+                    callback();
                 }
 
                 return;
@@ -470,13 +471,14 @@ namespace PTGame.Framework
 
                 //ResMgr.S.timeDebugger.End();
                 //ResMgr.S.timeDebugger.Dump(-1);
+                m_Strategy.OnAllTaskFinish(this);
+
                 if (m_Listener != null)
                 {
-                    m_Listener();
+                    Action callback = m_Listener;
                     m_Listener = null;
+                    callback();
                 }
-
-                m_Strategy.OnAllTaskFinish(this);
             }
             else
             {

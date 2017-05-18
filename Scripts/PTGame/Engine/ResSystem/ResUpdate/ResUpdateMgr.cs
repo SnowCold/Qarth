@@ -1,80 +1,269 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace PTGame.Framework
 {
     public class ResUpdateMgr : TSingleton<ResUpdateMgr>
     {
-        protected Action m_CheckListener;
-        protected Dictionary<string, ResPackageHandler> m_PackageMap = new Dictionary<string, ResPackageHandler>();
+        public const int RES_UPDATE_EVENT_FINISH = 1;
 
-        public override void OnSingletonInit()
+        private class ResPackageWrap
         {
+            private ResPackage m_Package;
+            private Action<ResPackage, int> m_Listener;
+            private ResPackageHandler m_Handler;
 
-        }
-
-        public static string AssetName2ResName(string assetName)
-        {
-            return string.Format("HotUpdateRes:{0}", assetName);
-        }
-
-        public bool IsPackageNeedUpdate(string packageName)
-        {
-            if (m_PackageMap == null)
+            public ResPackageWrap(ResPackage package, Action<ResPackage, int> l)
             {
-                return false;
+                m_Package = package;
+                m_Listener = l;
             }
 
-            if (!m_PackageMap.ContainsKey(packageName))
+            public ResPackageHandler handler
             {
-                return false;
+                get
+                {
+                    if (m_Handler == null)
+                    {
+                        m_Handler = new ResPackageHandler(m_Package);
+                    }
+
+                    return m_Handler;
+                }
             }
 
-            return m_PackageMap[packageName].needUpdate;
+            public void FireEvent(int eventID)
+            {
+                if (m_Listener == null)
+                {
+                    return;
+                }
+
+                m_Listener(m_Package, eventID);
+            }
         }
 
-        public void CheckPackage(ResPackage package, Action<ResPackageHandler> checkCallback)
-        {
-            ResPackageHandler handler = new ResPackageHandler(package);
+        private List<ResPackageWrap> m_UpdatePackageList;
+        private Action<bool> m_OnCheckUpdateListener;
+        private Action<bool> m_OnUpdateListener;
+        private int m_CheckFinishCount = 0;
+        private int m_UpdateIndex = -1;
+        private bool m_IsUpdateing = false;
 
-            if (m_PackageMap.ContainsKey(package.packageName))
+        public bool isUpdateing
+        {
+            get { return m_IsUpdateing; }
+        }
+
+        public void Clear()
+        {
+            if (m_UpdatePackageList != null)
             {
-                m_PackageMap.Remove(package.packageName);
+                m_UpdatePackageList.Clear();
             }
 
-            m_PackageMap.Add(package.packageName, handler);
-
-            handler.CheckUpdateList(checkCallback);
+            m_OnCheckUpdateListener = null;
+            m_OnUpdateListener = null;
         }
 
-        //下载资源zip包:完成后解压
-        public void DownloadPackage(string packageName, Action<ResPackageHandler> downloadCallback)
+        public ResPackageHandler currentUpdateHandler
         {
-            ResPackageHandler handler = m_PackageMap[packageName];
+            get
+            {
+                if (!m_IsUpdateing)
+                {
+                    return null;
+                }
 
-            handler.DownloadPackage(downloadCallback);
+                if (m_UpdateIndex < 0 || m_UpdateIndex >= m_UpdatePackageList.Count)
+                {
+                    return null;
+                }
+
+                return m_UpdatePackageList[m_UpdateIndex].handler;
+            }
         }
 
-        public void StartUpdatePackage(string packageName, Action<ResPackageHandler> updateListener)
+        public float needUpdateFileSize
         {
-            if (!IsPackageNeedUpdate(packageName))
+            get
+            {
+                if (m_UpdatePackageList == null || m_UpdatePackageList.Count == 0)
+                {
+                    return 0;
+                }
+
+                float size = 0;
+                for (int i = 0; i < m_UpdatePackageList.Count; ++i)
+                {
+                    size += m_UpdatePackageList[i].handler.needUpdateFileSize;
+                }
+                return size;
+            }
+        }
+
+        public float alreadyUpdateFileSize
+        {
+            get
+            {
+                if (m_UpdatePackageList == null || m_UpdatePackageList.Count == 0)
+                {
+                    return 0;
+                }
+
+                float size = 0;
+                for (int i = 0; i < m_UpdatePackageList.Count; ++i)
+                {
+                    size += m_UpdatePackageList[i].handler.alreadyUpdateFileSize;
+                }
+                return size;
+            }
+        }
+
+        public void AddPackage(ResPackage package, Action<ResPackage, int> l)
+        {
+            if (package == null)
             {
                 return;
             }
 
-            ResPackageHandler handler = m_PackageMap[packageName];
+            if (m_UpdatePackageList == null)
+            {
+                m_UpdatePackageList = new List<ResPackageWrap>();
+            }
 
-            handler.StartUpdate(updateListener);
+            m_UpdatePackageList.Add(new ResPackageWrap(package, l));
         }
 
-        private void OnAllRemoteConfigFileReady()
+        public void CheckUpdate(Action<bool> checkResultListener)
         {
-            if (m_CheckListener != null)
+            if (m_IsUpdateing)
             {
-                m_CheckListener();
+                return;
+            }
+
+            m_IsUpdateing = true;
+            m_OnCheckUpdateListener = checkResultListener;
+
+            if (m_UpdatePackageList == null || m_UpdatePackageList.Count == 0)
+            {
+                FireCheckUpdateEvent();
+                return;
+            }
+
+            m_CheckFinishCount = 0;
+
+            for (int i = 0; i < m_UpdatePackageList.Count; ++i)
+            {
+                m_UpdatePackageList[i].handler.CheckUpdateList(OnPackageUpdateCheckResult);
             }
         }
+
+        public void StartUpdate(Action<bool> updateResultListener)
+        {
+            if (m_IsUpdateing)
+            {
+                return;
+            }
+
+            m_IsUpdateing = true;
+            m_OnUpdateListener = updateResultListener;
+
+            if (!needUpdate)
+            {
+                FireUpdateEvent();
+                return;
+            }
+
+            m_UpdateIndex = -1;
+
+            TryStartNextUpdate();
+        }
+
+        private void TryStartNextUpdate()
+        {
+            if (m_UpdatePackageList == null || m_UpdatePackageList.Count == 0)
+            {
+                FireUpdateEvent();
+                return;
+            }
+
+            while(++m_UpdateIndex < m_UpdatePackageList.Count)
+            {
+                ResPackageWrap wrap = m_UpdatePackageList[m_UpdateIndex];
+                if (!wrap.handler.needUpdate)
+                {
+                    continue;
+                }
+
+                wrap.handler.StartUpdate(OnPackageUpdateResult);
+                break;
+            }
+
+            if (m_UpdateIndex >= m_UpdatePackageList.Count)
+            {
+                FireUpdateEvent();
+            }
+        }
+
+        public bool needUpdate
+        {
+            get
+            {
+                if (m_UpdatePackageList == null || m_UpdatePackageList.Count == 0)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < m_UpdatePackageList.Count; ++i)
+                {
+                    if (m_UpdatePackageList[i].handler.needUpdate)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        private void OnPackageUpdateCheckResult(ResPackageHandler handler)
+        {
+            ++m_CheckFinishCount;
+            if (m_CheckFinishCount == m_UpdatePackageList.Count)
+            {
+                FireCheckUpdateEvent();
+            }
+        }
+
+        private void OnPackageUpdateResult(ResPackageHandler handler)
+        {
+            ResPackageWrap wrap = m_UpdatePackageList[m_UpdateIndex];
+            wrap.FireEvent(RES_UPDATE_EVENT_FINISH);
+            TryStartNextUpdate();
+        }
+
+        private void FireCheckUpdateEvent()
+        {
+            m_IsUpdateing = false;
+            if (m_OnCheckUpdateListener != null)
+            {
+                m_OnCheckUpdateListener(needUpdate);
+                m_OnCheckUpdateListener = null;
+            }
+        }
+
+        private void FireUpdateEvent()
+        {
+            m_IsUpdateing = false;
+            if (m_OnUpdateListener != null)
+            {
+                m_OnUpdateListener(!needUpdate);
+                m_OnUpdateListener = null;
+            }
+        }
+
     }
 }

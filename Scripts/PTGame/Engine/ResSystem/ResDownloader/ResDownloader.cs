@@ -48,7 +48,7 @@ namespace PTGame.Framework
         }
 
         public void AddDownloadTask(IDownloadTask res)
-        {
+        {            
             if (res == null)
             {
                 return;
@@ -113,17 +113,20 @@ namespace PTGame.Framework
         {
             if (m_DownloadingTask != null)
             {
+                WWWDownloader.S.Clear();
                 return;
             }
 
             if (m_WaitDownloadList.Count == 0)
             {
+                WWWDownloader.S.Clear();
                 return;
             }
 
             IDownloadTask next = PopNextTask();
             if (next == null)
             {
+                WWWDownloader.S.Clear();
                 return;
             }
 
@@ -131,7 +134,8 @@ namespace PTGame.Framework
 
             m_DownloadingTask = next;
 
-            HttpDownloaderMgr.S.AddDownloadTask(next.url, next.localResPath, OnDownloadProgress, OnDownloadError, OnDownloadFinish, null);
+            //HttpDownloaderMgr.S.AddDownloadTask(next.url, next.localResPath, OnDownloadProgress, OnDownloadError, OnDownloadFinish, null);
+            WWWDownloader.S.AddDownloadTask(next.url, next.localResPath, OnDownloadProgress, OnDownloadError, OnDownloadFinish, null);
 
             next.DeleteOldResFile();
         }

@@ -8,11 +8,6 @@ using System.Threading;
 
 namespace PTGame.Framework
 {
-    public delegate void OnDownloadFinished(string fileName, int download, int totalFileLenght);
-    public delegate void OnDownloadError(string errorMsg);
-    public delegate void OnDownloadProgress(int download, int totalFileLenght);
-    public delegate void OnDownloadBegin(int totalLength);
-
     //http下载管理器
     [TMonoSingletonAttribute("[Singleton]/HttpDownloader")]
     public class HttpDownloaderMgr : TMonoSingleton<HttpDownloaderMgr>

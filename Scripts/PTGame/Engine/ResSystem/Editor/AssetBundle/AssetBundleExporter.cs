@@ -389,8 +389,9 @@ namespace PTGame.Framework.Editor
 
                 if (AssetFileFilter.IsConfigTable(info.FullName))
                 {
-                    string md5 = GetMD5HashFromFile(info.FullName);
-                    table.AddAssetBundleName(ProjectPathConfig.tableFolder + info.Name, null, md5, (int)info.Length, info.LastWriteTime.Ticks, out group);
+                    string md5 = "asdsada";// GetMD5HashFromFile(info.FullName);
+                    long buildTime = 10000;// info.LastWriteTime.Ticks;
+                    table.AddAssetBundleName(ProjectPathConfig.tableFolder + info.Name, null, md5, (int)info.Length, buildTime, out group);
                 }
             }
 
@@ -416,13 +417,14 @@ namespace PTGame.Framework.Editor
                 {
                     string abPath = Application.dataPath + "/" + ProjectPathConfig.exportRootFolder + abNames[i];
 
-                    string md5 = GetMD5HashFromFile(abPath);
-
                     string[] depends = AssetDatabase.GetAssetBundleDependencies(abNames[i], false);
 
                     FileInfo info = new FileInfo(abPath);
 
-                    abIndex = table.AddAssetBundleName(abNames[i], depends, md5, (int)info.Length, info.LastWriteTime.Ticks, out group);
+                    string md5 = "asdasd";// GetMD5HashFromFile(abPath);
+                    long buildTime = 10000;//info.LastWriteTime.Ticks;
+
+                    abIndex = table.AddAssetBundleName(abNames[i], depends, md5, (int)info.Length, buildTime, out group);
                     if (abIndex < 0)
                     {
                         continue;
