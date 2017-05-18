@@ -12,6 +12,6 @@ namespace PTGame.Framework
 
     public interface IHttpDownloader
     {
-        bool AddDownloadTask(string uri, string localPath, OnDownloadProgress onProgress, OnDownloadError onError, OnDownloadFinished onFinshed, OnDownloadBegin onBegin = null);
+        bool AddDownloadTask(string uri, string localPath, int fileSize, OnDownloadProgress onProgress, OnDownloadError onError, OnDownloadFinished onFinshed, OnDownloadBegin onBegin = null);
     }
 }

@@ -58,6 +58,14 @@ namespace PTGame.Framework
             }
         }
 
+        public int fileSize
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
         public void SetUrl(string url)
         {
             if (string.IsNullOrEmpty(url))

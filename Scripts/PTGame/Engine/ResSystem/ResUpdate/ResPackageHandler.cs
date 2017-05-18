@@ -76,7 +76,7 @@ namespace PTGame.Framework
             {
                 if (alreadyUpdateFileCount < needUpdateFileCount)
                 {
-                    return m_AlreadyUpdateFileSize + WWWDownloader.S.alreadyDownloadByte;
+                    return m_AlreadyUpdateFileSize + WWWDownloader.S.alreadyDownloadSize;
                 }
                 return m_AlreadyUpdateFileSize;
             }
@@ -86,6 +86,11 @@ namespace PTGame.Framework
         {
             get
             {
+                if (m_NeedUpdateFileList == null || m_NeedUpdateFileList.Count == 0)
+                {
+                    return 0;
+                }
+
                 if (m_NeedUpdateFileSize < 0)
                 {
                     m_NeedUpdateFileSize = 0;
@@ -132,7 +137,7 @@ namespace PTGame.Framework
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
 
             string fullPath = FilePath.persistentDownloadCachePath + m_Package.configFile;
-            hotUpdateRes.SetUpdateInfo(fullPath, m_Package.GetAssetUrl(m_Package.configFile));
+            hotUpdateRes.SetUpdateInfo(fullPath, m_Package.GetAssetUrl(m_Package.configFile), 1000);
 
             if (m_Loader != null)
             {
@@ -204,7 +209,7 @@ namespace PTGame.Framework
                 HotUpdateRes res = ResMgr.S.GetRes<HotUpdateRes>(resName);
                 string relativePath = m_Package.GetABLocalRelativePath(updateList[i].abName);
                 string fullPath = FilePath.persistentDataPath4Res + relativePath;
-                res.SetUpdateInfo(fullPath, m_Package.GetAssetUrl(relativePath));
+                res.SetUpdateInfo(fullPath, m_Package.GetAssetUrl(relativePath), updateList[i].fileSize);
             }
 
             m_Loader.LoadAsync(OnPackageUpdateFinish);
@@ -245,7 +250,7 @@ namespace PTGame.Framework
             HotUpdateRes hotUpdateRes = ResMgr.S.GetRes<HotUpdateRes>(resName);
 
             string fullPath = FilePath.persistentDownloadCachePath + m_Package.relativeLocalParentFolder + m_Package.zipFileName;
-            hotUpdateRes.SetUpdateInfo(fullPath, m_Package.zipUrl);
+            hotUpdateRes.SetUpdateInfo(fullPath, m_Package.zipUrl, 10000);
             if (m_Loader != null)
             {
                 m_Loader.LoadAsync();

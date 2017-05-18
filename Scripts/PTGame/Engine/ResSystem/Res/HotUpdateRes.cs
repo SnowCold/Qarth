@@ -12,6 +12,7 @@ namespace PTGame.Framework
         private int     m_TotalSize = 1;
         private int     m_DownloadSize;
         private string  m_LocalPath;
+        private int     m_FileSize;
 
         public static HotUpdateRes Allocate(string name)
         {
@@ -23,10 +24,11 @@ namespace PTGame.Framework
             return res;
         }
 
-        public void SetUpdateInfo(string localPath, string url)
+        public void SetUpdateInfo(string localPath, string url, int fileSize)
         {
             m_LocalPath = localPath;
             m_Url = url;
+            m_FileSize = fileSize;
         }
 
         public string localResPath
@@ -57,6 +59,14 @@ namespace PTGame.Framework
             get
             {
                 return m_Url;
+            }
+        }
+
+        public int fileSize
+        {
+            get
+            {
+                return m_FileSize;
             }
         }
 

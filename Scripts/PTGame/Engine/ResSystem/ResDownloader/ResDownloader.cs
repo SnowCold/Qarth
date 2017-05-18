@@ -24,6 +24,12 @@ namespace PTGame.Framework
             get;
         }
 
+        int fileSize
+        {
+            get;
+        }
+
+
         void SetDownloadProgress(int totalSize, int download);
 
         void DeleteOldResFile();
@@ -135,7 +141,7 @@ namespace PTGame.Framework
             m_DownloadingTask = next;
 
             //HttpDownloaderMgr.S.AddDownloadTask(next.url, next.localResPath, OnDownloadProgress, OnDownloadError, OnDownloadFinish, null);
-            WWWDownloader.S.AddDownloadTask(next.url, next.localResPath, OnDownloadProgress, OnDownloadError, OnDownloadFinish, null);
+            WWWDownloader.S.AddDownloadTask(next.url, next.localResPath, next.fileSize, OnDownloadProgress, OnDownloadError, OnDownloadFinish, null);
 
             next.DeleteOldResFile();
         }

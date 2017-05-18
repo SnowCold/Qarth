@@ -35,10 +35,11 @@ namespace PTGame.Framework
 
         private WWW m_WWW;
 
-        private int m_PreSize;
+        private float m_PreSize;
         private long m_LastChangeTime;
+        private int m_FileSize;
 
-        public int alreadyDownloadByte
+        public float alreadyDownloadProgress
         {
             get
             {
@@ -47,7 +48,15 @@ namespace PTGame.Framework
                     return 0;
                 }
 
-                return m_WWW.bytesDownloaded;
+                return m_WWW.progress;
+            }
+        }
+
+        public int alreadyDownloadSize
+        {
+            get
+            {
+                return (int)(alreadyDownloadProgress * m_FileSize);
             }
         }
 
@@ -61,7 +70,7 @@ namespace PTGame.Framework
             get { return DateTime.Now.Ticks / 10000000; }
         }
 
-        public bool AddDownloadTask(string uri, string localPath, OnDownloadProgress onProgress, OnDownloadError onError, OnDownloadFinished onFinshed, OnDownloadBegin onBegin = null)
+        public bool AddDownloadTask(string uri, string localPath, int fileSize, OnDownloadProgress onProgress, OnDownloadError onError, OnDownloadFinished onFinshed, OnDownloadBegin onBegin = null)
         {
             if (m_IsDownloading)
             {
@@ -216,10 +225,10 @@ namespace PTGame.Framework
 
             if (m_IsDownloading)
             {
-                int alreadySize = alreadyDownloadByte;
-                if (m_PreSize != alreadyDownloadByte)
+                float alreadySize = alreadyDownloadProgress;
+                if (m_PreSize != alreadyDownloadProgress)
                 {
-                    m_PreSize = alreadySize;
+                    m_PreSize = alreadyDownloadProgress;
                     m_LastChangeTime = currentTimeTick;
                 }
                 else
