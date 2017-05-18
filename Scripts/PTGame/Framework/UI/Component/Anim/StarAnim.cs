@@ -14,6 +14,8 @@ namespace PTGame.Framework
         private Image[] m_Stars;
         [SerializeField]
         private bool m_IsAutoPlay = true;
+
+
         private void Awake()
         {
             if (m_Stars.Length == 0)
@@ -41,6 +43,27 @@ namespace PTGame.Framework
                 DOTween.Sequence().Append(m_Stars[i].DOFade(1, RandomHelper.Range(0.2f, 0.5f)))
                     .SetDelay(1)
                     .Append(m_Stars[i].DOFade(0, RandomHelper.Range(0.5f, 1.0f)));
+            }
+        }
+
+        public void ShowLoop()
+        {
+            StartCoroutine(ShowLoopInternal());
+        }
+
+        private IEnumerator ShowLoopInternal()
+        {
+            while (true)
+            {
+                for (int i = 0; i < m_Stars.Length; ++i)
+                {
+                    m_Stars[i].DOKill();
+                    DOTween.Sequence().Append(m_Stars[i].DOFade(1, RandomHelper.Range(0.2f, 0.3f)))
+                        .SetDelay(0.8f)
+                        .Append(m_Stars[i].DOFade(0, RandomHelper.Range(0.5f, 0.6f)));
+                }
+
+                yield return new WaitForSeconds(1.8f);
             }
         }
     }
