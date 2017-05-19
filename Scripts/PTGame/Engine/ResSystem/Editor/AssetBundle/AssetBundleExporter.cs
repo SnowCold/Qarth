@@ -390,7 +390,7 @@ namespace PTGame.Framework.Editor
                 if (AssetFileFilter.IsConfigTable(info.FullName))
                 {
                     string md5 = GetMD5HashFromFile(info.FullName);
-                    long buildTime = info.LastWriteTime.Ticks;
+                    long buildTime = DateTime.Now.Ticks;//info.LastWriteTime.Ticks;
                     table.AddAssetBundleName(ProjectPathConfig.tableFolder + info.Name, null, md5, (int)info.Length, buildTime, out group);
                 }
             }
@@ -422,7 +422,7 @@ namespace PTGame.Framework.Editor
                     FileInfo info = new FileInfo(abPath);
 
                     string md5 = GetMD5HashFromFile(abPath);
-                    long buildTime = info.LastWriteTime.Ticks;
+                    long buildTime = DateTime.Now.Ticks; //info.LastWriteTime.Ticks;
 
                     abIndex = table.AddAssetBundleName(abNames[i], depends, md5, (int)info.Length, buildTime, out group);
                     if (abIndex < 0)
