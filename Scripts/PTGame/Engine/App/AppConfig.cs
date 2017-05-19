@@ -96,6 +96,7 @@ namespace PTGame.Framework
 		[SerializeField] private APP_MODE 		m_AppMode;
 		[SerializeField] private DebugSetting 	m_DebugSetting;
 		[SerializeField] private bool			m_IsGuideActive = false;
+        [SerializeField] private bool           m_IsResUpdateActive = false;
 		#endregion
 
 		#region 属性
@@ -104,6 +105,11 @@ namespace PTGame.Framework
 		{
 			get { return m_IsGuideActive; }
 		}
+
+        public bool isResUpdateActive
+        {
+            get { return m_IsResUpdateActive; }
+        }
 
 		public string serverIp
 		{

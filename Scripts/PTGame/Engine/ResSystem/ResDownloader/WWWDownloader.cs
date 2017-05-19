@@ -47,7 +47,6 @@ namespace PTGame.Framework
                 {
                     return 0;
                 }
-
                 return m_WWW.progress;
             }
         }

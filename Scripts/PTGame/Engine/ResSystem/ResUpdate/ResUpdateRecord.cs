@@ -150,13 +150,20 @@ namespace PTGame.Framework
                 return;
             }
 
-            string writeData = string.Format("{0}:{1}:{2}:{3}\n", name, md5, fileSize, buildTime);
-            byte[] writeDataArray = UTF8Encoding.UTF8.GetBytes(writeData);
-            m_RecordFileStream.Write(writeDataArray, 0, writeDataArray.Length);
-            m_RecordFileStream.Flush();
-            RecordCell cell = new RecordCell();
-            cell.SetData(name, md5, fileSize, buildTime);
-            m_UpdateRecordList.Add(cell);
+            try
+            {
+                string writeData = string.Format("{0}:{1}:{2}:{3}\n", name, md5, fileSize, buildTime);
+                byte[] writeDataArray = UTF8Encoding.UTF8.GetBytes(writeData);
+                m_RecordFileStream.Write(writeDataArray, 0, writeDataArray.Length);
+
+                RecordCell cell = new RecordCell();
+                cell.SetData(name, md5, fileSize, buildTime);
+                m_UpdateRecordList.Add(cell);
+            }
+            catch (Exception e)
+            {
+                Log.e(e);
+            }
         }
 
         public void Close()

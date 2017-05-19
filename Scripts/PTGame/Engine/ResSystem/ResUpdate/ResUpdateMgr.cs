@@ -122,6 +122,42 @@ namespace PTGame.Framework
             }
         }
 
+        public int alreadyUpdateFileCount
+        {
+            get
+            {
+                if (m_UpdatePackageList == null || m_UpdatePackageList.Count == 0)
+                {
+                    return 0;
+                }
+
+                int size = 0;
+                for (int i = 0; i < m_UpdatePackageList.Count; ++i)
+                {
+                    size += m_UpdatePackageList[i].handler.alreadyUpdateFileCount;
+                }
+                return size;
+            }
+        }
+
+        public int needUpdateFileCount
+        {
+            get
+            {
+                if (m_UpdatePackageList == null || m_UpdatePackageList.Count == 0)
+                {
+                    return 0;
+                }
+
+                int size = 0;
+                for (int i = 0; i < m_UpdatePackageList.Count; ++i)
+                {
+                    size += m_UpdatePackageList[i].handler.needUpdateFileCount;
+                }
+                return size;
+            }
+        }
+
         public void AddPackage(ResPackage package, Action<ResPackage, int> l)
         {
             if (package == null)
