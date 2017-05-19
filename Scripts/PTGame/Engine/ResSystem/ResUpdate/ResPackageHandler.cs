@@ -20,7 +20,8 @@ namespace PTGame.Framework
         private Action<ResPackageHandler> m_UpdateListener;
         private ResUpdateRecord m_Record;
         private List<ABUnit> m_UpdateFailedList = new List<ABUnit>();
-        private float m_NeedUpdateFileSize = -1;
+        private float m_NeedUpdateFileSize = 0;
+        private int m_NeedUpdateFileCount = 0;
         private float m_AlreadyUpdateFileSize;
         private int m_AlreadyUpdateFileCount;
 
@@ -56,12 +57,7 @@ namespace PTGame.Framework
         {
             get
             {
-                if (m_NeedUpdateFileList == null)
-                {
-                    return 0;
-                }
-
-                return m_NeedUpdateFileList.Count;
+                return m_NeedUpdateFileCount;
             }
         }
 
@@ -86,21 +82,6 @@ namespace PTGame.Framework
         {
             get
             {
-                if (m_NeedUpdateFileList == null || m_NeedUpdateFileList.Count == 0)
-                {
-                    return 0;
-                }
-
-                if (m_NeedUpdateFileSize < 0)
-                {
-                    m_NeedUpdateFileSize = 0;
-
-                    for (int i = 0; i < m_NeedUpdateFileList.Count; ++i)
-                    {
-                        m_NeedUpdateFileSize += m_NeedUpdateFileList[i].fileSize;
-                    }
-                }
-
                 return m_NeedUpdateFileSize;
             }
         }
@@ -407,23 +388,34 @@ namespace PTGame.Framework
             }
             m_NeedUpdateFileList = ABUnitHelper.CalculateLateList(AssetDataTable.S, remoteDataTable, true);
 
-            if (m_Package.updateBlackList != null)
+            if (m_NeedUpdateFileList != null)
             {
-                var list = m_Package.updateBlackList;
-
-                for (int i = 0; i < list.Count; ++i)
+                if (m_Package.updateBlackList != null)
                 {
-                    for (int j = m_NeedUpdateFileList.Count - 1; j >= 0; --j)
+                    var list = m_Package.updateBlackList;
+
+                    for (int i = 0; i < list.Count; ++i)
                     {
-                        if (m_NeedUpdateFileList[j].abName.Equals(list[i]))
+                        for (int j = m_NeedUpdateFileList.Count - 1; j >= 0; --j)
                         {
-                            m_NeedUpdateFileList.RemoveAt(j);
-                            break;
+                            if (m_NeedUpdateFileList[j].abName.Equals(list[i]))
+                            {
+                                m_NeedUpdateFileList.RemoveAt(j);
+                                break;
+                            }
                         }
                     }
                 }
+
+                m_NeedUpdateFileCount = m_NeedUpdateFileList.Count;
+
+                for (int i = 0; i < m_NeedUpdateFileCount; ++i)
+                {
+                    m_NeedUpdateFileSize += m_NeedUpdateFileList[i].fileSize;
+                }
             }
 
+            //Dump();
             ClearLoader();
         }
 
