@@ -209,7 +209,6 @@ namespace PTGame.Framework
 
             m_AlreadyUpdateFileCount = 0;
             m_AlreadyUpdateFileSize = 0;
-            m_NeedUpdateFileSize = -1;
 
             InnerStartUpdate(m_NeedUpdateFileList);
         }
