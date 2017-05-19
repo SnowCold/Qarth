@@ -259,8 +259,9 @@ namespace PTGame.Framework
                         break;
                     case DownloadEvent.DownloadOrExit:
                         break;
-                    case DownloadEvent.Error:
-                        OnDownloadError eL = m_OnError;
+				case DownloadEvent.Error:
+						OnDownloadError eL = m_OnError;
+						m_IsDownloading = false;
                         Clear();
                         if (eL != null)
                         {
