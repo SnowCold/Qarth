@@ -35,9 +35,9 @@ namespace PTGame.Framework
 
         private WWW m_WWW;
 
-        private float m_PreSize;
-        private long m_LastChangeTime;
-        private int m_FileSize;
+        protected float m_PreSize;
+        protected long m_LastChangeTime;
+        protected int m_FileSize;
 
         public float alreadyDownloadProgress
         {
@@ -97,6 +97,7 @@ namespace PTGame.Framework
 
             Clear();
 
+            m_FileSize = fileSize;
             m_OnProgress = onProgress;
             m_OnError = onError;
             m_OnFinished = onFinshed;
