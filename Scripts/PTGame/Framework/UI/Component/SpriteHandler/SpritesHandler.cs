@@ -25,6 +25,11 @@ namespace PTGame.Framework
             Sprite result = null;
             for (int i = m_SpritesData.Length - 1; i >= 0; --i)
             {
+                if (m_SpritesData[i] == null)
+                {
+                    continue;
+                }
+
                 result = m_SpritesData[i].Find(spriteName);
                 if (result != null)
                 {
