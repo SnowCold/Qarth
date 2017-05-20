@@ -6,7 +6,7 @@ using System.IO;
 
 namespace PTGame.Framework
 {
-    [TMonoSingletonAttribute("[Singleton]/HttpDownloader")]
+    [TMonoSingletonAttribute("[Tools]/HttpDownloader")]
     public class WWWDownloader : TMonoSingleton<WWWDownloader>, IHttpDownloader
     {
         private const int TIME_OUT = 10;

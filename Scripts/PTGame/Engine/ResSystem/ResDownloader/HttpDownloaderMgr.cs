@@ -9,7 +9,7 @@ using System.Threading;
 namespace PTGame.Framework
 {
     //http下载管理器
-    [TMonoSingletonAttribute("[Singleton]/HttpDownloader")]
+    [TMonoSingletonAttribute("[Tools]/HttpDownloader")]
     public class HttpDownloaderMgr : TMonoSingleton<HttpDownloaderMgr>
     {
         public static string TimeOutError = "Time-Out";
