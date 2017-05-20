@@ -8,8 +8,14 @@ namespace PTGame.Framework
 {
     public class GuideHighlightMask : MonoBehaviour
     {
+        public enum Shape
+        {
+            Square = 1,
+            Circle = 2,
+        }
+
         [SerializeField]
-        private int m_Shape = 1;
+        private Shape m_Shape = Shape.Square;
         [SerializeField]
         private RectTransform m_Target;
         [SerializeField]
@@ -18,11 +24,26 @@ namespace PTGame.Framework
         private RawImage m_RawImage;
         [SerializeField]
         private float m_Radio;
+        [SerializeField]
+        private bool m_IsDirty = true;
+
+        private Vector4 m_Edge;
+        private bool    m_NeedCheckEdge;
+
+        public Shape shape
+        {
+            get { return m_Shape; }
+            set { m_Shape = value; }
+        }
 
         public RectTransform target
         {
             get { return m_Target; }
-            set { m_Target = value; }
+            set
+            {
+                m_Target = value;
+                m_IsDirty = true;
+            }
         }
 
         private void Awake()
@@ -48,6 +69,25 @@ namespace PTGame.Framework
                 return;
             }
 
+            if (m_IsDirty)
+            {
+                ScrollRect scr = m_Target.GetComponentInParent<ScrollRect>();
+
+                if (scr == null)
+                {
+                    m_NeedCheckEdge = false;
+                }
+                else
+                {
+                    Vector2[] edge = RectTransformHelper.GetRectTransformViewPort(scr.GetComponent<RectTransform>());
+                    m_Edge.Set(edge[0].x, edge[0].y, edge[1].x, edge[1].y);
+
+                    m_NeedCheckEdge = true;
+                }
+
+                m_IsDirty = false;
+            }
+
             Vector2[] uvPos = RectTransformHelper.GetRectTransformViewPort(m_Target);
             Vector2 center = new Vector2((uvPos[0].x + uvPos[1].x) * 0.5f, (uvPos[0].y + uvPos[1].y) * 0.5f);
             m_Material.SetFloat("_CenterX", center.x);
@@ -56,7 +96,17 @@ namespace PTGame.Framework
             m_Material.SetFloat("_Width", (uvPos[1].x - uvPos[0].x) * 0.5f);
             m_Material.SetFloat("_Height", (uvPos[1].y - uvPos[0].y) * 0.5f);
             m_Material.SetFloat("_Radio", m_Radio);
-            m_Material.SetInt("_Shape", m_Shape);
+            m_Material.SetInt("_Shape", (int)m_Shape);
+
+            if (m_NeedCheckEdge)
+            {
+                m_Material.SetFloat("_CheckEdge", 1);
+                m_Material.SetVector("_Edge", m_Edge);
+            }
+            else
+            {
+                m_Material.SetFloat("_CheckEdge", -1);
+            }
         }
     }
 }

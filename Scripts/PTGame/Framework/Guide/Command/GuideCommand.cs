@@ -5,11 +5,34 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-    public class GuideCommand : CommandNode
+    public class GuideCommand
     {
-        public override void Start()
+        private GuideStep m_GuideStep;
+
+        public GuideStep guideStep
+        {
+            get { return m_GuideStep; }
+            set { m_GuideStep = value; }
+        }
+
+        protected void FinishStep()
+        {
+            if (m_GuideStep == null)
+            {
+                return;
+            }
+
+            m_GuideStep.Finish();
+        }
+
+        public virtual void Start()
         {
             //如果需要Update 直接用Timer就可以
+
+        }
+
+        public virtual void OnFinish()
+        {
 
         }
     }

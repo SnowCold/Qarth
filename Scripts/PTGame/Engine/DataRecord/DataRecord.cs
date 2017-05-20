@@ -21,6 +21,22 @@ namespace PTGame.Framework
                 set { m_Value = value; }
             }
 
+            public bool boolValue
+            {
+                get { return "1".Equals(m_Value); }
+                set
+                {
+                    if (value)
+                    {
+                        m_Value = "1";
+                    }
+                    else
+                    {
+                        m_Value = "0";
+                    }
+                }
+            }
+
             public int intValue
             {
                 get
@@ -150,6 +166,16 @@ namespace PTGame.Framework
             return "";
         }
 
+        public bool GetBool(string key, bool defaultValue = false)
+        {
+            RecordCell cell = null;
+            if (!m_DataMap.TryGetValue(key, out cell))
+            {
+                return defaultValue;
+            }
+            return cell.boolValue;
+        }
+
         public string GetString(string key, string defaultValue = "")
         {
             RecordCell cell = null;
@@ -191,6 +217,20 @@ namespace PTGame.Framework
             }
 
             cell.stringValue = value;
+            m_IsMapDirty = true;
+        }
+
+        public void SetBool(string key, bool value)
+        {
+            RecordCell cell = null;
+            if (!m_DataMap.TryGetValue(key, out cell))
+            {
+                cell = new RecordCell();
+                cell.key = key;
+                m_DataMap.Add(key, cell);
+            }
+
+            cell.boolValue = value;
             m_IsMapDirty = true;
         }
 

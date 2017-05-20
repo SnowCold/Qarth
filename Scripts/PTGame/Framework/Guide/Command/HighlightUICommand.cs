@@ -9,40 +9,32 @@ namespace PTGame.Framework
     {
         public string targetPanelName;
         public string targetUINodePath;
+        public GuideHighlightMask.Shape shape;
 
         private RectTransform m_TargetNode;
 
-        public HighlightUICommand()
-        {
-
-        }
-
-        public HighlightUICommand(string targetPanel, string uiNodePath)
+        public HighlightUICommand(string targetPanel, string uiNodePath, GuideHighlightMask.Shape shape)
         {
             this.targetPanelName = targetPanel;
             this.targetUINodePath = uiNodePath;
+            this.shape = shape;
         }
 
         public override void Start()
         {
-            string panelName = string.Format("{0}(Clone)", targetPanelName);
-            Transform targetPanel = UIMgr.S.uiRoot.panelRoot.Find(panelName);
-
-            if (targetPanel == null)
-            {
-                Log.w("# HighlightUICommand Not Find Panel:" + panelName);
-                return;
-            }
-
-            m_TargetNode = targetPanel.Find(targetUINodePath) as RectTransform;
+            m_TargetNode = GuideHelper.FindTransformInPanel(targetPanelName, targetUINodePath);
 
             if (m_TargetNode == null)
             {
-                Log.w(string.Format("# HighlightUICommand Not Find Node:{0}/{1}", panelName, targetUINodePath));
                 return;
             }
 
             UIMgr.S.OpenTopPanel(EngineUI.GuidePanel, OnGuidePanelOpen);
+        }
+
+        public override void OnFinish()
+        {
+            UIMgr.S.ClosePanelAsUIID(EngineUI.GuidePanel);
         }
 
         private void OnGuidePanelOpen(AbstractPanel panel)
@@ -59,6 +51,7 @@ namespace PTGame.Framework
             }
 
             guidePanel.highlightMask.target = m_TargetNode;
+            guidePanel.highlightMask.shape = shape;
         }
     }
 }

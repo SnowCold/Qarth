@@ -29,7 +29,7 @@ namespace PTGame.Framework
 
 		}
 
-        protected void FinishCommand()
+        protected virtual void FinishCommand()
         {
             if (m_OnCommandComplate != null)
             {

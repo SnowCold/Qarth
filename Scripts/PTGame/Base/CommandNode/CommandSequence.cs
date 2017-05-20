@@ -13,7 +13,7 @@ namespace PTGame.Framework
 
 		private CommandNode		m_RuntimeCurrentNode;
 
-		public void Append(CommandNode command)
+		public CommandSequence Append(CommandNode command)
 		{
 			if(m_CurrentCommand == null)
 			{
@@ -27,9 +27,11 @@ namespace PTGame.Framework
 				m_CurrentCommand = command;
 			}
 			m_CurrentCommand.SetCommandNodeEventListener(OnSubCommondComplate);
+
+            return this;
 		}
 
-		public void Join(CommandNode command)
+		public CommandSequence Join(CommandNode command)
 		{
 			CommandGroup group;
 			if(m_CurrentCommand == null)
@@ -47,6 +49,11 @@ namespace PTGame.Framework
 				}
 				else
 				{
+                    if (m_FirstCommand == m_CurrentCommand)
+                    {
+                        m_FirstCommand = null;
+                    }
+
 					group = new CommandGroup();
 					group.SetCommandNodeEventListener(OnSubCommondComplate);
 					if(m_PreCommand != null)
@@ -56,10 +63,17 @@ namespace PTGame.Framework
 					m_CurrentCommand.SetCommandNodeEventListener(null);
 					group.Add(m_CurrentCommand);
 					m_CurrentCommand = group;
+
+                    if (m_FirstCommand == null)
+                    {
+                        m_FirstCommand = m_CurrentCommand;
+                    }
 				}
 			}
 
 			group.Add(command);
+
+            return this;
 		}
 
 		public override void Start()
