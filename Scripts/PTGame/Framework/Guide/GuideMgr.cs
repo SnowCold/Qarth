@@ -10,6 +10,7 @@ namespace PTGame.Framework
     {
         private List<Guide> m_TrackingGuideList = new List<Guide>();
         private GuideStep m_CurretStep;
+		private Guide m_CurrentGuide;
 
         public void InitGuideMgr()
         {
@@ -41,6 +42,18 @@ namespace PTGame.Framework
 
             m_CurretStep.Active();
         }
+
+		public void TryActiveGuide(Guide guide)
+		{
+			if (m_CurrentGuide != null)
+			{
+				return;
+			}
+
+			m_CurrentGuide = guide;
+
+			m_CurrentGuide.Active();
+		}
 
         public void FinishStep(GuideStep step)
         {

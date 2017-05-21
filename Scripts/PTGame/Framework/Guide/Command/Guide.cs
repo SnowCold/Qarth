@@ -11,7 +11,7 @@ namespace PTGame.Framework
 
         protected ITrigger[] m_Trigger;
         protected GuideStep[] m_GuideSteps;
-
+		private bool m_IsActive = false;
         public Guide(int guideID)
         {
             m_GuideId = guideID;
@@ -35,35 +35,50 @@ namespace PTGame.Framework
             return true;
         }
 
-        //激活检测
+        //激活
         public bool StartTrack()
         {
+			//
             m_Trigger = GuideTriggerTable.GetTriggerByGuideID(m_GuideId);
             if (m_Trigger == null)
             {
-                return false;
+				return false;
             }
 
-            InnerStartTrack();
+			for (int i = 0; i < m_Trigger.Length; ++i)
+			{
+				m_Trigger[i].Start(OnTriggerEvent);
+			}
+
+			CheckAllTriggerstate();
             return true;
         }
 
-        private void InnerStartTrack()
-        {
-            for (int i = 0; i < m_Trigger.Length; ++i)
-            {
-                if (m_Trigger[i].isReady)
-                {
-                    OnTriggerEvent(m_Trigger[i]);
-                    return;
-                }
-            }
+		public void Active()
+		{
+			if (m_IsActive)
+			{
+				return;
+			}
 
-            for (int i = 0; i < m_Trigger.Length; ++i)
-            {
-                m_Trigger[i].Start(OnTriggerEvent);
-            }
-        }
+			m_IsActive = true;
+
+			if (m_GuideSteps == null)
+			{
+				m_GuideSteps = GuideStepTable.GetGuideStepByGuideID(m_GuideId);
+			}
+
+			if (m_GuideSteps == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < m_GuideSteps.Length; ++i)
+			{
+				m_GuideSteps[i].guide = this;
+				m_GuideSteps[i].StartTrack();
+			}
+		}
 
         public void OnStepFinish(GuideStep step)
         {
@@ -71,21 +86,57 @@ namespace PTGame.Framework
             //如果当前Step是该引导的最后一个step，那么记录关闭
         }
 
-        private void OnTriggerEvent(ITrigger trigger)
+		private void CheckAllTriggerstate()
+		{
+			if (m_Trigger == null || m_Trigger.Length == 0)
+			{
+				return;
+			}
+
+			for (int i = 0; i < m_Trigger.Length; ++i)
+			{
+				if (!m_Trigger[i].isReady)
+				{
+					OnTriggerEvent (false);
+					return;
+				}
+			}
+
+			OnAllTriggerEvent (true);
+		}
+
+		private void OnAllTriggerEvent(bool ready)
+		{
+			if (ready)
+			{
+				if (!m_IsActive)
+				{
+					GuideMgr.S.TryActiveGuide (this);
+				}
+
+				m_GuideSteps = GuideStepTable.GetGuideStepByGuideID(m_GuideId);
+
+				if (m_GuideSteps == null)
+				{
+					return;
+				}
+
+				for (int i = 0; i < m_GuideSteps.Length; ++i)
+				{
+					m_GuideSteps[i].guide = this;
+					m_GuideSteps[i].StartTrack();
+				}
+			}
+			else
+			{
+				
+			}
+
+		}
+
+        private void OnTriggerEvent(bool result, ITrigger trigger)
         {
-            trigger.Stop();
-            m_GuideSteps = GuideStepTable.GetGuideStepByGuideID(m_GuideId);
-
-            if (m_GuideSteps == null)
-            {
-                return;
-            }
-
-            for (int i = 0; i < m_GuideSteps.Length; ++i)
-            {
-                m_GuideSteps[i].guide = this;
-                m_GuideSteps[i].StartTrack();
-            }
+			CheckAllTriggerstate ();
         }
 
         private void AddStep(GuideStep[] steps)

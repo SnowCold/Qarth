@@ -8,7 +8,7 @@ namespace PTGame.Framework
     public interface ITrigger
     {
         bool isReady { get; }
-        void Start(Action<ITrigger> l);
+        void Start(Action<bool, ITrigger> l);
         void Stop();
     }
 }

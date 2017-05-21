@@ -8,14 +8,14 @@ namespace PTGame.Framework
     public class TopPanelTrigger : ITrigger
     {
         private int m_UIID;
-        private Action<ITrigger> m_Listener;
+        private Action<bool, ITrigger> m_Listener;
 
         public TopPanelTrigger(int uiID)
         {
             m_UIID = uiID;
         }
 
-        public void Start(Action<ITrigger> l)
+        public void Start(Action<bool, ITrigger> l)
         {
             m_Listener = l;
             EventSystem.S.Register(EngineEventID.OnPanelUpdate, OnPanelUpdte);
@@ -50,8 +50,12 @@ namespace PTGame.Framework
             int topUI = UIMgr.S.FindTopPanel<int>(null);
             if (topUI == m_UIID)
             {
-                m_Listener(this);
+                m_Listener(true, this);
             }
+			else 
+			{
+				m_Listener (false, this);
+			}
         }
     }
 }
