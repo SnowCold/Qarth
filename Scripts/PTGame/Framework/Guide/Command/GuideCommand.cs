@@ -15,6 +15,11 @@ namespace PTGame.Framework
             set { m_GuideStep = value; }
         }
 
+		public virtual void SetParam(string param)
+		{
+			
+		}
+
         protected void FinishStep()
         {
             if (m_GuideStep == null)

@@ -7,13 +7,13 @@ namespace PTGame.Framework
 {
     public class TopPanelTrigger : ITrigger
     {
-        private int m_UIID;
+        private int m_UIID = 0;
         private Action<bool, ITrigger> m_Listener;
 
-        public TopPanelTrigger(int uiID)
-        {
-            m_UIID = uiID;
-        }
+		public void SetParam(string param)
+		{
+			m_UIID = UIDataTable.PanelName2UIID (param);
+		}
 
         public void Start(Action<bool, ITrigger> l)
         {

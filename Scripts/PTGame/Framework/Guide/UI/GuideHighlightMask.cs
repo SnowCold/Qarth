@@ -108,5 +108,7 @@ namespace PTGame.Framework
                 m_Material.SetFloat("_CheckEdge", -1);
             }
         }
-    }
+	
+	
+	}
 }

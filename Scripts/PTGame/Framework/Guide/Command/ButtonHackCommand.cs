@@ -10,19 +10,33 @@ namespace PTGame.Framework
     //交互劫持
     public class ButtonHackCommand : GuideCommand
     {
-        public string targetPanelName;
-        public string targetUINodePath;
+		private string targetPanelName;
+		private string targetUINodePath;
 
         private Transform m_TargetButton;
         private GraphicRaycaster m_GraphicRaycaster;
         private bool m_HasDown = false;
         private static List<RaycastResult> m_Result = new List<RaycastResult>();
 
-        public ButtonHackCommand(string targetPanel, string uiNodePath)
-        {
-            this.targetPanelName = targetPanel;
-            this.targetUINodePath = uiNodePath;
-        }
+		public override void SetParam (string param)
+		{
+			string[] pv = param.Split (',');
+			if (pv.Length == 0)
+			{
+				Log.w ("ButtonHackCommand Init With Invalid Param.");
+				return;
+			}
+
+			try
+			{
+				targetPanelName = pv[0];
+				targetUINodePath = pv[1];
+			}
+			catch(Exception e)
+			{
+				Log.e (e);
+			}
+		}
 
         public override void Start()
         {
@@ -40,26 +54,16 @@ namespace PTGame.Framework
                 return;
             }
 
-            UIMgr.S.OpenTopPanel(EngineUI.GuidePanel, OnGuidePanelOpen);
-        }
-
-        private void OnGuidePanelOpen(AbstractPanel panel)
-        {
-            if (m_TargetButton == null)
-            {
-                return;
-            }
-
-            GuidePanel guidePanel = panel as GuidePanel;
-            if (guidePanel == null)
-            {
-                return;
-            }
-
-            guidePanel.hideMask = PanelHideMask.UnInteractive;
-            AppLoopMgr.S.onUpdate += Update;
+			UIMgr.S.topPanelHideMask = PanelHideMask.UnInteractive;
+			AppLoopMgr.S.onUpdate += Update;
         }
         
+		public override void OnFinish ()
+		{
+			UIMgr.S.topPanelHideMask = PanelHideMask.None;
+			AppLoopMgr.S.onUpdate -= Update;
+		}
+
         private void OnClickUpOnTarget()
         {
             ExecuteEvents.Execute<IPointerClickHandler>(m_TargetButton.gameObject, new PointerEventData(UnityEngine.EventSystems.EventSystem.current), ExecuteEvents.pointerClickHandler);

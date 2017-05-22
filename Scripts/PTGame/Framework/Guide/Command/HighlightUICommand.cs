@@ -7,18 +7,34 @@ namespace PTGame.Framework
 {
     public class HighlightUICommand : GuideCommand
     {
-        public string targetPanelName;
-        public string targetUINodePath;
-        public GuideHighlightMask.Shape shape;
+		private string targetPanelName;
+		private string targetUINodePath;
+        private GuideHighlightMask.Shape shape;
 
         private RectTransform m_TargetNode;
 
-        public HighlightUICommand(string targetPanel, string uiNodePath, GuideHighlightMask.Shape shape)
-        {
-            this.targetPanelName = targetPanel;
-            this.targetUINodePath = uiNodePath;
-            this.shape = shape;
-        }
+		public override void SetParam(string param)
+		{
+			
+			string[] pv = param.Split (',');
+			if (pv.Length == 0)
+			{
+				Log.w ("HighlightUICommand Init With Invalid Param.");
+				return;
+			}
+
+			try
+			{
+				this.targetPanelName = pv[0];
+				this.targetUINodePath = pv[1];
+				this.shape = (GuideHighlightMask.Shape)int.Parse(pv[2]);
+			}
+			catch(Exception e)
+			{
+				Log.e (e);
+			}
+
+		}
 
         public override void Start()
         {
@@ -29,8 +45,8 @@ namespace PTGame.Framework
                 return;
             }
 
-            UIMgr.S.OpenTopPanel(EngineUI.GuidePanel, OnGuidePanelOpen);
-        }
+			UIMgr.S.OpenTopPanel(EngineUI.GuidePanel, OnGuidePanelOpen);
+		}
 
         public override void OnFinish()
         {

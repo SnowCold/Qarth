@@ -24,7 +24,7 @@ namespace PTGame.Framework
         private List<PanelInfo>             m_CachedPanelList = new List<PanelInfo>();
         private bool                        m_PanelSortingOrderDirty = false;
         private bool                        m_IsPanelInfoListChange = false;
-
+		private PanelHideMask 				m_TopPanelHideMask = PanelHideMask.None;
         #endregion
 
         private int nextPanelID
@@ -46,6 +46,19 @@ namespace PTGame.Framework
                 return m_UIEventSystem;
             }
         }
+
+		public PanelHideMask topPanelHideMask
+		{
+			get { return m_TopPanelHideMask; }
+			set 
+			{
+				if (m_TopPanelHideMask != value)
+				{
+					m_TopPanelHideMask = value;
+					ReSortPanel();
+				}
+			}
+		}
 
         public override void OnSingletonInit()
         {
@@ -799,7 +812,7 @@ System.Reflection.BindingFlags.Public);
         //处理面板隐藏逻辑
         private void ProcessPanelGameObjectActiveState()
         {
-            int mask = 0;
+			int mask = (int)m_TopPanelHideMask;
             for (int i = m_ActivePanelInfoList.Count - 1; i >= 0; --i)
             {
                 PanelInfo panelInfo = m_ActivePanelInfoList[i];
