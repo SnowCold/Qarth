@@ -9,10 +9,10 @@ namespace PTGame.Framework
 	{
 		private UINodeFinder m_Finder;
 		private bool m_NeedClose = true;
+		private Vector3 m_Offset;
 
-		public override void SetParam (string param)
-		{	
-			string[] pv = param.Split (',');
+		public override void SetParam (string[] pv)
+		{
 			if (pv.Length == 0)
 			{
 				Log.w ("GuideHandCommand Init With Invalid Param.");
@@ -22,11 +22,16 @@ namespace PTGame.Framework
 			try
 			{
 				m_Finder = new UINodeFinder();
-				m_Finder.SetParam(pv[0], pv[1]);
+				m_Finder.SetParam(pv);
 
 				if (pv.Length > 2)
 				{
 					m_NeedClose = Helper.String2Bool(pv[2]);
+				}
+
+				if (pv.Length > 3)
+				{
+					m_Offset = Helper.String2Vector3(pv[3], '|');
 				}
 
 			}
@@ -45,7 +50,7 @@ namespace PTGame.Framework
 				return;
 			}
 
-			UIMgr.S.OpenTopPanel(EngineUI.GuideHandPanel, null, targetNode);
+			UIMgr.S.OpenTopPanel(EngineUI.GuideHandPanel, null, targetNode, m_Offset);
 		}
 
 		public override void OnFinish ()

@@ -111,10 +111,17 @@ namespace PTGame.Framework
 				return null;
 			}
 
-			string[] msg = data.command1.Split (';');
+			string[] msg = data.command.Split (';');
 			if (msg == null || msg.Length == 0)
 			{
 				return null;
+			}
+				
+			string[] commonParams = null;
+
+			if (data.commonParam != null)
+			{
+				commonParams = data.commonParam.Split (',');
 			}
 
 			List<GuideCommand> result = null;
@@ -140,7 +147,30 @@ namespace PTGame.Framework
 
 				if (com.Length > 1)
 				{
-					command.SetParam(com[1]);
+					string[] paramsArray = com[1].Split (',');
+					if (commonParams != null)
+					{
+						if (paramsArray.Length > 0)
+						{
+							for(int p = 0; p < paramsArray.Length; ++p)
+							{
+								if (paramsArray[p].StartsWith("#"))
+								{
+									int index = int.Parse (paramsArray[p].Substring(1));
+									if (index < commonParams.Length)
+									{
+										paramsArray[p] = commonParams [index];
+									}
+									else
+									{
+										Log.w("Invalid Param For Command:" + com[0]);
+									}
+								}
+							}
+						}	
+					}
+					//处理参数
+					command.SetParam(paramsArray);
 				}
 
 				if (result == null)
@@ -162,7 +192,7 @@ namespace PTGame.Framework
 				return null;
 			}
 
-			return LoadTrigger (data.trigger1);
+			return LoadTrigger(data.trigger, data.commonParam);
 		}
     }
 }

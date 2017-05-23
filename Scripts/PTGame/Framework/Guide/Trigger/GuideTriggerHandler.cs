@@ -84,7 +84,7 @@ namespace PTGame.Framework
 		}
 
 		//[name:p1,p2;name:p1,p2]
-		protected List<ITrigger> LoadTrigger(string context)
+		protected List<ITrigger> LoadTrigger(string context, string common)
 		{
 			if (string.IsNullOrEmpty(context))
 			{
@@ -95,6 +95,13 @@ namespace PTGame.Framework
 			if (msg == null || msg.Length == 0)
 			{
 				return null;
+			}
+
+			string[] commonParams = null;
+
+			if (common != null)
+			{
+				commonParams = common.Split (',');
 			}
 
 			List<ITrigger> result = null;
@@ -120,7 +127,31 @@ namespace PTGame.Framework
 
 				if (com.Length > 1)
 				{
-					trigger.SetParam (com [1]);
+
+					string[] paramsArray = com[1].Split (',');
+					if (commonParams != null)
+					{
+						if (paramsArray.Length > 0)
+						{
+							for(int p = 0; p < paramsArray.Length; ++p)
+							{
+								if (paramsArray[p].StartsWith("#"))
+								{
+									int index = int.Parse (paramsArray[p].Substring(1));
+									if (index < commonParams.Length)
+									{
+										paramsArray[p] = commonParams [index];
+									}
+									else
+									{
+										Log.w("Invalid Param For Trigger:" + com[0]);
+									}
+								}
+							}
+						}	
+					}
+					//处理参数
+					trigger.SetParam(paramsArray);
 				}
 
 				if (result == null)

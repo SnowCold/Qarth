@@ -68,12 +68,12 @@ namespace PTGame.Framework
 					}
 					else
 					{
-						m_UnTrackingGuide.Add (data);
+						m_UnTrackingGuide.Add(data);
 					}
 				}
 				else
 				{
-					AddTrackingGuide (new Guide (data.id));
+					AddTrackingGuide(new Guide (data.id));
 				}
 			}
 
@@ -114,6 +114,7 @@ namespace PTGame.Framework
 				return;
 			}
 
+			//TODO:需要找到最近的关键帧并保存
 			var data = TDGuideStepTable.GetData (step.stepID);
 
 			if (data != null)
@@ -122,6 +123,31 @@ namespace PTGame.Framework
 				{
 					DataRecord.S.SetInt (GetLastKeyStepKey (step.guide.guideID), step.stepID);
 					DataRecord.S.Save ();
+				}
+				else
+				{
+					//纪录最近的keyframe
+					var allStep = TDGuideStepTable.GetDataAsGuideID (step.guide.guideID);
+					for (int i = allStep.Count - 1; i >= 0; --i)
+					{
+						if (!allStep[i].keyFrame)
+						{
+							continue;
+						}
+
+						if (allStep[i].id <= oldKeyStep)
+						{
+							break;
+						}
+
+						if (allStep[i].id <= data.id)
+						{
+							DataRecord.S.SetInt (GetLastKeyStepKey (step.guide.guideID), allStep[i].id);
+							DataRecord.S.Save ();
+							break;
+						}
+
+					}
 				}
 			}
         }

@@ -10,9 +10,9 @@ namespace PTGame.Framework
         private int m_UIID = 0;
         private Action<bool, ITrigger> m_Listener;
 
-		public void SetParam(string param)
+		public void SetParam(string[] param)
 		{
-			m_UIID = UIDataTable.PanelName2UIID (param);
+			m_UIID = UIDataTable.PanelName2UIID (param[0]);
 		}
 
         public void Start(Action<bool, ITrigger> l)
@@ -32,7 +32,7 @@ namespace PTGame.Framework
             get
             {
                 int topUI = UIMgr.S.FindTopPanel<int>(null);
-                if (topUI == m_UIID)
+				if (topUI == m_UIID && topUI >= 0)
                 {
                     return true;
                 }

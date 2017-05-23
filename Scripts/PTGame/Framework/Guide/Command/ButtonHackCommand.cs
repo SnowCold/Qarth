@@ -16,10 +16,10 @@ namespace PTGame.Framework
         private bool m_HasDown = false;
         private static List<RaycastResult> m_Result = new List<RaycastResult>();
 
-		public override void SetParam (string param)
+		public override void SetParam (string[] param)
 		{
 			m_Finder = new UINodeFinder ();
-			m_Finder.SetParam (param);
+			m_Finder.SetParam(param);
 		}
 
         public override void Start()

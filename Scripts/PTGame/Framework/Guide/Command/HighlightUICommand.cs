@@ -11,10 +11,8 @@ namespace PTGame.Framework
         private GuideHighlightMask.Shape m_Shape;
 		private bool m_NeedClose = true;
 
-		public override void SetParam(string param)
+		public override void SetParam(string[] pv)
 		{
-			
-			string[] pv = param.Split (',');
 			if (pv.Length == 0)
 			{
 				Log.w ("HighlightUICommand Init With Invalid Param.");
@@ -24,7 +22,7 @@ namespace PTGame.Framework
 			try
 			{
 				m_Finder = new UINodeFinder();
-				m_Finder.SetParam(pv[0], pv[1]);
+				m_Finder.SetParam(pv);
 
 				if (pv.Length > 2)
 				{

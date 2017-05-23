@@ -15,7 +15,7 @@ namespace PTGame.Framework
 
             if (targetPanel == null)
             {
-                Log.w("# HighlightUICommand Not Find Panel:" + panelName);
+				//Log.w("# FindTransformInPanel Not Find Panel:" + panelName);
                 return null;
             }
 
@@ -23,7 +23,7 @@ namespace PTGame.Framework
 
             if (result == null)
             {
-                Log.w(string.Format("# HighlightUICommand Not Find Node:{0}/{1}", panelName, targetUINodePath));
+				//Log.w(string.Format("# FindTransformInPanel Not Find Node:{0}/{1}", panelName, targetUINodePath));
                 return null;
             }
 

@@ -12,6 +12,10 @@ namespace PTGame.Framework
 		private Transform m_HandImage;
 		[SerializeField]
 		protected float m_FlySpeed = 500;
+		[SerializeField]
+		protected Vector3 m_OffsetPos;
+
+		protected Vector3 m_OldPos = Vector3.zero;
 
 		private Transform m_Target;
 
@@ -23,6 +27,13 @@ namespace PTGame.Framework
 			}
 
 			m_Target = args [0] as Transform;
+
+			if (args.Length > 1)
+			{
+				m_OffsetPos = (Vector3)args[1];
+			}
+
+			Update();
 		}
 
 		private void Update()
@@ -33,8 +44,16 @@ namespace PTGame.Framework
 			}
 
 			Vector3 pos = GetHandPos();
+			if (pos.x != m_OldPos.x || pos.y != m_OldPos.y)
+			{
+				m_HandImage.position = pos;
 
-			m_HandImage.position = pos;
+				var localpos = m_HandImage.localPosition;
+				localpos = localpos + m_OffsetPos;
+				m_HandImage.localPosition = localpos;
+
+				m_OldPos = pos;
+			}
 		}
 
 		private Vector3 GetHandPos()

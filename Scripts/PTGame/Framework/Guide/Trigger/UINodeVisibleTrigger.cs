@@ -10,10 +10,10 @@ namespace PTGame.Framework
 		private UINodeFinder m_Finder;
 		private Action<bool, ITrigger> m_Listener;
 
-		public void SetParam(string param)
+		public void SetParam(string[] param)
 		{
 			m_Finder = new UINodeFinder ();
-			m_Finder.SetParam (param);
+			m_Finder.SetParam(param);
 		}
 
 		public void Start(Action<bool, ITrigger> l)

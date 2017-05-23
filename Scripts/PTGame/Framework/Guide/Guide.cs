@@ -146,7 +146,7 @@ namespace PTGame.Framework
 				return null;
 			}
 
-			return LoadTrigger (data.trigger1);
+			return LoadTrigger (data.trigger, data.commonParam);
 		}
 
         private void AddStep(GuideStep step)

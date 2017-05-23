@@ -15,7 +15,7 @@ namespace PTGame.Framework
             set { m_GuideStep = value; }
         }
 
-		public virtual void SetParam(string param)
+		public virtual void SetParam(string[] pv)
 		{
 			
 		}

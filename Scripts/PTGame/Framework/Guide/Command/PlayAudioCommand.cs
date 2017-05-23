@@ -11,9 +11,8 @@ namespace PTGame.Framework
 		private bool m_FinishStep = false;
 		private AudioUnit m_AudioUnit;
 
-		public override void SetParam (string param)
+		public override void SetParam (string[] pv)
 		{
-			string[] pv = param.Split (',');
 			if (pv.Length == 0)
 			{
 				Log.w ("PlayAudioCommand Init With Invalid Param.");

@@ -11,16 +11,8 @@ namespace PTGame.Framework
 		private string m_TargetPanel;
 		private string m_TargetUINode;
 
-		public void SetParam(string targetPanel, string targetNode)
+		public void SetParam(string[] pv)
 		{
-			m_TargetPanel = targetPanel;
-			m_TargetUINode = targetNode;
-		}
-
-		public void SetParam(string param)
-		{
-
-			string[] pv = param.Split (',');
 			if (pv.Length == 0)
 			{
 				Log.w ("UINodeFinder Init With Invalid Param.");
