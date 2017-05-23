@@ -13,6 +13,7 @@ namespace PTGame.Framework
         LightMessagePanel,
         MsgBoxPanel,
         TransitionPanel,
-        GuidePanel,
+        HighlightMaskPanel,
+		GuideHandPanel,
     }
 }

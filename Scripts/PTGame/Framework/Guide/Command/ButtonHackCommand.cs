@@ -10,9 +10,7 @@ namespace PTGame.Framework
     //交互劫持
     public class ButtonHackCommand : GuideCommand
     {
-		private string targetPanelName;
-		private string targetUINodePath;
-
+		private UINodeFinder m_Finder;
         private Transform m_TargetButton;
         private GraphicRaycaster m_GraphicRaycaster;
         private bool m_HasDown = false;
@@ -20,27 +18,13 @@ namespace PTGame.Framework
 
 		public override void SetParam (string param)
 		{
-			string[] pv = param.Split (',');
-			if (pv.Length == 0)
-			{
-				Log.w ("ButtonHackCommand Init With Invalid Param.");
-				return;
-			}
-
-			try
-			{
-				targetPanelName = pv[0];
-				targetUINodePath = pv[1];
-			}
-			catch(Exception e)
-			{
-				Log.e (e);
-			}
+			m_Finder = new UINodeFinder ();
+			m_Finder.SetParam (param);
 		}
 
         public override void Start()
         {
-            m_TargetButton = GuideHelper.FindTransformInPanel(targetPanelName, targetUINodePath);
+			m_TargetButton = m_Finder.FindNode ();
 
             if (m_TargetButton == null)
             {

@@ -19,13 +19,63 @@ namespace PTGame.Framework
             set { m_Guide = value; }
         }
 
+		public int stepID
+		{
+			get { return m_GuideStepID; }
+		}
+
         public GuideStep(int stepID)
         {
             m_GuideStepID = stepID;
         }
-
-        public bool Active()
+			
+		public void OnCommandFinish()
+		{
+			m_Guide.OnStepFinish(this);
+		}
+			
+        public void Finish()
         {
+			if (!m_IsActive)
+			{
+				return;
+			}
+
+			m_IsActive = false;
+
+			StopTrack ();
+
+			for (int i = 0; i < m_Commands.Count; ++i)
+			{
+				m_Commands[i].OnFinish();
+			}
+        }
+
+		protected override void OnAllTriggerEvent (bool ready)
+		{
+			if (ready)
+			{
+				if (!m_IsActive)
+				{
+					var data = TDGuideStepTable.GetData (m_GuideStepID);
+
+					if (data.requireStepId > 0)
+					{
+						if (m_Guide.IsStepFinish(data.requireStepId))
+						{
+							ActiveSelf();	
+						}
+					}
+					else
+					{
+						ActiveSelf();
+					}
+				}
+			}
+		}
+
+		private bool ActiveSelf()
+		{
 			if (m_IsActive)
 			{
 				return true;
@@ -36,47 +86,20 @@ namespace PTGame.Framework
 				m_Commands = LoadCommands ();
 			}
 
-            if (m_Commands == null)
-            {
-                return false;
-            }
+			if (m_Commands == null)
+			{
+				return false;
+			}
 
 			m_IsActive = true;
 
-            for (int i = 0; i < m_Commands.Count; ++i)
-            {
-                m_Commands[i].guideStep = this;
-                m_Commands[i].Start();
-            }
+			for (int i = 0; i < m_Commands.Count; ++i)
+			{
+				m_Commands[i].guideStep = this;
+				m_Commands[i].Start();
+			}
 
 			return true;
-        }
-
-        public void Finish()
-        {
-            if (m_Commands == null || m_Commands.Count == 0)
-            {
-                m_Guide.OnStepFinish(this);
-                return;
-            }
-
-            for (int i = 0; i < m_Commands.Count; ++i)
-            {
-                m_Commands[i].OnFinish();
-            }
-
-            m_Guide.OnStepFinish(this);
-        }
-
-		protected override void OnAllTriggerEvent (bool ready)
-		{
-			if (ready)
-			{
-				if (!m_IsActive)
-				{
-					GuideMgr.S.TryActiveStep (this);
-				}
-			}
 		}
 
 		//command format:[c1:p1,p2,p3;c2:p1,p2,p3]

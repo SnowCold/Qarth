@@ -9,7 +9,7 @@ namespace PTGame.Framework
     public class GuideMgr : TMonoSingleton<GuideMgr>
     {
         private List<Guide> m_TrackingGuideList = new List<Guide>();
-        private GuideStep m_CurretStep;
+		private List<TDGuide> m_UnTrackingGuide = new List<TDGuide> ();
 		private Guide m_CurrentGuide;
 
 		public static string GetGuideKey(int guideID)
@@ -47,6 +47,7 @@ namespace PTGame.Framework
 
         public void InitGuideMgr()
         {
+			DataRecord.S.Reset ();
             Log.i("Init[Guide Mgr]");
 
 			var dataList = TDGuideTable.dataList;
@@ -59,11 +60,15 @@ namespace PTGame.Framework
 					continue;
 				}
 
-				if (data.requirePreGuideId > 0)
+				if (data.requireGuideId > 0)
 				{
-					if (IsGuideFinish(data.requirePreGuideId))
+					if (IsGuideFinish(data.requireGuideId))
 					{
 						AddTrackingGuide (new Guide (data.id));
+					}
+					else
+					{
+						m_UnTrackingGuide.Add (data);
 					}
 				}
 				else
@@ -87,19 +92,6 @@ namespace PTGame.Framework
 			InitGuideTriggerFactory ();
         }
 
-        public void TryActiveStep(GuideStep step)
-        {
-            if (m_CurretStep != null)
-            {
-                return;
-            }
-
-			if (step.Active())
-			{
-				m_CurretStep = step;
-			}
-        }
-
 		public void TryActiveGuide(Guide guide)
 		{
 			if (m_CurrentGuide != null)
@@ -115,10 +107,23 @@ namespace PTGame.Framework
 
         public void FinishStep(GuideStep step)
         {
-            if (m_CurretStep == step)
-            {
-                m_CurretStep = null;
-            }
+			int oldKeyStep = DataRecord.S.GetInt (GetLastKeyStepKey (step.guide.guideID));
+
+			if (oldKeyStep >= step.stepID)
+			{
+				return;
+			}
+
+			var data = TDGuideStepTable.GetData (step.stepID);
+
+			if (data != null)
+			{
+				if (data.keyFrame)
+				{
+					DataRecord.S.SetInt (GetLastKeyStepKey (step.guide.guideID), step.stepID);
+					DataRecord.S.Save ();
+				}
+			}
         }
 
 		public void FinishGuide(Guide guide)
@@ -127,18 +132,43 @@ namespace PTGame.Framework
 			{
 				m_CurrentGuide = null;
 			}
+
+			m_TrackingGuideList.Remove(guide);
+
+			DataRecord.S.SetBool(GetGuideKey (guide.guideID), true);
+			DataRecord.S.Save();
+
+			int finishGuideId = guide.guideID;
+
+			if (m_UnTrackingGuide.Count > 0)
+			{
+				for (int i = m_UnTrackingGuide.Count - 1; i >= 0; --i)
+				{
+					if (m_UnTrackingGuide[i].requireGuideId == finishGuideId)
+					{
+						Guide nextGuide = new Guide(m_UnTrackingGuide[i].id);
+						m_UnTrackingGuide.RemoveAt (i);
+						if (nextGuide.StartTrack())
+						{
+							m_TrackingGuideList.Add (nextGuide);
+						}
+					}
+				}
+			}
 		}
 
 		private void InitGuideCommandFactory()
 		{
 			RegisterGuideCommand(typeof(ButtonHackCommand));
-			RegisterGuideCommand (typeof(HighlightUICommand));
+			RegisterGuideCommand(typeof(HighlightUICommand));
+			RegisterGuideCommand(typeof(GuideHandCommand));
+			RegisterGuideCommand(typeof(PlayAudioCommand));
 		}
 
 		private void InitGuideTriggerFactory()
 		{
 			RegisterGuideTrigger(typeof(TopPanelTrigger));
-			RegisterGuideTrigger (typeof(UINodeTrigger));
+			RegisterGuideTrigger(typeof(UINodeVisibleTrigger));
 		}
 
 		public void RegisterGuideCommand(Type type)

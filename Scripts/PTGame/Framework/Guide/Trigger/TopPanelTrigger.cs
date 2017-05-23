@@ -47,8 +47,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            int topUI = UIMgr.S.FindTopPanel<int>(null);
-            if (topUI == m_UIID)
+			if (isReady)
             {
                 m_Listener(true, this);
             }

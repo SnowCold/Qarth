@@ -14,6 +14,7 @@ namespace PTGame.Framework
 		{
 			if (m_IsTracking)
 			{
+				CheckAllTriggerState ();
 				return true;
 			}
 
@@ -34,7 +35,28 @@ namespace PTGame.Framework
 				m_Trigger[i].Start(OnTriggerEvent);
 			}
 
+			CheckAllTriggerState ();
 			return true;
+		}
+
+		public void StopTrack()
+		{
+			if (!m_IsTracking)
+			{
+				return;
+			}
+
+			m_IsTracking = false;
+
+			if (m_Trigger == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < m_Trigger.Count; ++i)
+			{
+				m_Trigger[i].Stop();
+			}
 		}
 
 		private void OnTriggerEvent(bool result, ITrigger trigger)

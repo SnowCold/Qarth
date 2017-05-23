@@ -7,11 +7,9 @@ namespace PTGame.Framework
 {
     public class HighlightUICommand : GuideCommand
     {
-		private string targetPanelName;
-		private string targetUINodePath;
-        private GuideHighlightMask.Shape shape;
-
-        private RectTransform m_TargetNode;
+		private UINodeFinder m_Finder;
+        private GuideHighlightMask.Shape m_Shape;
+		private bool m_NeedClose = true;
 
 		public override void SetParam(string param)
 		{
@@ -25,9 +23,18 @@ namespace PTGame.Framework
 
 			try
 			{
-				this.targetPanelName = pv[0];
-				this.targetUINodePath = pv[1];
-				this.shape = (GuideHighlightMask.Shape)int.Parse(pv[2]);
+				m_Finder = new UINodeFinder();
+				m_Finder.SetParam(pv[0], pv[1]);
+
+				if (pv.Length > 2)
+				{
+					this.m_Shape = (GuideHighlightMask.Shape)int.Parse(pv[2]);
+					if (pv.Length > 3)
+					{
+						m_NeedClose = Helper.String2Bool(pv[3]);
+					}
+				}
+
 			}
 			catch(Exception e)
 			{
@@ -38,36 +45,22 @@ namespace PTGame.Framework
 
         public override void Start()
         {
-            m_TargetNode = GuideHelper.FindTransformInPanel(targetPanelName, targetUINodePath);
+			RectTransform targetNode = m_Finder.FindNode() as RectTransform;
 
-            if (m_TargetNode == null)
+			if (targetNode == null)
             {
                 return;
             }
 
-			UIMgr.S.OpenTopPanel(EngineUI.GuidePanel, OnGuidePanelOpen);
+			UIMgr.S.OpenTopPanel(EngineUI.HighlightMaskPanel, null, targetNode, m_Shape);
 		}
 
         public override void OnFinish()
         {
-            UIMgr.S.ClosePanelAsUIID(EngineUI.GuidePanel);
-        }
-
-        private void OnGuidePanelOpen(AbstractPanel panel)
-        {
-            if (m_TargetNode == null)
-            {
-                return;
-            }
-
-            GuidePanel guidePanel = panel as GuidePanel;
-            if (guidePanel == null)
-            {
-                return;
-            }
-
-            guidePanel.highlightMask.target = m_TargetNode;
-            guidePanel.highlightMask.shape = shape;
+			if (m_NeedClose)
+			{
+				UIMgr.S.ClosePanelAsUIID(EngineUI.HighlightMaskPanel);	
+			}
         }
     }
 }

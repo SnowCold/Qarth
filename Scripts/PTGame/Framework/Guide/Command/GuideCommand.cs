@@ -27,7 +27,7 @@ namespace PTGame.Framework
                 return;
             }
 
-            m_GuideStep.Finish();
+			m_GuideStep.OnCommandFinish();
         }
 
         public virtual void Start()

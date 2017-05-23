@@ -25,7 +25,7 @@ namespace PTGame.Framework
         [SerializeField]
         private float m_Radio;
         [SerializeField]
-        private bool m_IsDirty = true;
+		protected bool m_IsDirty = true;
 
         private Vector4 m_Edge;
         private bool    m_NeedCheckEdge;
@@ -108,7 +108,6 @@ namespace PTGame.Framework
                 m_Material.SetFloat("_CheckEdge", -1);
             }
         }
-	
 	
 	}
 }
