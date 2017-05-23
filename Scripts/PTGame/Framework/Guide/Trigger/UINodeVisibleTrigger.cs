@@ -51,7 +51,8 @@ namespace PTGame.Framework
 			}
 			else 
 			{
-				m_Listener (false, this);
+				Log.w ("Not m_Finder UINode:" + m_Finder.ToString());
+				m_Listener(false, this);
 			}
 		}
 	}

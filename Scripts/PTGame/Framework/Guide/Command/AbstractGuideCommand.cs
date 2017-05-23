@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-    public class GuideCommand
+    public class AbstractGuideCommand
     {
         private GuideStep m_GuideStep;
 

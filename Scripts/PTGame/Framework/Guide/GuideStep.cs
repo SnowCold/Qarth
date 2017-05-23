@@ -10,7 +10,7 @@ namespace PTGame.Framework
         private int m_GuideStepID;
 
         private Guide m_Guide;
-		protected List<GuideCommand> m_Commands;
+		protected List<AbstractGuideCommand> m_Commands;
 		protected bool m_IsActive;
 
         public Guide guide
@@ -103,7 +103,7 @@ namespace PTGame.Framework
 		}
 
 		//command format:[c1:p1,p2,p3;c2:p1,p2,p3]
-		private List<GuideCommand> LoadCommands()
+		private List<AbstractGuideCommand> LoadCommands()
 		{
 			TDGuideStep data = TDGuideStepTable.GetData (m_GuideStepID);
 			if (data == null)
@@ -124,7 +124,7 @@ namespace PTGame.Framework
 				commonParams = data.commonParam.Split (',');
 			}
 
-			List<GuideCommand> result = null;
+			List<AbstractGuideCommand> result = null;
 
 			for (int i = 0; i < msg.Length; ++i)
 			{
@@ -138,7 +138,7 @@ namespace PTGame.Framework
 					continue;
 				}
 
-				GuideCommand command = GuideCommandFactory.S.Create(com[0]);
+				AbstractGuideCommand command = GuideCommandFactory.S.Create(com[0]);
 				if (command == null)
 				{
 					Log.e ("Create Command Failed:" + com [0]);
@@ -175,7 +175,7 @@ namespace PTGame.Framework
 
 				if (result == null)
 				{
-					result = new List<GuideCommand> ();
+					result = new List<AbstractGuideCommand> ();
 				}
 
 				result.Add (command);

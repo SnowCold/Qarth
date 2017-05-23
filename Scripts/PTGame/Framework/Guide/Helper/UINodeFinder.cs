@@ -11,6 +11,11 @@ namespace PTGame.Framework
 		private string m_TargetPanel;
 		private string m_TargetUINode;
 
+		public override string ToString ()
+		{
+			return string.Format("Panel:{0},UI:{1}", m_TargetPanel, m_TargetUINode);
+		}
+
 		public void SetParam(string[] pv)
 		{
 			if (pv.Length == 0)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace PTGame.Framework
 {
-	public class GuideHandCommand : GuideCommand
+	public class GuideHandCommand : AbstractGuideCommand
 	{
 		private UINodeFinder m_Finder;
 		private bool m_NeedClose = true;

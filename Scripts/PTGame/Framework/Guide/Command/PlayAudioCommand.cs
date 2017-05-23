@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-	public class PlayAudioCommand : GuideCommand
+	public class PlayAudioCommand : AbstractGuideCommand
 	{
 		private string m_AudioName;
 		private bool m_FinishStep = false;

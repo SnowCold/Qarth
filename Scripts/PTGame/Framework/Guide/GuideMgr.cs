@@ -45,10 +45,8 @@ namespace PTGame.Framework
 			return data.id - 1;
 		}
 
-        public void InitGuideMgr()
+        public void StartGuideTrack()
         {
-			DataRecord.S.Reset ();
-            Log.i("Init[Guide Mgr]");
 
 			var dataList = TDGuideTable.dataList;
 
@@ -208,7 +206,7 @@ namespace PTGame.Framework
 			}
 
 			GuideCommandFactory.S.RegisterCreator (type.Name, () => {
-				return constructor.Invoke(null) as GuideCommand;
+				return constructor.Invoke(null) as AbstractGuideCommand;
 			});
 		}
 

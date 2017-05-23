@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace PTGame.Framework
 {
     //交互劫持
-    public class ButtonHackCommand : GuideCommand
+    public class ButtonHackCommand : AbstractGuideCommand
     {
 		private UINodeFinder m_Finder;
         private Transform m_TargetButton;

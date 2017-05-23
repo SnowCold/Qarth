@@ -7,7 +7,7 @@ namespace PTGame.Framework
 {
 	public class GuideCommandFactory : TSingleton<GuideCommandFactory>
     {
-		public delegate GuideCommand GuideCommandCreator();
+		public delegate AbstractGuideCommand GuideCommandCreator();
 		private Dictionary<string, GuideCommandCreator> m_CreatorMap = new Dictionary<string, GuideCommandCreator>();
 
 		public void RegisterCreator(string name, GuideCommandCreator creator)
@@ -22,7 +22,7 @@ namespace PTGame.Framework
 		}
 
 
-		public GuideCommand Create(string name)
+		public AbstractGuideCommand Create(string name)
 		{
 			GuideCommandCreator creator = null;
 			if (m_CreatorMap.TryGetValue(name, out creator))

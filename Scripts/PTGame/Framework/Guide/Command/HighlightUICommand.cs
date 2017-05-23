@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-    public class HighlightUICommand : GuideCommand
+    public class HighlightUICommand : AbstractGuideCommand
     {
 		private UINodeFinder m_Finder;
         private GuideHighlightMask.Shape m_Shape;
