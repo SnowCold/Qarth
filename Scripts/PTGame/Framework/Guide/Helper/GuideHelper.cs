@@ -10,14 +10,29 @@ namespace PTGame.Framework
     {
         public static RectTransform FindTransformInPanel(string targetPanelName, string targetUINodePath)
         {
-            string panelName = string.Format("{0}(Clone)", targetPanelName);
-            Transform targetPanel = UIMgr.S.uiRoot.panelRoot.Find(panelName);
+			UIData data = UIDataTable.Get (targetPanelName);
+			if (data == null)
+			{
+				return null;
+			}
+            //string panelName = string.Format("{0}(Clone)", targetPanelName);
+			AbstractPanel panel = UIMgr.S.FindPanel (data.uiID);//UIMgr.S.uiRoot.panelRoot.Find(targetPanelName);
+			if (panel == null)
+			{
+				return null;
+			}
 
+			Transform targetPanel = panel.transform;
             if (targetPanel == null)
             {
 				//Log.w("# FindTransformInPanel Not Find Panel:" + panelName);
                 return null;
             }
+
+			if (string.IsNullOrEmpty(targetUINodePath))
+			{
+				return targetPanel as RectTransform;
+			}
 
             RectTransform result = targetPanel.Find(targetUINodePath) as RectTransform;
 

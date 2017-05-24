@@ -181,7 +181,7 @@ System.Reflection.BindingFlags.Public);
             return info.abstractPanel;
         }
 
-        public int FindTopPanel<T>(T[] filter = null) where T : IConvertible
+		public int FindTopPanel<T>(T[] filter = null, bool white = true) where T : IConvertible
         {
             int result = -1;
             if (filter == null)
@@ -195,11 +195,30 @@ System.Reflection.BindingFlags.Public);
             {
                 for (int i = m_ActivePanelInfoList.Count - 1; i >= 0; --i)
                 {
+					bool inArray = false;
                     if (IsValueInArray(filter, m_ActivePanelInfoList[i].uiID))
                     {
-                        result = m_ActivePanelInfoList[i].uiID;
-                        break;
+                        //result = m_ActivePanelInfoList[i].uiID;
+                        //break;
+						inArray = true;
                     }
+
+					if (white)
+					{
+						if (inArray)
+						{
+							result = m_ActivePanelInfoList [i].uiID;
+							break;	
+						}
+					}
+					else
+					{
+						if (!inArray)
+						{
+							result = m_ActivePanelInfoList [i].uiID;
+							break;
+						}
+					}
                 }
             }
 

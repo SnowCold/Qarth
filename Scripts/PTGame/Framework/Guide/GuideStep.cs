@@ -40,14 +40,13 @@ namespace PTGame.Framework
 			{
 				return;
 			}
-
 			m_IsActive = false;
 
 			StopTrack ();
 
 			for (int i = 0; i < m_Commands.Count; ++i)
 			{
-				m_Commands[i].OnFinish();
+				m_Commands[i].Finish(false);
 			}
         }
 
@@ -70,6 +69,23 @@ namespace PTGame.Framework
 					{
 						ActiveSelf();
 					}
+				}
+			}
+			else
+			{
+				if (!m_IsActive)
+				{
+					return;
+				}
+
+				m_IsActive = false;
+				//Log.e ("Force Finish Step:" + m_GuideStepID);
+				if (m_Commands != null)
+				{
+					for (int i = 0; i < m_Commands.Count; ++i)
+					{
+						m_Commands[i].Finish(true);
+					}	
 				}
 			}
 		}
@@ -117,11 +133,40 @@ namespace PTGame.Framework
 				return null;
 			}
 				
-			string[] commonParams = null;
+			object[] commonParams = null;
 
 			if (data.commonParam != null)
 			{
-				commonParams = data.commonParam.Split (',');
+				string[] comParamString = data.commonParam.Split(';');
+				if (comParamString.Length > 0)
+				{
+					commonParams = new object[comParamString.Length];
+					for (int i = 0; i < comParamString.Length; ++i)
+					{
+						if (comParamString[i].Contains(":"))
+						{
+							string[] dynaParams = comParamString [i].Split (':');
+							IRuntimeParam runtimeParam = RuntimeParamFactory.S.Create (dynaParams [0]);
+							if (runtimeParam == null)
+							{
+								Log.e ("Create RuntimeParam Failed:" + dynaParams[0]);
+							}
+							else
+							{
+								if (dynaParams.Length > 1)
+								{
+									string[] findParams = dynaParams [1].Split(',');
+									runtimeParam.SetParam(findParams);
+								}	
+							}
+							commonParams[i] = runtimeParam;
+						}
+						else
+						{
+							commonParams[i] = comParamString[i];
+						}
+					}
+				}
 			}
 
 			List<AbstractGuideCommand> result = null;
@@ -148,29 +193,41 @@ namespace PTGame.Framework
 				if (com.Length > 1)
 				{
 					string[] paramsArray = com[1].Split (',');
+
+					object[] resultArray = null;
 					if (commonParams != null)
 					{
+						resultArray = new object[paramsArray.Length];
 						if (paramsArray.Length > 0)
 						{
 							for(int p = 0; p < paramsArray.Length; ++p)
 							{
-								if (paramsArray[p].StartsWith("#"))
+								string pps = paramsArray[p] as string;
+								if (pps.StartsWith("#"))
 								{
-									int index = int.Parse (paramsArray[p].Substring(1));
+									int index = int.Parse (pps.Substring(1));
 									if (index < commonParams.Length)
 									{
-										paramsArray[p] = commonParams [index];
+										resultArray[p] = commonParams[index];
 									}
 									else
 									{
 										Log.w("Invalid Param For Command:" + com[0]);
 									}
 								}
+								else
+								{
+									resultArray [p] = paramsArray [p];
+								}
 							}
 						}	
 					}
+					else
+					{
+						resultArray = paramsArray;
+					}
 					//处理参数
-					command.SetParam(paramsArray);
+					command.SetParam(resultArray);
 				}
 
 				if (result == null)

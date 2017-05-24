@@ -7,13 +7,12 @@ namespace PTGame.Framework
 {
 	public class UINodeVisibleTrigger : ITrigger
 	{
-		private UINodeFinder m_Finder;
+		private IUINodeFinder m_Finder;
 		private Action<bool, ITrigger> m_Listener;
 
-		public void SetParam(string[] param)
+		public void SetParam(object[] param)
 		{
-			m_Finder = new UINodeFinder ();
-			m_Finder.SetParam(param);
+			m_Finder = param [0] as IUINodeFinder;
 		}
 
 		public void Start(Action<bool, ITrigger> l)
@@ -34,7 +33,7 @@ namespace PTGame.Framework
 		{
 			get
 			{
-				return m_Finder.FindNode() != null;
+				return m_Finder.FindNode(true) != null;
 			}
 		}
 
@@ -51,7 +50,7 @@ namespace PTGame.Framework
 			}
 			else 
 			{
-				Log.w ("Not m_Finder UINode:" + m_Finder.ToString());
+				//Log.w ("Not m_Finder UINode:" + m_Finder.ToString());
 				m_Listener(false, this);
 			}
 		}

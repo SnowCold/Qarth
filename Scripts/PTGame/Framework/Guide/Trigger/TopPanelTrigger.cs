@@ -7,12 +7,15 @@ namespace PTGame.Framework
 {
     public class TopPanelTrigger : ITrigger
     {
+		
+
         private int m_UIID = 0;
         private Action<bool, ITrigger> m_Listener;
 
-		public void SetParam(string[] param)
+		public void SetParam(object[] param)
 		{
-			m_UIID = UIDataTable.PanelName2UIID (param[0]);
+			string name = param [0] as string;
+			m_UIID = UIDataTable.PanelName2UIID (name);
 		}
 
         public void Start(Action<bool, ITrigger> l)
@@ -31,12 +34,15 @@ namespace PTGame.Framework
         {
             get
             {
-                int topUI = UIMgr.S.FindTopPanel<int>(null);
+				return UIMgr.S.FindPanel (m_UIID) != null;
+				/*
+				int topUI = UIMgr.S.FindTopPanel<int>(null, false);
 				if (topUI == m_UIID && topUI >= 0)
                 {
                     return true;
                 }
                 return false;
+                */
             }
         }
 

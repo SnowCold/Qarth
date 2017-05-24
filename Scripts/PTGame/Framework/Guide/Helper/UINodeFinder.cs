@@ -5,11 +5,13 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-	public class UINodeFinder
+	public class UINodeFinder : IUINodeFinder
 	{
 
 		private string m_TargetPanel;
 		private string m_TargetUINode;
+
+		private Transform m_Result;
 
 		public override string ToString ()
 		{
@@ -36,9 +38,14 @@ namespace PTGame.Framework
 
 		}
 
-		public Transform FindNode()
+		public Transform FindNode(bool search)
 		{
-			return GuideHelper.FindTransformInPanel(m_TargetPanel, m_TargetUINode);
+			//if (search)
+			{
+				m_Result = GuideHelper.FindTransformInPanel(m_TargetPanel, m_TargetUINode);
+			}
+
+			return m_Result;
 		}
 
 

@@ -7,11 +7,11 @@ namespace PTGame.Framework
 {
 	public class GuideHandCommand : AbstractGuideCommand
 	{
-		private UINodeFinder m_Finder;
+		private IUINodeFinder m_Finder;
 		private bool m_NeedClose = true;
 		private Vector3 m_Offset;
 
-		public override void SetParam (string[] pv)
+		public override void SetParam (object[] pv)
 		{
 			if (pv.Length == 0)
 			{
@@ -21,17 +21,16 @@ namespace PTGame.Framework
 
 			try
 			{
-				m_Finder = new UINodeFinder();
-				m_Finder.SetParam(pv);
+				m_Finder = pv[0] as IUINodeFinder;
+
+				if (pv.Length > 1)
+				{
+					m_NeedClose = Helper.String2Bool((string)pv[1]);
+				}
 
 				if (pv.Length > 2)
 				{
-					m_NeedClose = Helper.String2Bool(pv[2]);
-				}
-
-				if (pv.Length > 3)
-				{
-					m_Offset = Helper.String2Vector3(pv[3], '|');
+					m_Offset = Helper.String2Vector3((string)pv[2], '|');
 				}
 
 			}
@@ -41,9 +40,9 @@ namespace PTGame.Framework
 			}
 		}
 
-		public override void Start()
+		protected override void OnStart()
 		{
-			RectTransform targetNode = m_Finder.FindNode() as RectTransform;
+			RectTransform targetNode = m_Finder.FindNode(false) as RectTransform;
 
 			if (targetNode == null)
 			{
@@ -53,9 +52,9 @@ namespace PTGame.Framework
 			UIMgr.S.OpenTopPanel(EngineUI.GuideHandPanel, null, targetNode, m_Offset);
 		}
 
-		public override void OnFinish ()
+		protected override void OnFinish (bool forceClean)
 		{
-			if (m_NeedClose)
+			if (m_NeedClose || forceClean)
 			{
 				UIMgr.S.ClosePanelAsUIID (EngineUI.GuideHandPanel);
 			}

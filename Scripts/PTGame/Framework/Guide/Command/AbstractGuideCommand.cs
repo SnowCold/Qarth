@@ -8,6 +8,7 @@ namespace PTGame.Framework
     public class AbstractGuideCommand
     {
         private GuideStep m_GuideStep;
+		private bool m_IsRunning = false;
 
         public GuideStep guideStep
         {
@@ -15,7 +16,7 @@ namespace PTGame.Framework
             set { m_GuideStep = value; }
         }
 
-		public virtual void SetParam(string[] pv)
+		public virtual void SetParam(object[] pv)
 		{
 			
 		}
@@ -30,15 +31,38 @@ namespace PTGame.Framework
 			m_GuideStep.OnCommandFinish();
         }
 
-        public virtual void Start()
+        public void Start()
         {
-            //如果需要Update 直接用Timer就可以
+			if (m_IsRunning)
+			{
+				return;
+			}
 
+			m_IsRunning = true;
+			OnStart ();
         }
 
-        public virtual void OnFinish()
+		public void Finish(bool forceClean)
         {
+			if (!m_IsRunning)
+			{
+				return;
+			}
 
+			m_IsRunning = false;
+
+			OnFinish (forceClean);
         }
+
+		protected virtual void OnStart()
+		{
+			
+		}
+
+		protected virtual void OnFinish(bool forceClean)
+		{
+			
+		}
+
     }
 }

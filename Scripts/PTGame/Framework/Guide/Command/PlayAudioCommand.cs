@@ -11,7 +11,7 @@ namespace PTGame.Framework
 		private bool m_FinishStep = false;
 		private AudioUnit m_AudioUnit;
 
-		public override void SetParam (string[] pv)
+		public override void SetParam (object[] pv)
 		{
 			if (pv.Length == 0)
 			{
@@ -19,14 +19,14 @@ namespace PTGame.Framework
 				return;
 			}
 
-			m_AudioName = pv[0];
+			m_AudioName = (string)pv[0];
 			if (pv.Length > 1)
 			{
-				m_FinishStep = Helper.String2Bool(pv[1]);
+				m_FinishStep = Helper.String2Bool((string)pv[1]);
 			}
 		}
 
-		public override void Start()
+		protected override void OnStart()
 		{
 			m_AudioUnit = AudioMgr.S.PlaySound(m_AudioName, false, OnAoundPlayFinish);
 		}
@@ -40,7 +40,7 @@ namespace PTGame.Framework
 			}
 		}
 
-		public override void OnFinish()
+		protected override void OnFinish(bool forceClean)
 		{
 			if (m_AudioUnit != null)
 			{

@@ -10,21 +10,20 @@ namespace PTGame.Framework
     //交互劫持
     public class ButtonHackCommand : AbstractGuideCommand
     {
-		private UINodeFinder m_Finder;
+		private IUINodeFinder m_Finder;
         private Transform m_TargetButton;
         private GraphicRaycaster m_GraphicRaycaster;
         private bool m_HasDown = false;
         private static List<RaycastResult> m_Result = new List<RaycastResult>();
 
-		public override void SetParam (string[] param)
+		public override void SetParam (object[] param)
 		{
-			m_Finder = new UINodeFinder ();
-			m_Finder.SetParam(param);
+			m_Finder = param[0] as IUINodeFinder;
 		}
 
-        public override void Start()
+		protected override void OnStart()
         {
-			m_TargetButton = m_Finder.FindNode ();
+			m_TargetButton = m_Finder.FindNode (false);
 
             if (m_TargetButton == null)
             {
@@ -42,7 +41,7 @@ namespace PTGame.Framework
 			AppLoopMgr.S.onUpdate += Update;
         }
         
-		public override void OnFinish ()
+		protected override void OnFinish (bool forceClean)
 		{
 			UIMgr.S.topPanelHideMask = PanelHideMask.None;
 			AppLoopMgr.S.onUpdate -= Update;
@@ -50,8 +49,9 @@ namespace PTGame.Framework
 
         private void OnClickUpOnTarget()
         {
+			FinishStep ();
             ExecuteEvents.Execute<IPointerClickHandler>(m_TargetButton.gameObject, new PointerEventData(UnityEngine.EventSystems.EventSystem.current), ExecuteEvents.pointerClickHandler);
-            FinishStep();
+            //FinishStep();
         }
 
         private void OnClickDownOnTarget()

@@ -47,6 +47,7 @@ namespace PTGame.Framework
 
         public void StartGuideTrack()
         {
+			DataRecord.S.Reset ();
 
 			var dataList = TDGuideTable.dataList;
 
@@ -88,6 +89,7 @@ namespace PTGame.Framework
         {
 			InitGuideCommandFactory ();
 			InitGuideTriggerFactory ();
+			InitRuntimeParamFactory ();
         }
 
 		public void TryActiveGuide(Guide guide)
@@ -193,6 +195,27 @@ namespace PTGame.Framework
 		{
 			RegisterGuideTrigger(typeof(TopPanelTrigger));
 			RegisterGuideTrigger(typeof(UINodeVisibleTrigger));
+		}
+
+		private void InitRuntimeParamFactory()
+		{
+			RegisterRuntimeParam (typeof(UINodeFinder));
+			RegisterRuntimeParam (typeof(MonoFuncCall));
+		}
+
+		public void RegisterRuntimeParam(Type type)
+		{
+			Type[] ty = new Type[0];
+			var constructor = type.GetConstructor(ty);
+
+			if (constructor == null)
+			{
+				return;
+			}
+
+			RuntimeParamFactory.S.RegisterCreator(type.Name, () => {
+				return constructor.Invoke(null) as IRuntimeParam;
+			});
 		}
 
 		public void RegisterGuideCommand(Type type)

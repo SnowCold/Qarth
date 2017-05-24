@@ -12,12 +12,13 @@ namespace PTGame.Framework
 		protected List<GuideStep> m_GuideSteps;
 		private bool m_IsActive = false;
 		private int m_LastFinishStepID = 0;
+		private IUINodeFinder m_UINodeFinder;
 
 		public int guideID
 		{
 			get { return m_GuideId; }
 		}
-
+			
         public Guide(int guideID)
         {
             m_GuideId = guideID;

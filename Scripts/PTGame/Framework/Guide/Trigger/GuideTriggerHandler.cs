@@ -97,11 +97,41 @@ namespace PTGame.Framework
 				return null;
 			}
 
-			string[] commonParams = null;
+			object[] commonParams = null;
 
 			if (common != null)
 			{
-				commonParams = common.Split (',');
+				string[] comParamString = common.Split(';');
+				if (comParamString.Length > 0)
+				{
+					commonParams = new object[comParamString.Length];
+					for (int i = 0; i < comParamString.Length; ++i)
+					{
+						if (comParamString[i].Contains(":"))
+						{
+							string[] dynaParams = comParamString [i].Split (':');
+							IRuntimeParam runtimeParam = RuntimeParamFactory.S.Create (dynaParams[0]);
+							if (runtimeParam == null)
+							{
+								Log.e ("Create Runtime Param Failed:" + dynaParams[0]);
+							}
+							else
+							{
+								if (dynaParams.Length > 1)
+								{
+									string[] findParams = dynaParams [1].Split(',');
+									runtimeParam.SetParam(findParams);
+								}	
+							}
+
+							commonParams[i] = runtimeParam;
+						}
+						else
+						{
+							commonParams[i] = comParamString[i];
+						}
+					}
+				}
 			}
 
 			List<ITrigger> result = null;
@@ -127,31 +157,43 @@ namespace PTGame.Framework
 
 				if (com.Length > 1)
 				{
-
 					string[] paramsArray = com[1].Split (',');
+
+					object[] resultArray = null;
 					if (commonParams != null)
 					{
 						if (paramsArray.Length > 0)
 						{
+							resultArray = new object[paramsArray.Length];
+							
 							for(int p = 0; p < paramsArray.Length; ++p)
 							{
-								if (paramsArray[p].StartsWith("#"))
+								string pps = paramsArray [p] as string;
+								if (pps.StartsWith("#"))
 								{
-									int index = int.Parse (paramsArray[p].Substring(1));
+									int index = int.Parse (pps.Substring(1));
 									if (index < commonParams.Length)
 									{
-										paramsArray[p] = commonParams [index];
+										resultArray[p] = commonParams [index];
 									}
 									else
 									{
 										Log.w("Invalid Param For Trigger:" + com[0]);
 									}
 								}
+								else
+								{
+									resultArray [p] = paramsArray [p];
+								}
 							}
 						}	
 					}
+					else
+					{
+						resultArray = paramsArray;
+					}
 					//处理参数
-					trigger.SetParam(paramsArray);
+					trigger.SetParam(resultArray);
 				}
 
 				if (result == null)
