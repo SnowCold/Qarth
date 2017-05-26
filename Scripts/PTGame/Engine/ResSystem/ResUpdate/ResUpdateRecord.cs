@@ -156,6 +156,8 @@ namespace PTGame.Framework
                 byte[] writeDataArray = UTF8Encoding.UTF8.GetBytes(writeData);
                 m_RecordFileStream.Write(writeDataArray, 0, writeDataArray.Length);
 
+                m_RecordFileStream.Flush();
+
                 RecordCell cell = new RecordCell();
                 cell.SetData(name, md5, fileSize, buildTime);
                 m_UpdateRecordList.Add(cell);

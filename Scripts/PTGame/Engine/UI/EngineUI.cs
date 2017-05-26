@@ -15,5 +15,6 @@ namespace PTGame.Framework
         TransitionPanel,
         HighlightMaskPanel,
 		GuideHandPanel,
+        GuidePanel
     }
 }
