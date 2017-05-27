@@ -16,7 +16,6 @@ namespace PTGame.Framework
             {
                 return null;
             }
-
             float duration = context.Length * speed;
 
             label.text = "";
@@ -51,5 +50,20 @@ namespace PTGame.Framework
 
             return DOTween.To(getter, setter, 1, duration);
         }
+
+		public static Tweener DoSpriteScale(Image image,Run<bool> callback,bool bWin)
+		{
+			if (image == null)
+			{
+				return null;
+			}
+
+			return image.transform.DOScale(Vector3.one,0.8f).OnComplete(()=>{
+				image.transform.DOScale(Vector3.zero,0.8f).SetDelay(2f).OnComplete(()=>{
+					if(callback != null)
+						callback(bWin);
+				});
+			});
+		}
     }
 }
