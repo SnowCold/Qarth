@@ -109,8 +109,8 @@ namespace PTGame.Framework
 					{
 						if (comParamString[i].Contains(":"))
 						{
-							string[] dynaParams = comParamString [i].Split (':');
-							IRuntimeParam runtimeParam = RuntimeParamFactory.S.Create (dynaParams[0]);
+							string[] dynaParams = comParamString [i].Split(':');
+							IRuntimeParam runtimeParam = RuntimeParamFactory.S.Create(dynaParams[0]);
 							if (runtimeParam == null)
 							{
 								Log.e ("Create Runtime Param Failed:" + dynaParams[0]);
@@ -119,8 +119,9 @@ namespace PTGame.Framework
 							{
 								if (dynaParams.Length > 1)
 								{
-									string[] findParams = dynaParams [1].Split(',');
-									runtimeParam.SetParam(findParams);
+									//string[] findParams = dynaParams[1].Split(',');
+                                    object[] resultArray = GuideConfigParamProcess.ProcessParam(dynaParams[1], commonParams);
+									runtimeParam.SetParam(resultArray);
 								}	
 							}
 
@@ -151,47 +152,14 @@ namespace PTGame.Framework
 				ITrigger trigger = GuideTriggerFactory.S.Create(com[0]);
 				if (trigger == null)
 				{
-					Log.e ("Create Trigger Failed:" + com [0]);
+					Log.e ("Create Trigger Failed:" + com[0]);
 					continue;
 				}
 
 				if (com.Length > 1)
 				{
-					string[] paramsArray = com[1].Split (',');
-
-					object[] resultArray = null;
-					if (commonParams != null)
-					{
-						if (paramsArray.Length > 0)
-						{
-							resultArray = new object[paramsArray.Length];
-							
-							for(int p = 0; p < paramsArray.Length; ++p)
-							{
-								string pps = paramsArray [p] as string;
-								if (pps.StartsWith("#"))
-								{
-									int index = int.Parse (pps.Substring(1));
-									if (index < commonParams.Length)
-									{
-										resultArray[p] = commonParams [index];
-									}
-									else
-									{
-										Log.w("Invalid Param For Trigger:" + com[0]);
-									}
-								}
-								else
-								{
-									resultArray [p] = paramsArray [p];
-								}
-							}
-						}	
-					}
-					else
-					{
-						resultArray = paramsArray;
-					}
+					object[] resultArray = GuideConfigParamProcess.ProcessParam(com[1], commonParams);
+					
 					//处理参数
 					trigger.SetParam(resultArray);
 				}
@@ -201,7 +169,7 @@ namespace PTGame.Framework
 					result = new List<ITrigger> ();
 				}
 
-				result.Add (trigger);
+				result.Add(trigger);
 			}
 
 			return result;

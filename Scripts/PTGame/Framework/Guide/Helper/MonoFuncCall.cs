@@ -18,25 +18,24 @@ namespace PTGame.Framework
 			return string.Format("Panel:{0},UI:{1}", m_TypeName, m_FuncName);
 		}
 
-		public void SetParam(string[] param)
+		public void SetParam(object[] param)
 		{
-			if (param.Length < 4)
+			if (param.Length < 3)
 			{
 				return;
 			}
 
-			m_Finder = new UINodeFinder();
-			m_Finder.SetParam(param);
+            m_Finder = param[0] as UINodeFinder;
 
-			m_TypeName = param[2];
-			m_FuncName = param[3];
+			m_TypeName = param[1] as string;
+			m_FuncName = param[2] as string;
 
-			if (param.Length > 4)
+			if (param.Length > 3)
 			{
-				m_FuncParam = new string[param.Length - 4];
+				m_FuncParam = new string[param.Length - 3];
 				for (int i = 0; i < m_FuncParam.Length; ++i)
 				{
-					m_FuncParam [i] = param[i + 4];
+					m_FuncParam[i] = param[i + 3] as string;
 				}
 			}
 		}
@@ -45,12 +44,11 @@ namespace PTGame.Framework
 		{
 			//if (search)
 			{
-				m_Result = FindNodeInner ();
+				m_Result = FindNodeInner();
 			}
 
 			return m_Result;
 		}
-
 
 		private Transform FindNodeInner()
 		{
