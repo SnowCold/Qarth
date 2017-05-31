@@ -241,7 +241,16 @@ namespace PTGame.Framework
             {
                 AssetData old = GetAssetData(data.assetName);
 
-                Log.e("Already Add AssetData :{0} \n OldAB:{1}      NewAB:{2}", data.assetName, m_ABUnitArray[old.assetBundleIndex].abName, m_ABUnitArray[data.assetBundleIndex].abName);
+                string msg = string.Format("Already Add AssetData :{0} \n OldAB:{1}      NewAB:{2}", data.assetName, m_ABUnitArray[old.assetBundleIndex].abName, m_ABUnitArray[data.assetBundleIndex].abName);
+
+                if (m_ABUnitArray[old.assetBundleIndex].abName.Contains("anim"))
+                {
+                    Log.w(msg);
+                }
+                else
+                {
+                    Log.e(msg);
+                }
                 return false;
             }
 
