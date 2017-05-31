@@ -146,6 +146,11 @@ namespace PTGame.Framework
 
             yield return m_WWW;
 
+            if (m_WWW == null)
+            {
+                yield break;
+            }
+
             if (m_WWW.error != null)
             {
                 string errorMsg = string.Format("WWWDownload :{0}, WWW Errors:{1}", m_Uri, m_WWW.error);
@@ -154,6 +159,11 @@ namespace PTGame.Framework
 
                 HandleEvent(DownloadEvent.Error, errorMsg);
 
+                yield break;
+            }
+
+            if (m_WWW == null)
+            {
                 yield break;
             }
 
