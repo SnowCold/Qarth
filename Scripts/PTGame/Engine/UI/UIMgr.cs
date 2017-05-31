@@ -55,7 +55,8 @@ namespace PTGame.Framework
 				if (m_TopPanelHideMask != value)
 				{
 					m_TopPanelHideMask = value;
-					ReSortPanel();
+                    SetPanelSortingOrderDirty();
+                    //ReSortPanel();
 				}
 			}
 		}
