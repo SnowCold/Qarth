@@ -58,7 +58,7 @@ namespace PTGame.Framework
 				return null;
 			}
 
-			Type targetType = Type.GetType("PTGame.PaiLogic." + m_TypeName);
+			Type targetType = Type.GetType(m_TypeName);
 
 			if (targetType == null)
 			{
