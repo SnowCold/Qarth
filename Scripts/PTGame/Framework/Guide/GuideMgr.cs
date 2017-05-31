@@ -29,13 +29,13 @@ namespace PTGame.Framework
 
 		public int GetGuideLastStep(int guideID)
 		{
-			int stepId = DataRecord.S.GetInt (GetLastKeyStepKey (guideID));
+			int stepId = DataRecord.S.GetInt(GetLastKeyStepKey (guideID));
 			if (stepId > 0)
 			{
 				return stepId;
 			}
 
-			var data = TDGuideStepTable.GetGuideFirstStep (guideID);
+			var data = TDGuideStepTable.GetGuideFirstStep(guideID);
 
 			if (data == null)
 			{
@@ -63,7 +63,7 @@ namespace PTGame.Framework
 				{
 					if (IsGuideFinish(data.requireGuideId))
 					{
-						AddTrackingGuide (new Guide (data.id));
+						AddTrackingGuide(new Guide(data.id));
 					}
 					else
 					{
@@ -72,7 +72,7 @@ namespace PTGame.Framework
 				}
 				else
 				{
-					AddTrackingGuide(new Guide (data.id));
+					AddTrackingGuide(new Guide(data.id));
 				}
 			}
 
@@ -87,9 +87,9 @@ namespace PTGame.Framework
 
         public override void OnSingletonInit()
         {
-			InitGuideCommandFactory ();
-			InitGuideTriggerFactory ();
-			InitRuntimeParamFactory ();
+			InitGuideCommandFactory();
+			InitGuideTriggerFactory();
+			InitRuntimeParamFactory();
         }
 
 		public void TryActiveGuide(Guide guide)
@@ -107,7 +107,7 @@ namespace PTGame.Framework
 
         public void FinishStep(GuideStep step)
         {
-			int oldKeyStep = DataRecord.S.GetInt (GetLastKeyStepKey (step.guide.guideID));
+			int oldKeyStep = DataRecord.S.GetInt(GetLastKeyStepKey (step.guide.guideID));
 
 			if (oldKeyStep >= step.stepID)
 			{
@@ -115,19 +115,19 @@ namespace PTGame.Framework
 			}
 
 			//TODO:需要找到最近的关键帧并保存
-			var data = TDGuideStepTable.GetData (step.stepID);
+			var data = TDGuideStepTable.GetData(step.stepID);
 
 			if (data != null)
 			{
 				if (data.keyFrame)
 				{
-					DataRecord.S.SetInt (GetLastKeyStepKey (step.guide.guideID), step.stepID);
-					DataRecord.S.Save ();
+					DataRecord.S.SetInt(GetLastKeyStepKey(step.guide.guideID), step.stepID);
+					DataRecord.S.Save();
 				}
 				else
 				{
 					//纪录最近的keyframe
-					var allStep = TDGuideStepTable.GetDataAsGuideID (step.guide.guideID);
+					var allStep = TDGuideStepTable.GetDataAsGuideID(step.guide.guideID);
 					for (int i = allStep.Count - 1; i >= 0; --i)
 					{
 						if (!allStep[i].keyFrame)
@@ -142,8 +142,8 @@ namespace PTGame.Framework
 
 						if (allStep[i].id <= data.id)
 						{
-							DataRecord.S.SetInt (GetLastKeyStepKey (step.guide.guideID), allStep[i].id);
-							DataRecord.S.Save ();
+							DataRecord.S.SetInt(GetLastKeyStepKey(step.guide.guideID), allStep[i].id);
+							DataRecord.S.Save();
 							break;
 						}
 
@@ -161,7 +161,7 @@ namespace PTGame.Framework
 
 			m_TrackingGuideList.Remove(guide);
 
-			DataRecord.S.SetBool(GetGuideKey (guide.guideID), true);
+			DataRecord.S.SetBool(GetGuideKey(guide.guideID), true);
 			DataRecord.S.Save();
 
 			int finishGuideId = guide.guideID;
@@ -173,10 +173,10 @@ namespace PTGame.Framework
 					if (m_UnTrackingGuide[i].requireGuideId == finishGuideId)
 					{
 						Guide nextGuide = new Guide(m_UnTrackingGuide[i].id);
-						m_UnTrackingGuide.RemoveAt (i);
+						m_UnTrackingGuide.RemoveAt(i);
 						if (nextGuide.StartTrack())
 						{
-							m_TrackingGuideList.Add (nextGuide);
+							m_TrackingGuideList.Add(nextGuide);
 						}
 					}
 				}
@@ -199,8 +199,8 @@ namespace PTGame.Framework
 
 		private void InitRuntimeParamFactory()
 		{
-			RegisterRuntimeParam (typeof(UINodeFinder));
-			RegisterRuntimeParam (typeof(MonoFuncCall));
+			RegisterRuntimeParam(typeof(UINodeFinder));
+			RegisterRuntimeParam(typeof(MonoFuncCall));
 		}
 
 		public void RegisterRuntimeParam(Type type)
@@ -228,7 +228,7 @@ namespace PTGame.Framework
 				return;
 			}
 
-			GuideCommandFactory.S.RegisterCreator (type.Name, () => {
+			GuideCommandFactory.S.RegisterCreator(type.Name, () => {
 				return constructor.Invoke(null) as AbstractGuideCommand;
 			});
 		}
@@ -242,7 +242,7 @@ namespace PTGame.Framework
 				return;
 			}
 
-			GuideTriggerFactory.S.RegisterCreator (type.Name, () => {
+			GuideTriggerFactory.S.RegisterCreator(type.Name, () => {
 				return constructor.Invoke(null) as ITrigger;
 			});
 		}

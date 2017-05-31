@@ -12,7 +12,7 @@ namespace PTGame.Framework
 
 		public void SetParam(object[] param)
 		{
-			m_Finder = param [0] as IUINodeFinder;
+			m_Finder = param[0] as IUINodeFinder;
 		}
 
 		public void Start(Action<bool, ITrigger> l)

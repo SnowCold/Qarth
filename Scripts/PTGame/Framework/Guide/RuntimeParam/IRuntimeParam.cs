@@ -7,7 +7,7 @@ namespace PTGame.Framework
 {
 	public interface IRuntimeParam
 	{
-		void SetParam (string[] param);
+		void SetParam(object[] param);
 	}
 }
 

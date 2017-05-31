@@ -19,7 +19,7 @@ namespace PTGame.Framework
 				return;
 			}
 
-			m_CreatorMap.Add (name, creator);
+			m_CreatorMap.Add(name, creator);
 		}
 
 
@@ -28,7 +28,7 @@ namespace PTGame.Framework
 			RuntimeParamCreator creator = null;
 			if (m_CreatorMap.TryGetValue(name, out creator))
 			{
-				return creator ();
+				return creator();
 			}
 
 			return null;
