@@ -49,7 +49,7 @@ namespace PTGame.Framework
         private Action m_OkListener;
         private Action m_CancelListener;
 
-        private MsgBoxUIStyle m_UIStyle = MsgBoxUIStyle.NONE;
+        private MsgBoxUIStyle m_UIStyle = MsgBoxUIStyle.Default;
 
         public MsgBoxUIStyle uiStyle
         {
@@ -194,7 +194,7 @@ namespace PTGame.Framework
 
         protected override void OnOpen()
         {
-            uiStyle = MsgBoxUIStyle.Default;
+            uiStyle = m_UIStyle;
         }
 
         protected override void OnClose()
