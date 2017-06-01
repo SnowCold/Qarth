@@ -12,6 +12,7 @@ namespace PTGame.Framework
         {
             Square = 1,
             Circle = 2,
+            CircleSquare = 3,
         }
 
         [SerializeField]
@@ -25,6 +26,8 @@ namespace PTGame.Framework
         [SerializeField]
         private float m_Radio;
         [SerializeField]
+        private float m_RadiumRadio = 1.0f;
+        [SerializeField]
 		protected bool m_IsDirty = true;
 
         private Vector4 m_Edge;
@@ -34,6 +37,12 @@ namespace PTGame.Framework
         {
             get { return m_Shape; }
             set { m_Shape = value; }
+        }
+
+        public float radiumRadio
+        {
+            get { return m_RadiumRadio; }
+            set { m_RadiumRadio = value; }
         }
 
         public RectTransform target
@@ -93,10 +102,18 @@ namespace PTGame.Framework
             m_Material.SetFloat("_CenterX", center.x);
             m_Material.SetFloat("_CenterY", center.y);
 
-            m_Material.SetFloat("_Width", (uvPos[1].x - uvPos[0].x) * 0.5f);
-            m_Material.SetFloat("_Height", (uvPos[1].y - uvPos[0].y) * 0.5f);
+            float w = (uvPos[1].x - uvPos[0].x) * 0.49f;
+            float h = (uvPos[1].y - uvPos[0].y) * 0.49f;
+            m_Material.SetFloat("_Width", w);
+            m_Material.SetFloat("_Height", h);
             m_Material.SetFloat("_Radio", m_Radio);
             m_Material.SetInt("_Shape", (int)m_Shape);
+
+            if (m_Shape == Shape.CircleSquare)
+            {
+                float r = Mathf.Min(w, h);
+                m_Material.SetFloat("_Radium", r * m_RadiumRadio);
+            }
 
             if (m_NeedCheckEdge)
             {
