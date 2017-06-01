@@ -9,8 +9,7 @@ namespace PTGame.Framework
     public class GuideMgr : TMonoSingleton<GuideMgr>
     {
         private List<Guide> m_TrackingGuideList = new List<Guide>();
-		private List<TDGuide> m_UnTrackingGuide = new List<TDGuide> ();
-		private Guide m_CurrentGuide;
+		private List<TDGuide> m_UnTrackingGuide = new List<TDGuide>();
 
 		public static string GetGuideKey(int guideID)
 		{
@@ -92,19 +91,6 @@ namespace PTGame.Framework
 			InitRuntimeParamFactory();
         }
 
-		public void TryActiveGuide(Guide guide)
-		{
-			if (m_CurrentGuide != null)
-			{
-				return;
-			}
-
-			if (guide.Active())
-			{
-				m_CurrentGuide = guide;
-			}
-		}
-
         public void FinishStep(GuideStep step)
         {
 			int oldKeyStep = DataRecord.S.GetInt(GetLastKeyStepKey (step.guide.guideID));
@@ -154,11 +140,6 @@ namespace PTGame.Framework
 
 		public void FinishGuide(Guide guide)
 		{
-			if (m_CurrentGuide == guide)
-			{
-				m_CurrentGuide = null;
-			}
-
 			m_TrackingGuideList.Remove(guide);
 
 			DataRecord.S.SetBool(GetGuideKey(guide.guideID), true);

@@ -12,7 +12,6 @@ namespace PTGame.Framework
 		protected List<GuideStep> m_GuideSteps;
 		private bool m_IsActive = false;
 		private int m_LastFinishStepID = 0;
-		private IUINodeFinder m_UINodeFinder;
 
 		public int guideID
 		{
@@ -24,7 +23,7 @@ namespace PTGame.Framework
             m_GuideId = guideID;
         }
 			
-		public bool Active()
+		public bool ActiveSelf()
 		{
 			if (m_IsActive)
 			{
@@ -128,7 +127,7 @@ namespace PTGame.Framework
 			{
 				if (!m_IsActive)
 				{
-					GuideMgr.S.TryActiveGuide (this);
+                    ActiveSelf();
 				}
 			}
 			else

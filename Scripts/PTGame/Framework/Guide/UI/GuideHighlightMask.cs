@@ -10,6 +10,7 @@ namespace PTGame.Framework
     {
         public enum Shape
         {
+            NONE = 0,
             Square = 1,
             Circle = 2,
             CircleSquare = 3,
