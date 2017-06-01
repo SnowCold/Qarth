@@ -135,6 +135,10 @@ namespace PTGame.Framework
 
         }
 
+        public virtual bool OnBackKeyDown()
+        {
+            return false;
+        }
 
         protected override void OnViewEvent(ViewEvent e, object[] args)
         {

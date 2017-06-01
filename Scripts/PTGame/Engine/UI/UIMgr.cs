@@ -78,6 +78,8 @@ namespace PTGame.Framework
                 }
                 ObjectPool<PanelInfo>.S.maxCacheCount = 10;
                 ObjectPool<PanelInfo.OpenParam>.S.maxCacheCount = 20;
+
+                InitEventListener();
             }
         }
 
@@ -1010,9 +1012,35 @@ System.Reflection.BindingFlags.Public);
             }
         }
 
-        #endregion
+#endregion
 
-        #region Mono生命周期
+#region 内部事件处理
+        private void InitEventListener()
+        {
+            EventSystem.S.Register(EngineEventID.BackKeyDown, OnBackKeyDownEvent);
+        }
+
+        private void OnBackKeyDownEvent(int key, params object[] args)
+        {
+            for (int i = m_ActivePanelInfoList.Count - 1; i >= 0; --i)
+            {
+                if (m_ActivePanelInfoList[i].abstractPanel != null)
+                {
+                    if (m_ActivePanelInfoList[i].abstractPanel.OnBackKeyDown())
+                    {
+                        KeyCodeEventInfo eventInfo = args[0] as KeyCodeEventInfo;
+                        if (eventInfo != null)
+                        {
+                            eventInfo.Process();
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+#endregion
+
+#region Mono生命周期
         private void Update()
         {
             if (m_PanelSortingOrderDirty || m_IsPanelInfoListChange)
