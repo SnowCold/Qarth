@@ -284,7 +284,8 @@ System.Reflection.BindingFlags.Public);
 
             if (panelInfo.isReady)
             {
-                ReSortPanel();
+                SetPanelSortingOrderDirty();
+                //ReSortPanel();
                 panelInfo.AddOpenCallback(listener);
             }
             else
@@ -309,7 +310,8 @@ System.Reflection.BindingFlags.Public);
 
             if (hasChange)
             {
-                ReSortPanel();
+                SetPanelSortingOrderDirty();
+                //ReSortPanel();
             }
         }
 
@@ -337,7 +339,8 @@ System.Reflection.BindingFlags.Public);
             }
 
             ClosePanelInfo(panelInfo);
-            ReSortPanel();
+            //ReSortPanel();
+            SetPanelSortingOrderDirty();
         }
 
         public void SetPanelVisible<T>(T uiID, bool visible) where T : IConvertible
@@ -484,7 +487,8 @@ System.Reflection.BindingFlags.Public);
             RemovePanelInfo(panelInfo);
             CheckNeedClosePanel(panelInfo.panelID);
             ObjectPool<PanelInfo>.S.Recycle(panelInfo);
-            ReSortPanel();
+            //ReSortPanel();
+            SetPanelSortingOrderDirty();
         }
 
         public void CloseDependPanel<T>(int master, T uiID) where T : IConvertible
@@ -515,7 +519,8 @@ System.Reflection.BindingFlags.Public);
                 }
             }
 
-            ReSortPanel();
+            SetPanelSortingOrderDirty();
+            //ReSortPanel();
         }
 
         #endregion
@@ -602,7 +607,8 @@ System.Reflection.BindingFlags.Public);
 
             if (panelInfo.isReady)
             {
-                ReSortPanel();
+                //ReSortPanel();
+                SetPanelSortingOrderDirty();
                 panelInfo.AddOpenCallback(listener);
             }
             else
@@ -631,7 +637,8 @@ System.Reflection.BindingFlags.Public);
 
             if (panelInfo.isReady)
             {
-                ReSortPanel();
+                //ReSortPanel();
+                SetPanelSortingOrderDirty();
                 panelInfo.AddOpenCallback(listener);
             }
             else
@@ -721,8 +728,6 @@ System.Reflection.BindingFlags.Public);
 
         private void ReSortPanel()
         {
-
-
             m_IsPanelInfoListChange = false;
             m_PanelSortingOrderDirty = false;
 
@@ -734,11 +739,10 @@ System.Reflection.BindingFlags.Public);
             {
                 m_ActivePanelInfoList[i].OpenPanel();
                 //上面的代码导致内部状态改变
-                if (m_IsPanelInfoListChange)
+                if (m_IsPanelInfoListChange || m_PanelSortingOrderDirty)
                 {
-                    m_IsPanelInfoListChange = true;
-                    m_PanelSortingOrderDirty = true;
-                    break;
+                    ReSortPanel();
+                    return;
                 }
             }
 
@@ -1016,7 +1020,15 @@ System.Reflection.BindingFlags.Public);
                 ReSortPanel();
             }
         }
+        
 
+        private void LateUpdate()
+        {
+            if (m_PanelSortingOrderDirty || m_IsPanelInfoListChange)
+            {
+                ReSortPanel();
+            }
+        }
         #endregion
     }
 

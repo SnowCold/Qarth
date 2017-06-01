@@ -171,18 +171,9 @@ namespace PTGame.Framework
                 return;
             }
 
-            InitCanvasParam();
             m_HasStart = true;
-        }
-
-        private void InitCanvasParam()
-        {
-            if (m_ParentPage != null)
-            {
-                return;
-            }
-
-            UpdateCanvasSortingOrder();
+            m_IsOrderDirty = true;
+            UIMgr.S.SetPanelSortingOrderDirty();
         }
 
         private void UpdateCanvasSortingOrder()
