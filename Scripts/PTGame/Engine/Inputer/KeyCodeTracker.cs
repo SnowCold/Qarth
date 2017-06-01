@@ -30,7 +30,7 @@ namespace PTGame.Framework
             m_DefaultProcessListener = l;
         }
 
-		private void ProcessKeyDown()
+        public void ProcessKeyDown()
 		{
             m_BackKeyDownInfo.Reset();
 
