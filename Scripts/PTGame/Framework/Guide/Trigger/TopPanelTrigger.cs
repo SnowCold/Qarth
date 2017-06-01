@@ -7,6 +7,7 @@ namespace PTGame.Framework
 {
     public class TopPanelTrigger : ITrigger
     {
+        private static int[] m_BlackList;
 
         private int m_UIID = 0;
         private Action<bool, ITrigger> m_Listener;
@@ -19,6 +20,13 @@ namespace PTGame.Framework
 
         public void Start(Action<bool, ITrigger> l)
         {
+            if (m_BlackList == null)
+            {
+                m_BlackList = new int[2];
+                m_BlackList[0] = UIDataTable.PanelName2UIID("GuideHandPanel");
+                m_BlackList[1] = UIDataTable.PanelName2UIID("HighlightMaskPanel");
+            }
+
             m_Listener = l;
             EventSystem.S.Register(EngineEventID.OnPanelUpdate, OnPanelUpdte);
         }
@@ -33,15 +41,14 @@ namespace PTGame.Framework
         {
             get
             {
-				return UIMgr.S.FindPanel(m_UIID) != null;
-				/*
-				int topUI = UIMgr.S.FindTopPanel<int>(null, false);
+				//return UIMgr.S.FindPanel(m_UIID) != null;
+				
+				int topUI = UIMgr.S.FindTopPanel<int>(m_BlackList, false);
 				if (topUI == m_UIID && topUI >= 0)
                 {
                     return true;
                 }
                 return false;
-                */
             }
         }
 

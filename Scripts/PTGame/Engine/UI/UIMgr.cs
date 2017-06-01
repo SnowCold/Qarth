@@ -210,7 +210,7 @@ System.Reflection.BindingFlags.Public);
 					{
 						if (inArray)
 						{
-							result = m_ActivePanelInfoList [i].uiID;
+							result = m_ActivePanelInfoList[i].uiID;
 							break;	
 						}
 					}
@@ -218,7 +218,7 @@ System.Reflection.BindingFlags.Public);
 					{
 						if (!inArray)
 						{
-							result = m_ActivePanelInfoList [i].uiID;
+							result = m_ActivePanelInfoList[i].uiID;
 							break;
 						}
 					}
