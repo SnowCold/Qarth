@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using PTGame.Framework;
 
-namespace PTGame.PaiLogic
+namespace PTGame.Framework
 {
     public interface ITransitionProgress
     {
