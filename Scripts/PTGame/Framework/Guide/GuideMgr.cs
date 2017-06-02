@@ -171,6 +171,7 @@ namespace PTGame.Framework
 			RegisterGuideCommand(typeof(GuideHandCommand));
 			RegisterGuideCommand(typeof(PlayAudioCommand));
             RegisterGuideCommand(typeof(EventPauseCommand));
+            RegisterGuideCommand(typeof(MonoFuncCall));
 		}
 
 		private void InitGuideTriggerFactory()

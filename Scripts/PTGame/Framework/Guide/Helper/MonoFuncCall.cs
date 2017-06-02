@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-	public class MonoFuncCall : IUINodeFinder
+	public class MonoFuncCall : AbstractGuideCommand, IUINodeFinder
 	{
 		private UINodeFinder m_Finder;
 		private string m_TypeName;
@@ -18,7 +18,12 @@ namespace PTGame.Framework
 			return string.Format("Panel:{0},UI:{1}", m_TypeName, m_FuncName);
 		}
 
-		public void SetParam(object[] param)
+        protected override void OnStart()
+        {
+            FindNodeInner();
+        }
+
+        public override void SetParam(object[] param)
 		{
 			if (param.Length < 3)
 			{
