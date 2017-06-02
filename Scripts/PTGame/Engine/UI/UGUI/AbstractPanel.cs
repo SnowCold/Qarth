@@ -201,6 +201,16 @@ namespace PTGame.Framework
             }
 
             SendViewEvent(ViewEvent.OnSortingLayerUpdate);
+
+            SortingOrderObserver[] observer = GetComponentsInChildren<SortingOrderObserver>();
+            if (observer != null && observer.Length > 0)
+            {
+                for (int i = 0; i < observer.Length; ++i)
+                {
+                    observer[i].OnSortingOrderUpdate();
+                }
+            }
+
             m_IsOrderDirty = false;
         }
 
