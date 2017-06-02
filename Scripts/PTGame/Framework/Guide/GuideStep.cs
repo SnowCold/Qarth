@@ -36,18 +36,21 @@ namespace PTGame.Framework
 			
         public void Finish()
         {
-			if (!m_IsActive)
+            StopTrack();
+
+            if (!m_IsActive)
 			{
 				return;
 			}
-			m_IsActive = false;
 
-			StopTrack ();
+			m_IsActive = false;
 
 			for (int i = 0; i < m_Commands.Count; ++i)
 			{
 				m_Commands[i].Finish(false);
 			}
+
+            Log.i("#GuideStep Finish:" + m_GuideStepID);
         }
 
 		protected override void OnAllTriggerEvent (bool ready)
@@ -106,6 +109,8 @@ namespace PTGame.Framework
 			{
 				return false;
 			}
+
+            Log.i("#GuideStep Start:" + m_GuideStepID);
 
 			m_IsActive = true;
 

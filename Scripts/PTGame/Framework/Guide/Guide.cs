@@ -53,8 +53,10 @@ namespace PTGame.Framework
 				return false;
 			}
 
-			TrackNextStep ();
+            Log.i("#Guide Start:" + m_GuideId);
 
+			TrackNextStep ();
+            
 			return true;
 		}
 			
@@ -72,11 +74,13 @@ namespace PTGame.Framework
 
 			if (lastStep == null || lastStep.id == m_LastFinishStepID)
 			{
-				ClearSelf ();
+                ClearSelf ();
 				
 				GuideMgr.S.FinishGuide(this);
-			}
-			else
+
+                Log.i("#Guide Finish:" + m_GuideId);
+            }
+            else
 			{
 				TrackNextStep();
 			}
@@ -102,13 +106,14 @@ namespace PTGame.Framework
 
 		protected void ClearSelf()
 		{
-			if (!m_IsActive)
+            StopTrack();
+
+            if (!m_IsActive)
 			{
 				return;
 			}
 
 			m_IsActive = false;
-			StopTrack ();
 
 			if (m_GuideSteps != null)
 			{
