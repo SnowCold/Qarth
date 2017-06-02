@@ -46,8 +46,6 @@ namespace PTGame.Framework
 
         public void StartGuideTrack()
         {
-			DataRecord.S.Reset ();
-
 			var dataList = TDGuideTable.dataList;
 
 			for (int i = 0; i < dataList.Count; ++i)
