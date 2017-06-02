@@ -26,14 +26,10 @@ namespace PTGame.Framework
 				return;
 			}
 
-			try
+			m_TargetPanel = pv[0] as string;
+			if (pv.Length > 1)
 			{
-				m_TargetPanel = pv[0] as string;
 				m_TargetUINode = pv[1] as string;
-			}
-			catch(Exception e)
-			{
-				Log.e (e);
 			}
 
 		}
