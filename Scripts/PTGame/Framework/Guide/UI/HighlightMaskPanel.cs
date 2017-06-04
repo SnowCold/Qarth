@@ -7,18 +7,22 @@ namespace PTGame.Framework
 {
     public class HighlightMaskPanel : AbstractPanel
     {
-        [SerializeField]
-        private GuideHighlightMask m_HighlightMask;
+        private Action<int> m_OnSortingLayerUpdateListener;
 
 		protected override void OnPanelOpen (params object[] args)
 		{
-			if (args.Length < 2)
-			{
-				return;
-			}
-
-			m_HighlightMask.target = args [0] as RectTransform;
-			m_HighlightMask.shape = (GuideHighlightMask.Shape)args [1];
+            if (args.Length > 0)
+            {
+                m_OnSortingLayerUpdateListener = args[0] as Action<int>;
+            }
 		}
+
+        protected override void OnSortingLayerUpdate()
+        {
+            if (m_OnSortingLayerUpdateListener != null)
+            {
+                m_OnSortingLayerUpdateListener(m_SortingOrder);
+            }
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace PTGame.Framework
         [SerializeField]
         private bool            m_CustomVisibleFlag = true;
         [SerializeField]
-        private int             m_SortingOrder = -1;
+        protected int           m_SortingOrder = -1;
         private bool            m_HasStart = false;
         private int             m_MaxSortingOrder = -1;
         private bool            m_IsOrderDirty = false;
