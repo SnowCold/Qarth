@@ -15,6 +15,8 @@ namespace PTGame.Framework
             {
                 m_OnSortingLayerUpdateListener = args[0] as Action<int>;
             }
+
+            OnSortingLayerUpdate();
 		}
 
         protected override void OnSortingLayerUpdate()

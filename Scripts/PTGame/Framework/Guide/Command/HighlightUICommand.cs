@@ -9,7 +9,6 @@ namespace PTGame.Framework
     public class HighlightUICommand : AbstractGuideCommand
     {
 		private IUINodeFinder m_Finder;
-        private bool m_NeedCreateGraphicRaycast = false;
 		private bool m_NeedClose = true;
 
         private Canvas m_Canvas;
@@ -29,11 +28,7 @@ namespace PTGame.Framework
 
             if (pv.Length > 1)
             {
-                m_NeedCreateGraphicRaycast = Helper.String2Bool((string)pv[1]);
-                if (pv.Length > 2)
-                {
-                    m_NeedClose = Helper.String2Bool((string)pv[2]);
-                }
+                m_NeedClose = Helper.String2Bool((string)pv[1]);
             }
         }
 
@@ -50,6 +45,7 @@ namespace PTGame.Framework
             if (m_Canvas == null)
             {
                 m_Canvas = targetNode.gameObject.AddComponent<Canvas>();
+                m_Canvas.overrideSorting = true;
                 m_CanvasPreSortingOrder = -1;
             }
             else
@@ -57,14 +53,11 @@ namespace PTGame.Framework
                 m_CanvasPreSortingOrder = m_Canvas.sortingOrder;
             }
 
-            if (m_NeedCreateGraphicRaycast)
+            m_GraphicRaycaster = targetNode.GetComponent<GraphicRaycaster>();
+            if (m_GraphicRaycaster == null)
             {
-                m_GraphicRaycaster = targetNode.GetComponent<GraphicRaycaster>();
-                if (m_GraphicRaycaster == null)
-                {
-                    m_IsCreateGraphicRaycaster = true;
-                    m_GraphicRaycaster = targetNode.gameObject.AddComponent<GraphicRaycaster>();
-                }
+                m_IsCreateGraphicRaycaster = true;
+                m_GraphicRaycaster = targetNode.gameObject.AddComponent<GraphicRaycaster>();
             }
 
             Action<int> orderUpdate = OnSortingOrderUpdate;
@@ -73,7 +66,11 @@ namespace PTGame.Framework
 
         protected void OnSortingOrderUpdate(int panelOrder)
         {
-            m_Canvas.sortingOrder = panelOrder + 1;
+            if (m_Canvas != null)
+            {
+                m_Canvas.overrideSorting = true;
+                m_Canvas.sortingOrder = panelOrder + 1;
+            }
         }
 
         protected override void OnFinish(bool forceClean)
