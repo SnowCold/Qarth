@@ -15,8 +15,9 @@ namespace PTGame.Framework
         private int m_CanvasPreSortingOrder = -1;
         private GraphicRaycaster m_GraphicRaycaster;
         private bool m_IsCreateGraphicRaycaster;
+        private int m_PanelOrder;
 
-		public override void SetParam(object[] pv)
+        public override void SetParam(object[] pv)
 		{
 			if (pv.Length == 0)
 			{
@@ -68,8 +69,19 @@ namespace PTGame.Framework
         {
             if (m_Canvas != null)
             {
+                m_PanelOrder = panelOrder;
                 m_Canvas.overrideSorting = true;
-                m_Canvas.sortingOrder = panelOrder + 1;
+                m_Canvas.sortingOrder = m_PanelOrder + 1;
+                Timer.S.Post2Scale(OnTimeReach, 0.1f);
+            }
+        }
+
+        private void OnTimeReach(int count)
+        {
+            if (m_Canvas != null)
+            {
+                m_Canvas.overrideSorting = true;
+                m_Canvas.sortingOrder = m_PanelOrder + 1;
             }
         }
 
