@@ -86,6 +86,20 @@ namespace PTGame.Framework.Editor
             }
         }
 
+        public static string RemoveFileExtend(string fileName)
+        {
+            int lastIndex = fileName.LastIndexOf(".");
+
+            if (lastIndex >= 0)
+            {
+                return fileName.Substring(0, lastIndex);
+            }
+            else
+            {
+                return fileName;
+            }
+        }
+
         public static string GetFileExtendName(string absOrAssetsPath)
         {
             int lastIndex = absOrAssetsPath.LastIndexOf(".");
