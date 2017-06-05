@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PTGame.Framework
 {
-    public class TransitionPanel : AbstractPanel, ITransitionHandler
+    public class TransitionPanel : AbstractPanel, ITransitionHandler, ITransitionAction
     {
         private TransitionHelper.OpenParam m_OpenParam;
         
@@ -18,6 +18,27 @@ namespace PTGame.Framework
             get
             {
                 return this;
+            }
+        }
+
+        public ITransitionHandler transitionHandler
+        {
+            get
+            {
+                return this;
+            }
+
+            set
+            {
+                
+            }
+        }
+
+        public virtual bool transitionSameTime
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -36,7 +57,14 @@ namespace PTGame.Framework
                 return;
             }
 
-            m_Action = m_OpenParam.action;
+            if (m_OpenParam.action == null)
+            {
+                m_Action = this;
+            }
+            else
+            {
+                m_Action = m_OpenParam.action;
+            }
             m_Action.transitionHandler = this;
             m_Action.PrepareTransition();
         }
@@ -144,6 +172,31 @@ namespace PTGame.Framework
         public void OnTransitionOutFinish()
         {
             CloseSelfPanel();
+        }
+
+        public virtual void PrepareTransition()
+        {
+            transitionHandler.OnTransitionPrepareFinish();
+        }
+
+        public virtual void TransitionIn(AbstractPanel panel)
+        {
+            transitionHandler.OnTransitionInFinish();
+        }
+
+        public virtual void TransitionOut(AbstractPanel panel)
+        {
+            transitionHandler.OnTransitionOutFinish();
+        }
+
+        public void OnTransitionDestroy()
+        {
+            
+        }
+
+        public void OnNextPanelReady()
+        {
+            
         }
     }
 }
