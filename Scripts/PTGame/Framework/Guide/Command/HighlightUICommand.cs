@@ -82,6 +82,8 @@ namespace PTGame.Framework
             {
                 m_Canvas.overrideSorting = true;
                 m_Canvas.sortingOrder = m_PanelOrder + 1;
+
+				Timer.S.Post2Scale(OnTimeReach, 0.1f);
             }
         }
 

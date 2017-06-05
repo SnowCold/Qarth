@@ -12,7 +12,6 @@ namespace PTGame.Framework
     {
 		private IUINodeFinder m_Finder;
         private Transform m_TargetButton;
-        private GraphicRaycaster m_GraphicRaycaster;
         private bool m_HasDown = false;
         private static List<RaycastResult> m_Result = new List<RaycastResult>();
 
@@ -26,13 +25,6 @@ namespace PTGame.Framework
 			m_TargetButton = m_Finder.FindNode (false);
 
             if (m_TargetButton == null)
-            {
-                return;
-            }
-
-            m_GraphicRaycaster = m_TargetButton.GetComponentInParent<GraphicRaycaster>();
-
-            if (m_GraphicRaycaster == null)
             {
                 return;
             }
@@ -61,7 +53,7 @@ namespace PTGame.Framework
 
         private void Update()
         {
-            if (m_GraphicRaycaster == null || m_TargetButton == null)
+            if (m_TargetButton == null)
             {
                 AppLoopMgr.S.onUpdate -= Update;
                 return;
@@ -97,7 +89,14 @@ namespace PTGame.Framework
             PointerEventData pd = new PointerEventData(UnityEngine.EventSystems.EventSystem.current);
             pd.position = Input.mousePosition;
 
-            m_GraphicRaycaster.Raycast(pd, m_Result);
+			var graphicRaycasr = m_TargetButton.GetComponentInParent<GraphicRaycaster>();
+
+			if (graphicRaycasr == null)
+			{
+				return false;
+			}
+
+			graphicRaycasr.Raycast(pd, m_Result);
 
             if (m_Result.Count == 0)
             {
