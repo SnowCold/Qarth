@@ -135,6 +135,8 @@ namespace PTGame.Framework.Editor
 #endif
 
             BuildPipeline.BuildAssetBundles("Assets/" + ProjectPathConfig.exportRootFolder, BuildAssetBundleOptions.ChunkBasedCompression, buildTarget);
+
+            BuildDataTable();
         }
 #endregion
 
