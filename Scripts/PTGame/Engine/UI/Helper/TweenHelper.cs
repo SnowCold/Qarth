@@ -65,5 +65,15 @@ namespace PTGame.Framework
 				});
 			});
 		}
+
+        public static Sequence DoScale(Transform target, float dstValue, float duration, int loop = -1)
+        {
+            Vector3 originScale = target.transform.localScale;
+            return DOTween.Sequence()
+                .Append(target.transform.DOScale(dstValue, duration * 0.6f).SetEase(Ease.Linear))
+                .Append(target.transform.DOScale(originScale, duration * 0.4f).SetEase(Ease.Linear))
+                .SetLoops(loop);
+        }
+        
     }
 }

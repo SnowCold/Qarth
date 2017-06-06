@@ -7,7 +7,7 @@ using System.Threading;
 using System.IO;
 using System.Diagnostics;
 
-namespace PTGame.Framework
+namespace PTGame.Framework.Editor
 {
     public class TableExporter
     {

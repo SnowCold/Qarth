@@ -140,11 +140,6 @@ namespace PTGame.Framework.Editor
 
                 ABFlagMode flagMode = ABFlagMode.NONE;
 
-                if (absPath.Contains("Res\\Textures"))
-                {
-                    Log.i("!");
-                }
-
                 for (int i = 0; i < files.Length; ++i)
                 {
                     AssetImporter ai = AssetImporter.GetAtPath(EditorUtils.ABSPath2AssetsPath(files[i]));
