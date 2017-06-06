@@ -104,7 +104,38 @@ namespace PTGame.Framework
 			return stepID <= m_LastFinishStepID;
 		}
 
-		protected void ClearSelf()
+        protected override bool CheckNeedJump()
+        {
+            TDGuide data = TDGuideTable.GetData(m_GuideId);
+
+            if (data == null)
+            {
+                return true;
+            }
+
+            if (string.IsNullOrEmpty(data.jumpTrigger))
+            {
+                return false;
+            }
+
+            List<ITrigger> triggerList = LoadTrigger(data.jumpTrigger, data.commonParam);
+            if (triggerList == null || triggerList.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < triggerList.Count; ++i)
+            {
+                if (!triggerList[i].isReady)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        protected void ClearSelf()
 		{
             StopTrack();
 
@@ -151,7 +182,7 @@ namespace PTGame.Framework
 				return null;
 			}
 
-			return LoadTrigger (data.trigger, data.commonParam);
+			return LoadTrigger(data.trigger, data.commonParam);
 		}
 
         private void AddStep(GuideStep step)

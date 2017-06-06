@@ -14,6 +14,7 @@ namespace PTGame.Framework
         private EInt m_Id = 0;
         private string m_Trigger;
 		private string m_CommonParam;
+        private string m_JumpTrigger;
 		private EInt m_RequireGuideId = 0;
       	
         /// <summary>
@@ -25,6 +26,8 @@ namespace PTGame.Framework
         /// Trigger1
         /// </summary>
         public string trigger {get { return m_Trigger; } }
+
+        public string jumpTrigger { get { return m_JumpTrigger; } }
 
 		/// <summary>
 		/// CommandCommonParam
@@ -55,8 +58,11 @@ namespace PTGame.Framework
 					m_CommonParam = dataR.ReadString();
 					break;
 				case 3:
-					m_RequireGuideId = dataR.ReadInt ();
+					m_RequireGuideId = dataR.ReadInt();
 					break;
+                case 4:
+                    m_JumpTrigger = dataR.ReadString();
+                    break;
                 default:
                     break;
             }
@@ -72,6 +78,7 @@ namespace PTGame.Framework
           ret.Add("Trigger", 1);
 	      ret.Add ("CommonParam", 2);
 		  ret.Add("RequireGuideId", 3);
+          ret.Add("JumpTrigger", 4);
           return ret;
         }
         

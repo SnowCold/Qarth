@@ -73,13 +73,22 @@ namespace PTGame.Framework
 				}
 			}
 
+            bool needRecheck = false;
+
 			for (int i = m_TrackingGuideList.Count - 1; i >= 0; --i)
 			{
 				if (!m_TrackingGuideList[i].StartTrack())
 				{
-					m_TrackingGuideList.RemoveAt(i);
+                    SaveFinishGuideID(m_TrackingGuideList[i].guideID);
+                    m_TrackingGuideList.RemoveAt(i);
+                    needRecheck = true;
 				}
 			}
+
+            if (needRecheck)
+            {
+                ReCheckUnTrackGuide();
+            }
         }
 
         public override void OnSingletonInit()
@@ -140,11 +149,11 @@ namespace PTGame.Framework
 		{
 			m_TrackingGuideList.Remove(guide);
 
-			DataRecord.S.SetBool(GetGuideKey(guide.guideID), true);
-			DataRecord.S.Save();
+            SaveFinishGuideID(guide.guideID);
 
 			int finishGuideId = guide.guideID;
 
+            bool needRecheck = false;
 			if (m_UnTrackingGuide.Count > 0)
 			{
 				for (int i = m_UnTrackingGuide.Count - 1; i >= 0; --i)
@@ -157,10 +166,58 @@ namespace PTGame.Framework
 						{
 							m_TrackingGuideList.Add(nextGuide);
 						}
+                        else
+                        {
+                            SaveFinishGuideID(nextGuide.guideID);
+                            needRecheck = true;
+                        }
 					}
 				}
 			}
+
+            if (needRecheck)
+            {
+                ReCheckUnTrackGuide();
+            }
 		}
+
+        private void ReCheckUnTrackGuide()
+        {
+            if (m_UnTrackingGuide.Count > 0)
+            {
+                bool needCheck = false;
+                for (int i = m_UnTrackingGuide.Count - 1; i >= 0; --i)
+                {
+                    if (m_UnTrackingGuide[i].requireGuideId > 0)
+                    {
+                        if (IsGuideFinish(m_UnTrackingGuide[i].requireGuideId))
+                        {
+                            Guide guide = new Guide(m_UnTrackingGuide[i].id);
+                            m_UnTrackingGuide.RemoveAt(i);
+                            AddTrackingGuide(guide);
+
+                            if (!guide.StartTrack())
+                            {
+                                SaveFinishGuideID(guide.guideID);
+                                m_TrackingGuideList.Remove(guide);
+                                needCheck = true;
+                            }
+                        }
+                    }
+                }
+
+                if (needCheck)
+                {
+                    ReCheckUnTrackGuide();
+                }
+            }
+        }
+
+        private void SaveFinishGuideID(int guideID)
+        {
+            DataRecord.S.SetBool(GetGuideKey(guideID), true);
+            DataRecord.S.Save();
+        }
 
 		private void InitGuideCommandFactory()
 		{

@@ -18,9 +18,14 @@ namespace PTGame.Framework
 				return true;
 			}
 
+            if (CheckNeedJump())
+            {
+                return false;
+            }
+
 			if (m_Trigger == null)
 			{
-				m_Trigger = GetTriggerArray ();
+				m_Trigger = GetTriggerArray();
 			}
 
 			if (m_Trigger == null)
@@ -38,6 +43,11 @@ namespace PTGame.Framework
 			CheckAllTriggerState ();
 			return true;
 		}
+
+        protected virtual bool CheckNeedJump()
+        {
+            return false;
+        }
 
 		public void StopTrack()
 		{
