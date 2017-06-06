@@ -243,7 +243,11 @@ namespace PTGame.Framework
 
                 string msg = string.Format("Already Add AssetData :{0} \n OldAB:{1}      NewAB:{2}", data.assetName, m_ABUnitArray[old.assetBundleIndex].abName, m_ABUnitArray[data.assetBundleIndex].abName);
 
-                if (m_ABUnitArray[old.assetBundleIndex].abName.Contains("anim"))
+                if (data.assetName.EndsWith("spritesdata"))
+                {
+                    Log.w(msg);
+                }
+                else if (m_ABUnitArray[old.assetBundleIndex].abName.Contains("anim"))
                 {
                     Log.w(msg);
                 }
