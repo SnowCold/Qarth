@@ -29,6 +29,11 @@ namespace PTGame.Framework
             set { m_CustomEventID = -1; }
         }
 
+        public string audioName
+        {
+            get { return m_Name; }
+        }
+
         public AudioUnit Allocate()
         {
             return ObjectPool<AudioUnit>.S.Allocate();
