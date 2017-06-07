@@ -102,7 +102,12 @@ namespace PTGame.Framework
                 return false;
             }
 
-            using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            using (FileStream fs = new FileStream(path, FileMode.CreateNew))
             {
                 XmlSerializer xmlserializer = new XmlSerializer(obj.GetType());
                 xmlserializer.Serialize(fs, obj);

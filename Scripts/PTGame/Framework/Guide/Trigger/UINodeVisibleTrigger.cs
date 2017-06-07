@@ -20,7 +20,7 @@ namespace PTGame.Framework
 			m_Listener = l;
 			EventSystem.S.Register(EngineEventID.OnPanelUpdate, OnPanelUpdte);
 
-			OnPanelUpdte (0);
+			OnPanelUpdte(0);
 		}
 
 		public void Stop()

@@ -30,6 +30,7 @@ namespace PTGame.Framework.Editor
             string assetRootPath = System.IO.Path.GetFullPath(Application.dataPath);
             return assetRootPath.Substring(0, assetRootPath.Length - 6) + assetsPath;
         }
+        
 
         public static string ABSPath2AssetsPath(string absPath)
         {
