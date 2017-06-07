@@ -86,9 +86,15 @@ namespace PTGame.Framework.Editor
 
                 for (int i = 0; i < config.dataArray.Count; ++i)
                 {
-                    m_ConfigMap.Add(config.dataArray[i].folderPath, config.dataArray[i]);
+                    AddConfigUnit(EditorUtils.AssetsPath2ABSPath(config.dataArray[i].folderAssetPath), config.dataArray[i]);
                 }
             }
+        }
+
+        private void AddConfigUnit(string fullPath, ABEditorConfigUnit unit)
+        {
+            fullPath = fullPath.Replace("\\", "/");
+            m_ConfigMap.Add(fullPath, unit);
         }
 
         public SerializeData GetSerizlizeData()
@@ -172,33 +178,31 @@ namespace PTGame.Framework.Editor
             return folderMode;
         }
 
-        public void AddConfig(ABEditorConfigUnit unit)
-        {
-            if (unit == null)
-            {
-                return;
-            }
-
-            ABEditorConfigUnit oldUnit = null;
-            if (m_ConfigMap.TryGetValue(unit.folderPath, out oldUnit))
-            {
-                m_ConfigMap.Remove(unit.folderPath);
-            }
-
-            m_ConfigMap.Add(unit.folderPath, unit);
-        }
-
-        public void AddConfig(string folderPath, int mode)
+        public void AddConfig(string folderFullPath, int mode)
         {
             ABEditorConfigUnit unit = null;
-            if (!m_ConfigMap.TryGetValue(folderPath, out unit))
+            if (!m_ConfigMap.TryGetValue(folderFullPath, out unit))
             {
                 unit = new ABEditorConfigUnit();
-                m_ConfigMap.Add(folderPath, unit);
+                AddConfigUnit(folderFullPath, unit);
             }
 
-            unit.folderPath = EditorUtils.ABSPath2AssetsPath(folderPath);
+            unit.folderAssetPath = EditorUtils.ABSPath2AssetsPath(folderFullPath);
             unit.flagMode = mode;
+        }
+
+        public ABEditorConfigUnit GetConfigUnit(string folderFullPath)
+        {
+            if (m_ConfigMap == null)
+            {
+                return null;
+            }
+
+            if (m_ConfigMap.ContainsKey(folderFullPath))
+            {
+                return m_ConfigMap[folderFullPath];
+            }
+            return null;
         }
 
         public void Dump()

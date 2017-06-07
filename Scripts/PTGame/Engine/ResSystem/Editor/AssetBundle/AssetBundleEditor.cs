@@ -14,7 +14,6 @@ namespace PTGame.Framework.Editor
         {
             ABEditorConfig config = new ABEditorConfig();
             config.AddRootFolder("Assets/Res", null);
-            config.AddRootFolder("Assets/Books", null);
             config.ExportEditorConfig("abConfig.xml");
             Log.i("## Success Export Config");
         }
@@ -36,15 +35,23 @@ namespace PTGame.Framework.Editor
 
         class FolderInfo
         {
-            private string m_FolderPath;
+            private string m_FolderFullPath;
             private bool m_isOpen = false;
             private int m_Level = 0;
             private FolderInfo[] m_ChildFolderInfos;
             private string m_DisplayString;
 
-            public string folderPath
+            private bool m_IsFolderFlagMode;
+
+            public string folderFullPath
             {
-                get { return m_FolderPath; }
+                get { return m_FolderFullPath; }
+            }
+
+            public bool isFolderFlagMode
+            {
+                get { return m_IsFolderFlagMode; }
+                set { m_IsFolderFlagMode = value; }
             }
 
             public bool isOpen
@@ -59,18 +66,13 @@ namespace PTGame.Framework.Editor
                 set { m_Level = value; }
             }
 
-            public string displayString
+            public string folderName
             {
                 get
                 {
                     if (string.IsNullOrEmpty(m_DisplayString))
                     {
-                        string state = "*";
-                        if (m_ChildFolderInfos == null)
-                        {
-                            state = "";
-                        }
-                        m_DisplayString = string.Format("{0}{1}", state, EditorFileUtils.GetFileName(m_FolderPath));
+                        m_DisplayString = EditorFileUtils.GetFileName(m_FolderFullPath);
                     }
 
                     return m_DisplayString;
@@ -85,7 +87,8 @@ namespace PTGame.Framework.Editor
             public FolderInfo(string folderPath, int level)
             {
                 m_Level = level + 1;
-                m_FolderPath = EditorUtils.ABSPath2AssetsPath(folderPath);
+                m_FolderFullPath = folderPath;
+                m_FolderFullPath = m_FolderFullPath.Replace("\\", "/");
                 string[] dires = Directory.GetDirectories(folderPath);
 
                 if (dires != null && dires.Length > 0)
@@ -122,8 +125,11 @@ namespace PTGame.Framework.Editor
 
         private ABEditorConfig m_Config;
         private FolderInfo m_RootFolder;
-        Vector2 scrollPos;
-        GUIStyle m_Style = "Label";
+        private Vector2 scrollPos;
+        private GUIStyle m_Style = "Label";
+        private Texture m_FolderIcon;
+        private Texture m_TrangleDownIcon;
+        private Texture m_TrangleRightIcon;
 
         private void Awake()
         {
@@ -132,9 +138,12 @@ namespace PTGame.Framework.Editor
 
             m_RootFolder = new FolderInfo();
             m_RootFolder.AddFolder(EditorUtils.AssetsPath2ABSPath("Assets/Res"));
-            m_RootFolder.AddFolder(EditorUtils.AssetsPath2ABSPath("Assets/Books"));
 
             m_Style.normal.textColor = Color.white;
+
+            m_FolderIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/PTFramework/Editor/Res/folder_icon.png");
+            m_TrangleDownIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/PTFramework/Editor/Res/triangle_down.png");
+            m_TrangleRightIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/PTFramework/Editor/Res/triangle_right.png");
         }
 
         private void OnGUI()
@@ -153,7 +162,7 @@ namespace PTGame.Framework.Editor
                 return;
             }
 
-            if (!string.IsNullOrEmpty(info.folderPath))
+            if (!string.IsNullOrEmpty(info.folderFullPath))
             {
                 EditorGUI.indentLevel = info.level;
                 DrawGUIData(info);
@@ -173,23 +182,50 @@ namespace PTGame.Framework.Editor
 
         private void DrawGUIData(FolderInfo info)
         {
-
             Rect rt = GUILayoutUtility.GetRect(20, 20, m_Style);
             rt.x += (16 * EditorGUI.indentLevel);
 
             using (var h = new EditorGUILayout.HorizontalScope())
             {
-                rt.width = 100;
-                //EditorGUI.DrawRect(rt, Color.white);
-
-                if (GUI.Button(rt, info.displayString, m_Style))
+                if (info.childFolderInfo != null)
                 {
-                    info.isOpen = !info.isOpen;
+                    rt.width = 20;
+                    //EditorGUI.DrawRect(rt, Color.white);
+                    if (info.isOpen)
+                    {
+                        if (GUI.Button(rt, m_TrangleDownIcon, m_Style))
+                        {
+                            info.isOpen = !info.isOpen;
+                        }
+                    }
+                    else
+                    {
+                        if (GUI.Button(rt, m_TrangleRightIcon, m_Style))
+                        {
+                            info.isOpen = !info.isOpen;
+                        }
+                    }
+
                 }
 
+                rt.x += 20;
+
+                GUI.Label(rt, m_FolderIcon, m_Style);
+                rt.x += 20;
+                rt.width = 120;
+                GUI.Label(rt, info.folderName);
+
                 rt.x += 120;
-                //EditorGUI.DrawRect(rt, Color.white);
-                GUI.Label(rt, "asd", m_Style);
+                info.isFolderFlagMode = GUI.Toggle(rt, info.isFolderFlagMode, "文件夹模式");
+
+                rt.x += 120;
+
+                var config = m_Config.GetConfigUnit(info.folderFullPath);
+                if (config != null)
+                {
+                    string stateMsg = string.Format("当前状态:{0}", config.flagMode);
+                    GUI.Label(rt, stateMsg);
+                }
             }
         }
 

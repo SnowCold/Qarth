@@ -10,18 +10,43 @@ namespace PTGame.Framework.Editor
 
     public class ABEditorConfigUnit
     {
-        public string folderPath;
+        private string m_FolderAssetPath;
         public int flagMode;
+
+        public string folderAssetPath
+        {
+            get { return m_FolderAssetPath; }
+            set { m_FolderAssetPath = value; }
+        }
 
         public override string ToString()
         {
-            return string.Format("Folder:{0},FlagMode:{1}", folderPath, flagMode);
+            return string.Format("Folder:{0},FlagMode:{1}", m_FolderAssetPath, flagMode);
         }
     }
 
     public class ABEditorConfig
     {
         protected List<ResRootFolderHandler> m_RootFolderArray;
+
+        public ABEditorConfigUnit GetConfigUnit(string folderFullPath)
+        {
+            if (m_RootFolderArray == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < m_RootFolderArray.Count; ++i)
+            {
+                var result = m_RootFolderArray[i].GetConfigUnit(folderFullPath);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
 
         public void AddRootFolder(string folderAssetsPath, ResRootFolderHandler.SerializeData data)
         {
