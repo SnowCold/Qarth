@@ -55,7 +55,7 @@ namespace PTGame.Framework.Editor
 
                 ShowControlUI();
 
-                using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, false, true))
+                using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, true, true))
                 {
                     scrollPos = scrollView.scrollPosition;
                     DrawFolder(m_Mgr.rootFolder);
@@ -131,7 +131,7 @@ namespace PTGame.Framework.Editor
 
         private void DrawGUIData(ABFolderInfo info)
         {
-            Rect rt = GUILayoutUtility.GetRect(20, 20, m_Style);
+            Rect rt = GUILayoutUtility.GetRect(800, 20, m_Style);
             rt.x += (16 * EditorGUI.indentLevel);
 
             using (var h = new EditorGUILayout.HorizontalScope())
@@ -272,8 +272,6 @@ namespace PTGame.Framework.Editor
 
         void OnInspectorUpdate()
         {
-            //Debug.Log("窗口面板的更新");
-            //这里开启窗口的重绘，不然窗口信息不会刷新
             this.Repaint();
         }
     }

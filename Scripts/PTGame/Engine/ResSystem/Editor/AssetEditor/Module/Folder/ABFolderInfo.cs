@@ -55,17 +55,49 @@ namespace PTGame.Framework.Editor
             m_Level = level + 1;
             m_FolderFullPath = absPath;
             m_FolderFullPath = m_FolderFullPath.Replace("\\", "/");
-            string[] dires = Directory.GetDirectories(absPath);
-
-            if (dires != null && dires.Length > 0)
-            {
-                m_ChildFolderInfos = new ABFolderInfo[dires.Length];
-                for (int i = 0; i < m_ChildFolderInfos.Length; ++i)
-                {
-                    m_ChildFolderInfos[i] = new ABFolderInfo(dires[i], m_Level);
-                }
-            }
+            
+			Init (null);
         }
+
+		private void Init(ABFolderInfo[] history)
+		{
+			string[] dires = Directory.GetDirectories(m_FolderFullPath);
+
+			if (dires != null && dires.Length > 0)
+			{
+				m_ChildFolderInfos = new ABFolderInfo[dires.Length];
+				for (int i = 0; i < m_ChildFolderInfos.Length; ++i)
+				{
+					m_ChildFolderInfos[i] = new ABFolderInfo(dires[i], m_Level);
+					ABFolderInfo old = FindInArray (history, m_ChildFolderInfos [i].folderFullPath);
+					if (old != null)
+					{
+						m_ChildFolderInfos [i] = old;
+					}
+				}
+			}
+			else
+			{
+				m_ChildFolderInfos = null;
+			}
+		}
+
+		private ABFolderInfo FindInArray(ABFolderInfo[] array, string name)
+		{
+			if (array == null)
+			{
+				return null;
+			}
+
+			for (int i = 0; i < array.Length; ++i)
+			{
+				if (name == array[i].folderFullPath)
+				{
+					return array [i];
+				}
+			}
+			return null;
+		}
 
         public ABFolderInfo()
         {
@@ -82,6 +114,10 @@ namespace PTGame.Framework.Editor
             absPath = absPath.Replace("\\", "/");
             for (int i = 0; i < m_ChildFolderInfos.Length; ++i)
             {
+				if (m_ChildFolderInfos[i] == null)
+				{
+					continue;
+				}
                 if (m_ChildFolderInfos[i].folderFullPath == absPath)
                 {
                     m_ChildFolderInfos[i] = null;
@@ -118,12 +154,13 @@ namespace PTGame.Framework.Editor
                 return;
             }
 
-            /*
+            
             for (int i = 0; i < m_ChildFolderInfos.Length; ++i)
             {
-                m_ChildFolderInfos[i].RefreshFolder();
+				m_ChildFolderInfos[i].Rebuild();
             }
-            */
+
+            /*
             var temp = m_ChildFolderInfos;
             m_ChildFolderInfos = null;
 
@@ -136,6 +173,23 @@ namespace PTGame.Framework.Editor
 
                 AddFolder(temp[i].folderFullPath);
             }
+            */
         }
+
+		private void Rebuild()
+		{
+			ABFolderInfo[] history = m_ChildFolderInfos;
+			Init (history);
+
+			if (m_ChildFolderInfos == null)
+			{
+				return;
+			}
+				
+			for (int i = 0; i < m_ChildFolderInfos.Length; ++i)
+			{
+				m_ChildFolderInfos[i].Rebuild();
+			}
+		}
     }
 }

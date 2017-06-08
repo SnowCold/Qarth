@@ -290,6 +290,71 @@ namespace PTGame.Framework.Editor
             table.Save(ProjectPathConfig.absExportRootFolder);
         }
 
+		[MenuItem("Assets/SCEngine/Res/清理无效AB")]
+		public static void RemoveInvalidAssetBundle()
+		{
+			AssetDataTable table = new AssetDataTable();
+
+			ProcessAssetBundleRes(table, null);
+
+			Log.i("#Start Remove Invalid AssetBundle");
+
+			RemoveInvalidAssetBundleInner(ProjectPathConfig.absExportRootFolder, table);
+
+			Log.i("#Success Remove Invalid AssetBundle.");
+		}
+
+		private static void RemoveInvalidAssetBundleInner(string absPath, AssetDataTable table)
+		{
+			string[] dirs = Directory.GetDirectories(absPath);
+
+			if (dirs != null && dirs.Length > 0)
+			{
+				for (int i = 0; i < dirs.Length; ++i)
+				{
+					RemoveInvalidAssetBundleInner(dirs[i], table);
+				}
+			}
+
+			string[] files = Directory.GetFiles(absPath);
+			if (files != null && files.Length > 0)
+			{
+				for (int i = 0; i < files.Length; ++i)
+				{
+					string p = AssetBundlePath2ABName(files[i]);
+					if (!AssetFileFilter.IsAssetBundle(p))
+					{
+						continue;
+					}
+
+					if (table.GetABUnit(p) == null)
+					{
+						File.Delete(files[i]);
+						File.Delete(files[i] + ".meta");
+						File.Delete(files[i] + ".manifest");
+						File.Delete(files[i] + ".manifest.meta");
+
+						Log.e("Delete Invalid AB:" + p);
+					}
+				}
+
+				files = Directory.GetFiles(absPath);
+				if (files == null || files.Length == 0)
+				{
+					Directory.Delete(absPath);
+				}
+			}
+			else
+			{
+				Directory.Delete(absPath);
+			}
+		}
+
+		private static string AssetBundlePath2ABName(string absPath)
+		{
+			return ProjectPathConfig.AssetBundleUrl2Name(absPath);
+		}
+
         /*
         [MenuItem("Assets/SCEngine/Asset/生成Asset清单[当前文件夹]")]
         public static void BuildDataTableInFolder()

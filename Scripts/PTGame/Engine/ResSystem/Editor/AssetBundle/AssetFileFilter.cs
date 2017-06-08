@@ -17,6 +17,15 @@ namespace PTGame.Framework.Editor
             return true;
         }
 
+		public static bool IsAssetBundle(string fileName)
+		{
+			if (fileName.LastIndexOf('.') < 0)
+			{
+				return true;
+			}
+			return false;
+		}
+
         public static bool IsConfigTable(string fileName)
         {
             if (fileName.EndsWith(".txt"))
