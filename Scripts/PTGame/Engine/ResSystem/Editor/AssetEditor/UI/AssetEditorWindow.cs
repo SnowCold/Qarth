@@ -12,8 +12,8 @@ namespace PTGame.Framework.Editor
         [MenuItem("Assets/SCEngine/Res/导出配置")]
         public static void SavaConfig()
         {
-            ABEditorConfig config = new ABEditorConfig();
-            config.AddRootFolder("Assets/Res", null);
+            ABConfigInfo config = new ABConfigInfo();
+            config.AddFolder("Assets/Res", null);
             config.ExportEditorConfig("abConfig.xml");
             Log.i("## Success Export Config");
         }
@@ -21,7 +21,7 @@ namespace PTGame.Framework.Editor
         [MenuItem("Assets/SCEngine/Res/读取配置")]
         public static void LoadConfig()
         {
-            ABEditorConfig config = new ABEditorConfig();
+            ABConfigInfo config = new ABConfigInfo();
             config.LoadFromEditorConfig("abConfig.xml");
             config.Dump();
         }
@@ -33,32 +33,19 @@ namespace PTGame.Framework.Editor
             window.Show();
         }
 
-        private ABEditorConfig m_Config;
-        private FolderInfo m_RootFolder;
         private Vector2 scrollPos;
         private GUIStyle m_Style = "Label";
         private Texture m_FolderIcon;
         private Texture m_TrangleDownIcon;
         private Texture m_TrangleRightIcon;
 
+        private ABEditorMgr m_Mgr;
+
         private void Awake()
         {
-            m_Config = new ABEditorConfig();
-            m_Config.LoadFromEditorConfig("abConfig.xml");
-
-            m_RootFolder = new FolderInfo();
-
-            var list = m_Config.GetRootFolderList();
-            
-            if (list != null)
-            {
-                for (int i = 0; i < list.Count; ++i)
-                {
-                    m_RootFolder.AddFolder(EditorUtils.AssetsPath2ABSPath(list[i].folderAssetsPath));
-                }
-            }
-
             m_Style.normal.textColor = Color.white;
+
+            m_Mgr = new ABEditorMgr();
 
             List<string> outResult = new List<string>();
             FilePath.GetFolderInFolder(Application.dataPath, "PTFramework", outResult);
@@ -72,6 +59,11 @@ namespace PTGame.Framework.Editor
             }
         }
 
+        private void OnDestroy()
+        {
+            m_Mgr.ExportConfig();
+        }
+
         private void OnGUI()
         {
             using (var verView = new EditorGUILayout.VerticalScope())
@@ -83,7 +75,7 @@ namespace PTGame.Framework.Editor
                 using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, false, true))
                 {
                     scrollPos = scrollView.scrollPosition;
-                    DrawFolder(m_RootFolder);
+                    DrawFolder(m_Mgr.rootFolder);
                 }
             }
         }
@@ -96,7 +88,13 @@ namespace PTGame.Framework.Editor
             m_AddRootFolderName = GUILayout.TextField(m_AddRootFolderName);
             if (GUILayout.Button("Add"))
             {
-                m_Config.AddRootFolder("Assets/" + m_AddRootFolderName, null);
+                m_Mgr.AddFolder("Assets/" + m_AddRootFolderName);
+                m_AddRootFolderName = "";
+            }
+            if (GUILayout.Button("Remove"))
+            {
+                m_Mgr.RemoveFolder("Assets/" + m_AddRootFolderName);
+                m_AddRootFolderName = "";
             }
             EditorGUILayout.EndHorizontal();
         }
@@ -106,20 +104,16 @@ namespace PTGame.Framework.Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Export"))
             {
-                m_Config.ExportEditorConfig("abConfig.xml");
-            }
-            if (GUILayout.Button("Import"))
-            {
-                m_Config.LoadFromEditorConfig("abConfig.xml");
+                m_Mgr.ExportConfig();
             }
             if (GUILayout.Button("Refresh"))
             {
-
+                m_Mgr.RefreshState();
             }
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawFolder(FolderInfo info)
+        private void DrawFolder(ABFolderInfo info)
         {
             if (info == null)
             {
@@ -138,13 +132,17 @@ namespace PTGame.Framework.Editor
                 {
                     for (int i = 0; i < info.childFolderInfo.Length; ++i)
                     {
+                        if (info.childFolderInfo[i] == null)
+                        {
+                            continue;
+                        }
                         DrawFolder(info.childFolderInfo[i]);
                     }
                 }
             }
         }
 
-        private void DrawGUIData(FolderInfo info)
+        private void DrawGUIData(ABFolderInfo info)
         {
             Rect rt = GUILayoutUtility.GetRect(20, 20, m_Style);
             rt.x += (16 * EditorGUI.indentLevel);
@@ -180,51 +178,103 @@ namespace PTGame.Framework.Editor
                 m_Style.normal.textColor = Color.white;
                 GUI.Label(rt, info.folderName);
 
-                var config = m_Config.GetConfigUnit(info.folderFullPath);
-                if (config != null)
+                ABConfigUnit configUnit = m_Mgr.GetConfigUnit(info.folderFullPath);
+                bool isFolderFlag = true;
+
+                if (configUnit != null)
+                {
+                    isFolderFlag = configUnit.isFolderFlag;
+                }
+
+                if (configUnit != null)
                 {
                     rt.x += 120;
-                    config.isFolderTagMode = GUI.Toggle(rt, config.isFolderTagMode, "文件夹模式");
+                    if (configUnit.isFolderFlag)
+                    {
+                        configUnit.isFolderFlag = GUI.Toggle(rt, configUnit.isFolderFlag, "文件夹模式");
+                    }
+                    else
+                    {
+                        configUnit.isFolderFlag = GUI.Toggle(rt, configUnit.isFolderFlag, "文件模式");
+                    }
+                }
 
+
+                ABStateUnit stateUnit = m_Mgr.GetStateUnit(info.folderFullPath);
+
+                if (stateUnit != null)
+                {
                     rt.x += 120;
                     rt.width = 160;
 
                     string stateMsg = null;
-                    if (FlagMode2Msg(config.flagMode, out stateMsg))
+                    if (ABState2Msg(stateUnit.state, out stateMsg))
                     {
-                        m_Style.normal.textColor = Color.gray;
+                        if (isFolderFlag != stateUnit.state.isFolderFlag && !stateUnit.state.isNoneFlag)
+                        {
+                            m_Style.normal.textColor = Color.red;
+                        }
+                        else
+                        {
+                            m_Style.normal.textColor = Color.gray;
+                        }
+                        
+                        stateMsg = string.Format("当前状态:{0}", stateMsg);
+                        GUI.Label(rt, stateMsg, m_Style);
+
+                        rt.x += 180;
+                        if (GUI.Button(rt, "重置"))
+                        {
+                            m_Mgr.FixedFolder(stateUnit.folderAssetPath);
+                        }
                     }
                     else
                     {
                         m_Style.normal.textColor = Color.red;
+                        stateMsg = string.Format("当前状态:{0}", stateMsg);
+                        GUI.Label(rt, stateMsg, m_Style);
+
+                        rt.x += 180;
+                        if (GUI.Button(rt, "修复"))
+                        {
+                            m_Mgr.FixedFolder(stateUnit.folderAssetPath);
+                        }
                     }
-                    stateMsg = string.Format("当前状态:{0}", stateMsg);
-                    GUI.Label(rt, stateMsg, m_Style);
-                    
                 }
             }
         }
 
-        private bool FlagMode2Msg(int flagMode, out string msg)
+        private bool ABState2Msg(ABState state, out string msg)
         {
+            bool result = true;
+            
             msg = "";
-            if (((flagMode ^ ABFlagMode.MIXED) & ABFlagMode.MIXED) == 0)
+            if (state.isMixedFlag)
             {
-                msg += "-混合标记";
+                msg += "-混合模式";
+                result = false;
+            }
+            else if (state.isFileFlag)
+            {
+                msg += "-文件模式";
+            }
+            else if (state.isFolderFlag)
+            {
+                msg += "-文件夹模式";
             }
 
-            if (((flagMode ^ ABFlagMode.LOST) & ABFlagMode.LOST) == 0)
+            if (state.isLost)
             {
                 msg += "-丢失";
+                result = false;
             }
 
             if (string.IsNullOrEmpty(msg))
             {
-                msg = "正常";
-                return true;
+                msg += "-正常";
             }
 
-            return false;
+            return result;
         }
 
         void OnInspectorUpdate()

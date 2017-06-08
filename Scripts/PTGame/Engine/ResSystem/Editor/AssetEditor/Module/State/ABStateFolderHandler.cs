@@ -7,69 +7,79 @@ using System.IO;
 
 namespace PTGame.Framework.Editor
 {
-    public class ResRootFolderHandler
+    public class ABStateFolderHandler
     {
         public class SerializeData
         {
             public string folderPath;
-            public List<ABEditorConfigUnit> dataArray;
+            public List<ABStateUnit> dataArray;
         }
 
         interface IFolderVisitor
         {
-            void OnFolderVisitorResult(string folderFullPath, int flagMode);
-            void OnAssetVisitorResult(AssetImporter ai, int flagMode);
+            void OnFolderVisitorResult(string folderFullPath, ABState state);
+            void OnAssetVisitorResult(AssetImporter ai, int state);
         }
 
         class GenerateConfigVisitor : IFolderVisitor
         {
-            private ResRootFolderHandler m_Handler;
+            private ABStateFolderHandler m_Handler;
 
-            public GenerateConfigVisitor(ResRootFolderHandler handler)
+            public GenerateConfigVisitor(ABStateFolderHandler handler)
             {
                 m_Handler = handler;
             }
 
-            public void OnFolderVisitorResult(string folderFullPath, int flagMode)
+            public void OnFolderVisitorResult(string folderFullPath, ABState state)
             {
-                m_Handler.AddConfig(folderFullPath, flagMode);
-                if (((flagMode ^ ABFlagMode.MIXED) & ABFlagMode.MIXED) == 0)
+                m_Handler.AddConfig(folderFullPath, state);
+                if (((state.flag ^ ABStateDefine.MIXED) & ABStateDefine.MIXED) == 0)
                 {
-                    Log.w("Folder Has Mixed Flag:" + folderFullPath + " :" + flagMode);
+                    //Log.w("Folder Has Mixed Flag:" + folderFullPath);
                 }
             }
 
             public void OnAssetVisitorResult(AssetImporter ai, int flagMode)
             {
-                if (flagMode == ABFlagMode.LOST)
+                if (flagMode == ABStateDefine.LOST)
                 {
-                    Log.w("Asset Lost AB Name:" + ai.assetPath);
+                    //Log.w("Asset Lost AB Name:" + ai.assetPath);
                 }
             }
         }
 
         protected string m_FolderAssetsPath;
-        protected Dictionary<string, ABEditorConfigUnit> m_ConfigMap;
+        protected Dictionary<string, ABStateUnit> m_StateMap;
 
         public string folderAssetsPath
         {
             get { return m_FolderAssetsPath; }
         }
 
+        public void RefreshState()
+        {
+            BuildAsFileSystem(m_FolderAssetsPath);
+        }
+
         public void BuildAsFileSystem(string folderPath)
         {
             m_FolderAssetsPath = folderPath;
 
-            if (m_ConfigMap == null)
+            if (m_StateMap == null)
             {
-                m_ConfigMap = new Dictionary<string, ABEditorConfigUnit>();
+                m_StateMap = new Dictionary<string, ABStateUnit>();
             }
             else
             {
-                m_ConfigMap.Clear();
+                m_StateMap.Clear();
             }
 
-            VisitorFolder(EditorUtils.AssetsPath2ABSPath(folderPath), new GenerateConfigVisitor(this));
+            var gen = new GenerateConfigVisitor(this);
+
+            string fullPath = EditorUtils.AssetsPath2ABSPath(folderPath);
+            ABState subState = VisitorFolder(fullPath, gen);
+
+            gen.OnFolderVisitorResult(fullPath, subState);
         }
 
         public void BuildAsConfigFile(SerializeData config)
@@ -82,7 +92,7 @@ namespace PTGame.Framework.Editor
             m_FolderAssetsPath = config.folderPath;
             if (config.dataArray != null)
             {
-                m_ConfigMap = new Dictionary<string, ABEditorConfigUnit>();
+                m_StateMap = new Dictionary<string, ABStateUnit>();
 
                 for (int i = 0; i < config.dataArray.Count; ++i)
                 {
@@ -91,10 +101,14 @@ namespace PTGame.Framework.Editor
             }
         }
 
-        private void AddConfigUnit(string fullPath, ABEditorConfigUnit unit)
+        private void AddConfigUnit(string fullPath, ABStateUnit unit)
         {
             fullPath = fullPath.Replace("\\", "/");
-            m_ConfigMap.Add(fullPath, unit);
+            if (m_StateMap.ContainsKey(fullPath))
+            {
+                return;
+            }
+            m_StateMap.Add(fullPath, unit);
         }
 
         public SerializeData GetSerizlizeData()
@@ -102,10 +116,10 @@ namespace PTGame.Framework.Editor
             SerializeData data = new SerializeData();
             data.folderPath = m_FolderAssetsPath;
 
-            if (m_ConfigMap != null)
+            if (m_StateMap != null)
             {
-                List<ABEditorConfigUnit> list = new List<ABEditorConfigUnit>();
-                foreach (var unit in m_ConfigMap)
+                List<ABStateUnit> list = new List<ABStateUnit>();
+                foreach (var unit in m_StateMap)
                 {
                     list.Add(unit.Value);
                 }
@@ -115,30 +129,32 @@ namespace PTGame.Framework.Editor
             return data;
         }
 
-        private int VisitorFolder(string absPath, IFolderVisitor visitor)
+        private ABState VisitorFolder(string absPath, IFolderVisitor visitor)
         {
             if (visitor == null)
             {
-                return ABFlagMode.NONE;
+                return ABState.NONE;
             }
-
-            int folderMode = ABFlagMode.NONE;
+            
+            ABState state = new ABState();
 
             var dirs = Directory.GetDirectories(absPath);
             if (dirs.Length > 0)
             {
                 for (int i = 0; i < dirs.Length; ++i)
                 {
-                    int flagMode = VisitorFolder(dirs[i], visitor);
-                    folderMode |= flagMode;
-                    visitor.OnFolderVisitorResult(dirs[i], flagMode);
+                    ABState subState = VisitorFolder(dirs[i], visitor);
+                    if (subState.isLost)
+                    {
+                        state.isLost = true;
+                    }
+                    visitor.OnFolderVisitorResult(dirs[i], subState);
                 }
             }
 
             var files = Directory.GetFiles(absPath);
             if (files.Length > 0)
             {
-
                 for (int i = 0; i < files.Length; ++i)
                 {
                     if (!AssetFileFilter.IsAsset(files[i]))
@@ -156,64 +172,64 @@ namespace PTGame.Framework.Editor
                             if (assetPath.EndsWith(ai.assetBundleName))
                             {
                                 //Log.i("File Flag:" + assetPath);
-                                folderMode |= ABFlagMode.FILE;
-                                visitor.OnAssetVisitorResult(ai, ABFlagMode.FILE);
+                                state.flag |= ABStateDefine.FILE;
+                                visitor.OnAssetVisitorResult(ai, ABStateDefine.FILE);
                             }
                             else
                             {
                                 //Log.i("##Folder Flag:" + assetPath);
-                                folderMode |= ABFlagMode.FOLDER;
-                                visitor.OnAssetVisitorResult(ai, ABFlagMode.FOLDER);
+                                state.flag |= ABStateDefine.FOLDER;
+                                visitor.OnAssetVisitorResult(ai, ABStateDefine.FOLDER);
                             }
                         }
                         else
                         {
-                            folderMode |= ABFlagMode.LOST;
-                            visitor.OnAssetVisitorResult(ai, ABFlagMode.LOST);
+                            state.isLost = true;
+                            visitor.OnAssetVisitorResult(ai, ABStateDefine.LOST);
                         }
                     }
                 }
                 
             }
 
-            return folderMode;
+            return state;
         }
 
-        public void AddConfig(string folderFullPath, int mode)
+        public void AddConfig(string folderFullPath, ABState state)
         {
-            ABEditorConfigUnit unit = null;
-            if (!m_ConfigMap.TryGetValue(folderFullPath, out unit))
+            ABStateUnit unit = null;
+            if (!m_StateMap.TryGetValue(folderFullPath, out unit))
             {
-                unit = new ABEditorConfigUnit();
+                unit = new ABStateUnit();
                 AddConfigUnit(folderFullPath, unit);
             }
 
             unit.folderAssetPath = EditorUtils.ABSPath2AssetsPath(folderFullPath);
-            unit.flagMode = mode;
+            unit.state = state;
         }
 
-        public ABEditorConfigUnit GetConfigUnit(string folderFullPath)
+        public ABStateUnit GetConfigUnit(string folderFullPath)
         {
-            if (m_ConfigMap == null)
+            if (m_StateMap == null)
             {
                 return null;
             }
 
-            if (m_ConfigMap.ContainsKey(folderFullPath))
+            if (m_StateMap.ContainsKey(folderFullPath))
             {
-                return m_ConfigMap[folderFullPath];
+                return m_StateMap[folderFullPath];
             }
             return null;
         }
 
         public void Dump()
         {
-            if (m_ConfigMap == null)
+            if (m_StateMap == null)
             {
                 return;
             }
 
-            foreach (var item in m_ConfigMap)
+            foreach (var item in m_StateMap)
             {
                 Log.i(item.Value.ToString());
             }

@@ -7,34 +7,16 @@ using System.IO;
 
 namespace PTGame.Framework.Editor
 {
-
-    public class ABEditorConfigUnit
+    public class ABStateInfo
     {
-        private string m_FolderAssetPath;
-        public int flagMode;
-        public bool isFolderTagMode = true;
-        public string folderAssetPath
-        {
-            get { return m_FolderAssetPath; }
-            set { m_FolderAssetPath = value; }
-        }
+        protected List<ABStateFolderHandler> m_RootFolderArray;
 
-        public override string ToString()
-        {
-            return string.Format("Folder:{0},FlagMode:{1}", m_FolderAssetPath, flagMode);
-        }
-    }
-
-    public class ABEditorConfig
-    {
-        protected List<ResRootFolderHandler> m_RootFolderArray;
-
-        public List<ResRootFolderHandler> GetRootFolderList()
+        public List<ABStateFolderHandler> GetRootFolderList()
         {
             return m_RootFolderArray;
         }
 
-        public ABEditorConfigUnit GetConfigUnit(string folderFullPath)
+        public ABStateUnit GetStateUnit(string folderFullPath)
         {
             if (m_RootFolderArray == null)
             {
@@ -53,7 +35,37 @@ namespace PTGame.Framework.Editor
             return null;
         }
 
-        public void AddRootFolder(string folderAssetsPath, ResRootFolderHandler.SerializeData data)
+        public void RefreshState()
+        {
+            if (m_RootFolderArray == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < m_RootFolderArray.Count; ++i)
+            {
+                m_RootFolderArray[i].RefreshState();
+            }
+        }
+
+        public void RemoveFolder(string folderAssetsPath)
+        {
+            if (m_RootFolderArray == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < m_RootFolderArray.Count; ++i)
+            {
+                if (m_RootFolderArray[i].folderAssetsPath == folderAssetsPath)
+                {
+                    m_RootFolderArray.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+
+        public void AddFolder(string folderAssetsPath, ABStateFolderHandler.SerializeData data)
         {
             var rootFolder = FindResRootFolder(folderAssetsPath);
             if (rootFolder != null)
@@ -68,8 +80,8 @@ namespace PTGame.Framework.Editor
                 return;
             }
 
-            ResRootFolderHandler folder = new ResRootFolderHandler();
-            
+            ABStateFolderHandler folder = new ABStateFolderHandler();
+
             if (data == null)
             {
                 folder.BuildAsFileSystem(folderAssetsPath);
@@ -81,13 +93,13 @@ namespace PTGame.Framework.Editor
 
             if (m_RootFolderArray == null)
             {
-                m_RootFolderArray = new List<ResRootFolderHandler>();
+                m_RootFolderArray = new List<ABStateFolderHandler>();
             }
 
             m_RootFolderArray.Add(folder);
         }
 
-        public void ExportEditorConfig(string path)
+        public void ExportEditorConfig(string assetPath)
         {
             if (m_RootFolderArray == null)
             {
@@ -95,30 +107,30 @@ namespace PTGame.Framework.Editor
                 return;
             }
 
-            List<ResRootFolderHandler.SerializeData> exportData = new List<ResRootFolderHandler.SerializeData>();
+            List<ABStateFolderHandler.SerializeData> exportData = new List<ABStateFolderHandler.SerializeData>();
             for (int i = 0; i < m_RootFolderArray.Count; ++i)
             {
                 exportData.Add(m_RootFolderArray[i].GetSerizlizeData());
             }
 
-            SerializeHelper.SerializeXML(EditorUtils.AssetsPath2ABSPath(path), exportData);
+            SerializeHelper.SerializeXML(EditorUtils.AssetsPath2ABSPath(assetPath), exportData);
         }
 
-        public void LoadFromEditorConfig(string path)
+        public void LoadFromFile(string path)
         {
             if (!File.Exists(path))
             {
-                Log.w("Not Find Config File:" + path);
+                Log.w("Not Find State Cache File:" + path);
                 return;
             }
             path = EditorUtils.AssetsPath2ABSPath(path);
-            List<ResRootFolderHandler.SerializeData> loadData = SerializeHelper.DeserializeXML<List<ResRootFolderHandler.SerializeData>>(path) as List<ResRootFolderHandler.SerializeData>;
+            List<ABStateFolderHandler.SerializeData> loadData = SerializeHelper.DeserializeXML<List<ABStateFolderHandler.SerializeData>>(path) as List<ABStateFolderHandler.SerializeData>;
             if (loadData != null && loadData.Count > 0)
             {
-                m_RootFolderArray = new List<ResRootFolderHandler>();
+                m_RootFolderArray = new List<ABStateFolderHandler>();
                 for (int i = 0; i < loadData.Count; ++i)
                 {
-                    AddRootFolder(loadData[i].folderPath, loadData[i]); 
+                    AddFolder(loadData[i].folderPath, loadData[i]);
                 }
             }
         }
@@ -136,7 +148,7 @@ namespace PTGame.Framework.Editor
             }
         }
 
-        protected ResRootFolderHandler FindResRootFolder(string folderPath)
+        protected ABStateFolderHandler FindResRootFolder(string folderPath)
         {
             if (m_RootFolderArray == null)
             {
@@ -153,6 +165,6 @@ namespace PTGame.Framework.Editor
 
             return null;
         }
-        
+
     }
 }

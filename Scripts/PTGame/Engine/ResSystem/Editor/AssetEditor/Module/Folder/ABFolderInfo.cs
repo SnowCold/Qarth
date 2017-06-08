@@ -7,12 +7,12 @@ using System.IO;
 
 namespace PTGame.Framework.Editor
 {
-    public class FolderInfo
+    public class ABFolderInfo
     {
         private string m_FolderFullPath;
         private bool m_isOpen = false;
         private int m_Level = 0;
-        private FolderInfo[] m_ChildFolderInfos;
+        private ABFolderInfo[] m_ChildFolderInfos;
         private string m_DisplayString;
 
         public string folderFullPath
@@ -45,47 +45,70 @@ namespace PTGame.Framework.Editor
             }
         }
 
-        public FolderInfo[] childFolderInfo
+        public ABFolderInfo[] childFolderInfo
         {
             get { return m_ChildFolderInfos; }
         }
 
-        public FolderInfo(string folderPath, int level)
+        public ABFolderInfo(string absPath, int level)
         {
             m_Level = level + 1;
-            m_FolderFullPath = folderPath;
+            m_FolderFullPath = absPath;
             m_FolderFullPath = m_FolderFullPath.Replace("\\", "/");
-            string[] dires = Directory.GetDirectories(folderPath);
+            string[] dires = Directory.GetDirectories(absPath);
 
             if (dires != null && dires.Length > 0)
             {
-                m_ChildFolderInfos = new FolderInfo[dires.Length];
+                m_ChildFolderInfos = new ABFolderInfo[dires.Length];
                 for (int i = 0; i < m_ChildFolderInfos.Length; ++i)
                 {
-                    m_ChildFolderInfos[i] = new FolderInfo(dires[i], m_Level);
+                    m_ChildFolderInfos[i] = new ABFolderInfo(dires[i], m_Level);
                 }
             }
         }
 
-        public FolderInfo()
+        public ABFolderInfo()
         {
 
         }
 
-        public void AddFolder(string folderPath)
+        public void RemoveFolder(string absPath)
         {
             if (m_ChildFolderInfos == null)
             {
-                m_ChildFolderInfos = new FolderInfo[1];
+                return;
+            }
+
+            absPath = absPath.Replace("\\", "/");
+            for (int i = 0; i < m_ChildFolderInfos.Length; ++i)
+            {
+                if (m_ChildFolderInfos[i].folderFullPath == absPath)
+                {
+                    m_ChildFolderInfos[i] = null;
+                    break;
+                }
+            }
+        }
+
+        public void AddFolder(string absPath)
+        {
+            if (!Directory.Exists(absPath))
+            {
+                return;
+            }
+
+            if (m_ChildFolderInfos == null)
+            {
+                m_ChildFolderInfos = new ABFolderInfo[1];
             }
             else
             {
-                FolderInfo[] temp = new FolderInfo[m_ChildFolderInfos.Length + 1];
+                ABFolderInfo[] temp = new ABFolderInfo[m_ChildFolderInfos.Length + 1];
                 Array.Copy(m_ChildFolderInfos, temp, m_ChildFolderInfos.Length);
                 m_ChildFolderInfos = temp;
             }
 
-            m_ChildFolderInfos[m_ChildFolderInfos.Length - 1] = new FolderInfo(folderPath, m_Level);
+            m_ChildFolderInfos[m_ChildFolderInfos.Length - 1] = new ABFolderInfo(absPath, m_Level);
         }
     }
 }

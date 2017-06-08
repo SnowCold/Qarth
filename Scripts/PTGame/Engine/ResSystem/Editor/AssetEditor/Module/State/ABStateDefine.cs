@@ -1,0 +1,89 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using System.IO;
+
+namespace PTGame.Framework.Editor
+{
+    public class ABStateDefine
+    {
+        public const int NONE = 0;//单纯文件夹
+        public const int FILE = 1;//按文件标记
+        public const int FOLDER = 2;//按文件夹标记
+        public const int MIXED = 3;
+        public const int LOST = 4;
+    }
+
+    public struct ABState
+    {
+        public int flag;//当前的标记状态
+        public bool isLost;
+
+        public ABState(int flag, bool isLost)
+        {
+            this.flag = flag;
+            this.isLost = isLost;
+        }
+
+        public bool isNoneFlag
+        {
+            get
+            {
+                return flag == ABStateDefine.NONE;
+            }
+        }
+
+        public bool isFolderFlag
+        {
+            get
+            {
+                if (isMixedFlag)
+                {
+                    return false;
+                }
+
+                if (((flag ^ ABStateDefine.FOLDER) & ABStateDefine.FOLDER) == 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public bool isFileFlag
+        {
+            get
+            {
+                if (isMixedFlag)
+                {
+                    return false;
+                }
+
+                if (((flag ^ ABStateDefine.FILE) & ABStateDefine.FILE) == 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public bool isMixedFlag
+        {
+            get
+            {
+                if (((flag ^ ABStateDefine.MIXED) & ABStateDefine.MIXED) == 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public static ABState NONE = new ABState(ABStateDefine.NONE, false);
+    }
+    
+}
