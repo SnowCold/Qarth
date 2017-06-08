@@ -10,6 +10,7 @@ namespace PTGame.Framework
     {
         protected int m_MaxSoundCount = 5;
         protected AudioUnit m_MainUnit;
+        protected Dictionary<string, AudioUnit> m_SingletonSoundMap = new Dictionary<string, AudioUnit>();
 
         public override void OnSingletonInit()
         {
@@ -39,6 +40,34 @@ namespace PTGame.Framework
             unit.SetOnFinishListener(callBack);
             unit.customEventID = customEventID;
             return unit;
+        }
+
+        public AudioUnit PlaySoundSingleton(string name, bool replace)
+        {
+            if (m_SingletonSoundMap.ContainsKey(name))
+            {
+                if (replace)
+                {
+                    m_SingletonSoundMap[name].Stop();
+                    m_SingletonSoundMap.Remove(name);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            AudioUnit unit = PlaySound(name, false, OnSingleAudioFinish);
+            m_SingletonSoundMap.Add(name, unit);
+            return unit;
+        }
+        
+        private void OnSingleAudioFinish(AudioUnit unit)
+        {
+            if (m_SingletonSoundMap.ContainsKey(unit.audioName))
+            {
+                m_SingletonSoundMap.Remove(unit.audioName);
+            }
         }
 
 		public AudioUnit GetBGUnit()
