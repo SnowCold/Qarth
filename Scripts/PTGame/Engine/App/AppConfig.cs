@@ -97,6 +97,7 @@ namespace PTGame.Framework
 		[SerializeField] private DebugSetting 	m_DebugSetting;
 		[SerializeField] private bool			m_IsGuideActive = false;
         [SerializeField] private bool           m_IsResUpdateActive = false;
+        [SerializeField] private string         m_ReleaseBundleId = "com.putao.logic.cn";
 		#endregion
 
 		#region 属性
@@ -152,6 +153,11 @@ namespace PTGame.Framework
 		{
 			get { return m_ServerMode; }
 		}
+
+        public string ReleaseBundleId
+        {
+            get {return m_ReleaseBundleId;}
+        }
 		#endregion
 		
 	#endregion
