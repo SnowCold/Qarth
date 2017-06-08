@@ -190,5 +190,33 @@ namespace PTGame.Framework
             }
         }
 
+        public static void GetFolderInFolder(string dirName, string fileName, List<string> outResult)
+        {
+            if (outResult == null)
+            {
+                return;
+            }
+
+            DirectoryInfo dir = new DirectoryInfo(dirName);
+
+            if (null != dir.Parent && dir.Attributes.ToString().IndexOf("System") > -1)
+            {
+                return;
+            }
+            
+            string fname = string.Empty;
+            
+            DirectoryInfo[] dinfo = dir.GetDirectories();
+            for (int i = 0; i < dinfo.Length; i++)
+            {
+                fname = dinfo[i].Name;
+                if (fname == fileName)
+                {
+                    outResult.Add(dinfo[i].FullName);
+                }
+                GetFolderInFolder(dinfo[i].FullName, fileName, outResult);
+            }
+        }
+
     }
 }

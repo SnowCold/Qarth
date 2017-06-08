@@ -12,7 +12,7 @@ namespace PTGame.Framework.Editor
     {
         private string m_FolderAssetPath;
         public int flagMode;
-
+        public bool isFolderTagMode = true;
         public string folderAssetPath
         {
             get { return m_FolderAssetPath; }
@@ -28,6 +28,11 @@ namespace PTGame.Framework.Editor
     public class ABEditorConfig
     {
         protected List<ResRootFolderHandler> m_RootFolderArray;
+
+        public List<ResRootFolderHandler> GetRootFolderList()
+        {
+            return m_RootFolderArray;
+        }
 
         public ABEditorConfigUnit GetConfigUnit(string folderFullPath)
         {
@@ -54,6 +59,12 @@ namespace PTGame.Framework.Editor
             if (rootFolder != null)
             {
                 Log.w("Already Add Root Folder.");
+                return;
+            }
+
+            if (!Directory.Exists(EditorUtils.AssetsPath2ABSPath(folderAssetsPath)))
+            {
+                Log.w("Folder not Exit.");
                 return;
             }
 
@@ -134,7 +145,7 @@ namespace PTGame.Framework.Editor
 
             for (int i = 0; i < m_RootFolderArray.Count; ++i)
             {
-                if (m_RootFolderArray[i].folderPath == folderPath)
+                if (m_RootFolderArray[i].folderAssetsPath == folderPath)
                 {
                     return m_RootFolderArray[i];
                 }

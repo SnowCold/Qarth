@@ -48,17 +48,17 @@ namespace PTGame.Framework.Editor
             }
         }
 
-        protected string m_FolderPath;
+        protected string m_FolderAssetsPath;
         protected Dictionary<string, ABEditorConfigUnit> m_ConfigMap;
 
-        public string folderPath
+        public string folderAssetsPath
         {
-            get { return m_FolderPath; }
+            get { return m_FolderAssetsPath; }
         }
 
         public void BuildAsFileSystem(string folderPath)
         {
-            m_FolderPath = folderPath;
+            m_FolderAssetsPath = folderPath;
 
             if (m_ConfigMap == null)
             {
@@ -79,7 +79,7 @@ namespace PTGame.Framework.Editor
                 return;
             }
 
-            m_FolderPath = config.folderPath;
+            m_FolderAssetsPath = config.folderPath;
             if (config.dataArray != null)
             {
                 m_ConfigMap = new Dictionary<string, ABEditorConfigUnit>();
@@ -100,7 +100,7 @@ namespace PTGame.Framework.Editor
         public SerializeData GetSerizlizeData()
         {
             SerializeData data = new SerializeData();
-            data.folderPath = m_FolderPath;
+            data.folderPath = m_FolderAssetsPath;
 
             if (m_ConfigMap != null)
             {
@@ -130,6 +130,7 @@ namespace PTGame.Framework.Editor
                 for (int i = 0; i < dirs.Length; ++i)
                 {
                     int flagMode = VisitorFolder(dirs[i], visitor);
+                    folderMode |= flagMode;
                     visitor.OnFolderVisitorResult(dirs[i], flagMode);
                 }
             }
