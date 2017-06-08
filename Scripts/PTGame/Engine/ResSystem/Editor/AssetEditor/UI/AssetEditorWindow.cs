@@ -9,23 +9,6 @@ namespace PTGame.Framework.Editor
 {
     public class AssetEditorWindow : EditorWindow
     {
-        [MenuItem("Assets/SCEngine/Res/导出配置")]
-        public static void SavaConfig()
-        {
-            ABConfigInfo config = new ABConfigInfo();
-            config.AddFolder("Assets/Res", null);
-            config.ExportEditorConfig("abConfig.xml");
-            Log.i("## Success Export Config");
-        }
-
-        [MenuItem("Assets/SCEngine/Res/读取配置")]
-        public static void LoadConfig()
-        {
-            ABConfigInfo config = new ABConfigInfo();
-            config.LoadFromEditorConfig("abConfig.xml");
-            config.Dump();
-        }
-
         [MenuItem("Assets/SCEngine/Res/AB编辑器")]
         public static void OpenABWindow()
         {
@@ -109,6 +92,10 @@ namespace PTGame.Framework.Editor
             if (GUILayout.Button("Refresh"))
             {
                 m_Mgr.RefreshState();
+            }
+            if (GUILayout.Button("Build All"))
+            {
+                AssetBundleExporter.BuildAllAssetBundles();
             }
             EditorGUILayout.EndHorizontal();
         }
@@ -239,6 +226,12 @@ namespace PTGame.Framework.Editor
                         {
                             m_Mgr.FixedFolder(stateUnit.folderAssetPath);
                         }
+                    }
+
+                    rt.x += 180;
+                    if (GUI.Button(rt, "构建AB"))
+                    {
+                        AssetBundleExporter.BuildAssetBundlesInSelectFolder(stateUnit.folderAssetPath);
                     }
                 }
             }

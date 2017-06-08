@@ -152,6 +152,11 @@ namespace PTGame.Framework.Editor
                 return;
             }
 
+            BuildAssetBundlesInSelectFolder(selectPath);
+        }
+
+        public static void BuildAssetBundlesInSelectFolder(string selectPath)
+        {
             string exportPath = Application.dataPath + "/" + ProjectPathConfig.exportRootFolder;
 
             if (Directory.Exists(exportPath) == false)
