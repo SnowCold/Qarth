@@ -110,5 +110,32 @@ namespace PTGame.Framework.Editor
 
             m_ChildFolderInfos[m_ChildFolderInfos.Length - 1] = new ABFolderInfo(absPath, m_Level);
         }
+
+        public void RefreshFolder()
+        {
+            if (m_ChildFolderInfos == null)
+            {
+                return;
+            }
+
+            /*
+            for (int i = 0; i < m_ChildFolderInfos.Length; ++i)
+            {
+                m_ChildFolderInfos[i].RefreshFolder();
+            }
+            */
+            var temp = m_ChildFolderInfos;
+            m_ChildFolderInfos = null;
+
+            for (int i = 0; i < temp.Length; ++i)
+            {
+                if (temp[i] == null)
+                {
+                    continue;
+                }
+
+                AddFolder(temp[i].folderFullPath);
+            }
+        }
     }
 }

@@ -111,6 +111,7 @@ namespace PTGame.Framework.Editor
         {
             m_ABConfigInfo.RefreshConfig();
             m_ABStateInfo.RefreshState();
+            m_RootFolder.RefreshFolder();
         }
 
         private void AutoGenAssetNameInFolder(string folderPath)
