@@ -1,10 +1,16 @@
+О╩©//  Desc:        Framework For Game Develop with Unity3d
+//  Copyright:   Copyright (C) 2017 SnowCold. All rights reserved.
+//  WebSite:     https://github.com/SnowCold/PTFramework
+//  Blog:        http://blog.csdn.net/snowcoldgame
+//  Author:      SnowCold
+//  E-mail:      snowcold.ouyang@gmail.com
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace PTGame.Framework
 {
-	//цЭаНдёй╫:╨СцФ©иртсе╩╞обвИж╞пнй╫ё╛х╚╡©м╗╧ЩEventю╢й╣ож╣д╩╟©идэп╖бйиосп╣Ц╣м
+	//О©╫О©╫О©╫О©╫дёй╫:О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫е╩О©╫О©╫О©╫О©╫О©╫ж╞О©╫О©╫й╫О©╫О©╫х╚О©╫О©╫м╗О©╫О©╫EventО©╫О©╫й╣О©╫ж╣д╩О©╫О©╫О©╫О©╫О©╫п╖О©╫О©╫О©╫О©╫О©╫п╣О©╫О©╫
 	public class CommandNode
 	{
 		public delegate void CommandNodeEvent(CommandNode commond);

@@ -1,3 +1,9 @@
+ï»¿//  Desc:        Framework For Game Develop with Unity3d
+//  Copyright:   Copyright (C) 2017 SnowCold. All rights reserved.
+//  WebSite:     https://github.com/SnowCold/PTFramework
+//  Blog:        http://blog.csdn.net/snowcoldgame
+//  Author:      SnowCold
+//  E-mail:      snowcold.ouyang@gmail.com
 using System;
 using System.Net;
 using System.Collections.Generic;
@@ -9,7 +15,7 @@ namespace PTGame.Framework
 {
     public class DataStreamReader
     {
-        //Don't Edit it (¸ßÄÜÔ¤¾¯,²»Òª±à¼­)
+        //Don't Edit it (ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½,ï¿½ï¿½Òªï¿½à¼­)
         public enum FieldType
         {
             Unkown,
@@ -66,7 +72,7 @@ namespace PTGame.Framework
             return m_SchemeNames;
         }
 
-        // »ñÈ¡typeÀàÐÍ
+        // ï¿½ï¿½È¡typeï¿½ï¿½ï¿½ï¿½
         private void PreReadFieldType()
         {
             m_FieldTypes = new FieldType[m_Col];
@@ -151,7 +157,7 @@ namespace PTGame.Framework
         }
 
         /// <summary>
-        /// ·µ»Ø-1 Ôò±íÊ¾¶Áµ½ÐÐÄ©Î²
+        /// ï¿½ï¿½ï¿½ï¿½-1 ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä©Î²
         /// </summary>
         /// <returns></returns>
         public int MoreFieldOnRow()

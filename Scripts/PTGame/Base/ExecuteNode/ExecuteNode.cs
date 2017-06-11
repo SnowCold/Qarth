@@ -1,9 +1,15 @@
+ï»¿//  Desc:        Framework For Game Develop with Unity3d
+//  Copyright:   Copyright (C) 2017 SnowCold. All rights reserved.
+//  WebSite:     https://github.com/SnowCold/PTFramework
+//  Blog:        http://blog.csdn.net/snowcoldgame
+//  Author:      SnowCold
+//  E-mail:      snowcold.ouyang@gmail.com
 using UnityEngine;
 using System.Collections;
 
 namespace PTGame.Framework
 {
-    //´ø½ø¶È»Øµ÷µÄÖ´ÐÐ½Úµã
+    //ï¿½ï¿½ï¿½ï¿½ï¿½È»Øµï¿½ï¿½ï¿½Ö´ï¿½Ð½Úµï¿½
 	public class ExecuteNode
 	{
         protected string        m_Tips = "Default";

@@ -1,3 +1,9 @@
+ï»¿//  Desc:        Framework For Game Develop with Unity3d
+//  Copyright:   Copyright (C) 2017 SnowCold. All rights reserved.
+//  WebSite:     https://github.com/SnowCold/PTFramework
+//  Blog:        http://blog.csdn.net/snowcoldgame
+//  Author:      SnowCold
+//  E-mail:      snowcold.ouyang@gmail.com
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -12,7 +18,7 @@ namespace PTGame.Framework.Editor
 
     public class EditorUtils
     {
-        //Ñ¡ÖÐÎÄ¼þ¼ÐÎÞÐ§:ÐèÒªÑ¡ÖÐÄ³¸öÎÄ¼þ²ÅÐÐ
+        //Ñ¡ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ð§:ï¿½ï¿½ÒªÑ¡ï¿½ï¿½Ä³ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
         public static string CurrentSelectPath
         {
             get
