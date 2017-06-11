@@ -358,7 +358,7 @@ namespace PTGame.Framework.Editor
 
 		private static string AssetBundlePath2ABName(string absPath)
 		{
-			return ProjectPathConfig.AssetBundleUrl2Name(absPath);
+			return ProjectPathConfig.AssetBundleUrl2Name(absPath).Replace("\\", "/");
 		}
 
         /*
