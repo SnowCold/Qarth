@@ -8,11 +8,11 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using PTGame.Framework;
+using SCEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class StarAnim : MonoBehaviour
     {

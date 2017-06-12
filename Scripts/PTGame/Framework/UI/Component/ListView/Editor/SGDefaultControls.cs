@@ -6,7 +6,7 @@
 //  E-mail:      snowcold.ouyang@gmail.com
 using UnityEngine;
 using System.Collections.Generic;
-using PTGame.Framework;
+using SCEngine;
 
 namespace UnityEngine.UI
 {

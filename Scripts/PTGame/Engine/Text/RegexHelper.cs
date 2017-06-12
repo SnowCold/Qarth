@@ -11,7 +11,7 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 using System.Text;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class RegexHelper
     {

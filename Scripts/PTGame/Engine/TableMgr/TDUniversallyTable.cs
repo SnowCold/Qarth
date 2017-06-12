@@ -11,7 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class TDTableMetaData
     {

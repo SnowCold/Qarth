@@ -10,7 +10,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     //资源加载&释放策略
     public interface IResLoaderStrategy

@@ -13,7 +13,7 @@ using System.Threading;
 using System.IO;
 using System.Diagnostics;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine.Editor
 {
     public class TableExporter
     {

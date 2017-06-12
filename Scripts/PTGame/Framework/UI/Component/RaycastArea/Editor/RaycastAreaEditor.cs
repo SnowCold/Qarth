@@ -10,7 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     [CustomEditor(typeof(RaycastArea), false)]
     [CanEditMultipleObjects]

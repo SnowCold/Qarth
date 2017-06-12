@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using UnityEngine.Profiling;
 #endif
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     [TMonoSingletonAttribute("[App]/MemoryMgr")]
     public class MemoryMgr : TMonoSingleton<MemoryMgr>

@@ -8,10 +8,10 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using PTGame.Framework;
+using SCEngine;
 using System.Text;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class AssetDataTable : TSingleton<AssetDataTable>
     {

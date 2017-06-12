@@ -6,7 +6,7 @@
 //  E-mail:      snowcold.ouyang@gmail.com
 using System;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public interface ITestUnit
     {

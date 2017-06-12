@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ICSharpCode.SharpZipLib.Zip;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class FileMgr: TSingleton<FileMgr>
     {

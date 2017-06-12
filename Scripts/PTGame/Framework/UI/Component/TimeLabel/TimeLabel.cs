@@ -8,10 +8,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using PTGame.Framework;
+using SCEngine;
 using UnityEngine.UI;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class TimeLabel : MonoBehaviour
     {

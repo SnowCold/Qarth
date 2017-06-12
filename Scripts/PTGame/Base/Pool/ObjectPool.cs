@@ -9,7 +9,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     //主动提供缓存管理的类型
     public interface ICacheType

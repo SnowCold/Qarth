@@ -8,7 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public delegate void DTableOnParse(byte[] data);
     public delegate void Run();

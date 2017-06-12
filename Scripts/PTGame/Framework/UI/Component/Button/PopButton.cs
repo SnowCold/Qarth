@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class PopButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {

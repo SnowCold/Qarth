@@ -25,7 +25,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine.Editor
 {
     public class EmojiBuilder
     {

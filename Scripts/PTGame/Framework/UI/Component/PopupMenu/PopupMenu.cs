@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class PopupMenu : MonoBehaviour
     {

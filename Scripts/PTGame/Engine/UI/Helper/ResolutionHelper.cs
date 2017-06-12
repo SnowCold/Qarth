@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public enum ResolutionMode
     {

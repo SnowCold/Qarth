@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class TestMeshEffect : BaseMeshEffect
     {

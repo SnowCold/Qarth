@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine.Editor
 {
     public class AppConfigEditor
     {

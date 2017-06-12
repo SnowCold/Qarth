@@ -9,11 +9,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using PTGame.Framework;
+using SCEngine;
 using UnityEditor.UI;
 using UnityEditor;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine
 {
     [CustomEditor(typeof(SoundButton), true)]
     [CanEditMultipleObjects]

@@ -13,7 +13,7 @@ using System.Text;
 using UnityEngine;
 using ICSharpCode.SharpZipLib.Zip;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class TableReadThreadWork
     {
@@ -22,7 +22,7 @@ namespace PTGame.Framework
             public DTableOnParse    parseRun;
             public string           fileName;
 
-            public TableInfo(PTGame.Framework.DTableOnParse parseRun, string fileName)
+            public TableInfo(SCEngine.DTableOnParse parseRun, string fileName)
             {
                 this.parseRun = parseRun;
                 this.fileName = fileName;
@@ -66,7 +66,7 @@ namespace PTGame.Framework
 #endif
         }
 
-        private static ReadParams CreateReadParams(PTGame.Framework.DTableOnParse onParse, string tableName)
+        private static ReadParams CreateReadParams(SCEngine.DTableOnParse onParse, string tableName)
         {
             ReadParams readParam = new ReadParams();
             
@@ -77,7 +77,7 @@ namespace PTGame.Framework
             return readParam;
         }
 
-        public void AddJob(string tableName, PTGame.Framework.DTableOnParse onParse = null)
+        public void AddJob(string tableName, SCEngine.DTableOnParse onParse = null)
         {
             if (onParse == null)
             {
@@ -132,7 +132,7 @@ namespace PTGame.Framework
             IsDone = true;
         }
 
-        public static void ReadSync( PTGame.Framework.DTableOnParse onParse, string fileName)
+        public static void ReadSync( SCEngine.DTableOnParse onParse, string fileName)
         {
             var readParam = CreateReadParams (onParse ,fileName);
             byte[] fileData = FileMgr.S.ReadSync(readParam.filePath);

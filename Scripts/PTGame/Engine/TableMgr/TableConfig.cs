@@ -5,7 +5,7 @@
 //  Author:      SnowCold
 //  E-mail:      snowcold.ouyang@gmail.com
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public static class TableConfig
     {

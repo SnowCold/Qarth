@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class SerializeHelper
     {

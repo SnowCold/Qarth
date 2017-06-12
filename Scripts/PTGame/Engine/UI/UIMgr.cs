@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Reflection;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     [TMonoSingletonAttribute("[Tools]/UIMgr")]
     public partial class UIMgr : TMonoSingleton<UIMgr>

@@ -8,9 +8,9 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using PTGame.Framework;
+using SCEngine;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class CloudAnim : MonoBehaviour
     {

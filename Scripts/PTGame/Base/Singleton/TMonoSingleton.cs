@@ -9,7 +9,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public abstract class TMonoSingleton<T> : MonoSingleton, ISingleton where T : TMonoSingleton<T>
     {

@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
 	public class UINodeFinder : IUINodeFinder
 	{

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using DG;
 using DG.Tweening;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
 	
 	public class BubbleAnim

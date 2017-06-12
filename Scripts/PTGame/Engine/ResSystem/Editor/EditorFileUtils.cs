@@ -9,7 +9,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine.Editor
 {
     public class EditorFileUtils
     {

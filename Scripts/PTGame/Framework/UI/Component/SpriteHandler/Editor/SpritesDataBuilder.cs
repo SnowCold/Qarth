@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using System.IO;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine.Editor
 {
     public class SpritesDataBuilder
     {

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     [TMonoSingletonAttribute("[Tools]/Timer")]
     public class Timer : TMonoSingleton<Timer>

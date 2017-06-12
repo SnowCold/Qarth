@@ -10,7 +10,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class ResLoader : DisposableObject, IResLoader, ICacheAble, ICacheType
     {

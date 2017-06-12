@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
-namespace PTGame.Framework
+namespace SCEngine
 {	
 	public enum Layout
 	{

@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine.Editor
 {
     public class AssetBundleExporter
     {

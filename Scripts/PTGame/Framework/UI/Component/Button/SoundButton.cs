@@ -9,10 +9,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using PTGame.Framework;
+using SCEngine;
 using UnityEngine.EventSystems;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class SoundButton : Button
     {

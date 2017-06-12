@@ -11,7 +11,7 @@ using UnityEngine;
 using System.IO;
 using System.Text;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class ResUpdateRecord
     {

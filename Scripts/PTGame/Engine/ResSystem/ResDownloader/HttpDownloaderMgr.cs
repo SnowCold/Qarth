@@ -12,7 +12,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     //http下载管理器
     [TMonoSingletonAttribute("[Tools]/HttpDownloader")]

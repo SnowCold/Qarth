@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
 
     public class TimeDebugger

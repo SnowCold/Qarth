@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using Object = UnityEngine.Object;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine.Editor
 {
 
     public class EditorUtils

@@ -7,7 +7,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
 	public abstract class IUListItemView : MonoBehaviour
 	{

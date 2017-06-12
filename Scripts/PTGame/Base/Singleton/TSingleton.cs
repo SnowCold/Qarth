@@ -6,7 +6,7 @@
 //  E-mail:      snowcold.ouyang@gmail.com
 using System.Collections;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class TSingleton<T> : ISingleton where T : TSingleton<T>, new()
 	{

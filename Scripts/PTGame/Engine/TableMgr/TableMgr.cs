@@ -8,7 +8,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class TableMgr : TSingleton<TableMgr>
     {

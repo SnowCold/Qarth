@@ -8,7 +8,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
 	//����ģʽ:��������Ż�����֯��ʽ��ȫ��ͨ��Event��ʵ�ֵĻ�����Ч�����е��
 	public class CommandNode

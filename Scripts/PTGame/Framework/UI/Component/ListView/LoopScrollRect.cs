@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     [AddComponentMenu("")]
     [DisallowMultipleComponent]

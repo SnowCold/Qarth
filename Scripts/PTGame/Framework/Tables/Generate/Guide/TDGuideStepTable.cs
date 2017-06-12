@@ -9,9 +9,9 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using PTGame.Framework;
+using SCEngine;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public static partial class TDGuideStepTable
     {

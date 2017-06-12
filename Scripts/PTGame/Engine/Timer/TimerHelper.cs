@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class TimerHelper
     {

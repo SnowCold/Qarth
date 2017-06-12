@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 
-namespace PTGame.Framework.Editor
+namespace SCEngine.Editor
 {
     [CustomEditor(typeof(LoopScrollRect), true)]
     public class LoopScrollRectInspector : UnityEditor.Editor

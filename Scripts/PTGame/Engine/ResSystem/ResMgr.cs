@@ -11,7 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     [TMonoSingletonAttribute("[Tools]/ResMgr")]
     public class ResMgr : TMonoSingleton<ResMgr>, IEnumeratorTaskMgr

@@ -7,7 +7,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
 
 	public class Rect2D

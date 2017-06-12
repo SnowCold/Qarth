@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace PTGame.Framework
+namespace SCEngine
 {
     public class PopupAction : MonoBehaviour
     {
