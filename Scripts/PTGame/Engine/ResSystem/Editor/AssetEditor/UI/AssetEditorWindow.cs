@@ -245,10 +245,9 @@ namespace PTGame.Framework.Editor
 
         private bool ABState2Msg(ABState state, out string msg)
         {
-            bool result = true;
-            
             msg = "";
-            if (state.isMixedFlag)
+            bool result = true;
+            if (state.isMixedFlag || state.hasMixed)
             {
                 msg += "-混合模式";
                 result = false;

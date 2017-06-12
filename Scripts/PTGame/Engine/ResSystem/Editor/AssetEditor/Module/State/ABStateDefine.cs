@@ -25,11 +25,13 @@ namespace PTGame.Framework.Editor
     {
         public int flag;//当前的标记状态
         public bool isLost;
+        private bool m_HasMixed;
 
         public ABState(int flag, bool isLost)
         {
             this.flag = flag;
             this.isLost = isLost;
+            m_HasMixed = false;
         }
 
         public bool isNoneFlag
@@ -37,6 +39,19 @@ namespace PTGame.Framework.Editor
             get
             {
                 return flag == ABStateDefine.NONE;
+            }
+        }
+
+        public bool hasMixed
+        {
+            get
+            {
+                return m_HasMixed;
+            }
+
+            set
+            {
+                m_HasMixed = value;
             }
         }
 

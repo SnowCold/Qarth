@@ -74,7 +74,9 @@ namespace PTGame.Framework.Editor
                 }
             }
 
-            VisitorFolder(EditorUtils.AssetsPath2ABSPath(folderPath), new GenerateConfigVisitor(this));
+            string fullPath = EditorUtils.AssetsPath2ABSPath(folderPath);
+            var gen = new GenerateConfigVisitor(this);
+            VisitorFolder(fullPath, gen);
         }
 
         public void RefreshConfig()
@@ -142,9 +144,10 @@ namespace PTGame.Framework.Editor
                 for (int i = 0; i < dirs.Length; ++i)
                 {
                     VisitorFolder(dirs[i], visitor);
-                    visitor.OnFolderVisitorResult(dirs[i]);
                 }
             }
+            visitor.OnFolderVisitorResult(absPath);
+
             return;
         }
 

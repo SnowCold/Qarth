@@ -50,6 +50,7 @@ namespace PTGame.Framework
 #else
                     //m_StreamingAssetsPath = GetParentDir(Application.dataPath, 1) + "/BuildRes/standalone/";
                     m_StreamingAssetsPath = Application.streamingAssetsPath + "/";
+                    m_StreamingAssetsPath = m_StreamingAssetsPath.Replace("\\", "/");
 #endif
                 }
 

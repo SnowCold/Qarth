@@ -34,7 +34,8 @@ namespace PTGame.Framework.Editor
         public static string AssetsPath2ABSPath(string assetsPath)
         {
             string assetRootPath = System.IO.Path.GetFullPath(Application.dataPath);
-            return assetRootPath.Substring(0, assetRootPath.Length - 6) + assetsPath;
+            assetRootPath = assetRootPath.Substring(0, assetRootPath.Length - 6) + assetsPath;
+            return assetRootPath.Replace("\\", "/");
         }
         
 

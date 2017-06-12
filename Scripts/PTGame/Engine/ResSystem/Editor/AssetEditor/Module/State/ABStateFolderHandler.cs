@@ -150,11 +150,16 @@ namespace PTGame.Framework.Editor
                 for (int i = 0; i < dirs.Length; ++i)
                 {
                     ABState subState = VisitorFolder(dirs[i], visitor);
+
+                    if (subState.hasMixed)
+                    {
+                        state.hasMixed = true;
+                    }
+
                     if (subState.isLost)
                     {
                         state.isLost = true;
                     }
-                    visitor.OnFolderVisitorResult(dirs[i], subState);
                 }
             }
 
@@ -195,9 +200,13 @@ namespace PTGame.Framework.Editor
                         }
                     }
                 }
-                
             }
 
+            if (state.isMixedFlag)
+            {
+                state.hasMixed = true;
+            }
+            visitor.OnFolderVisitorResult(absPath, state);
             return state;
         }
 
