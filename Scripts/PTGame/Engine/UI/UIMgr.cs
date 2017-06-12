@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Reflection;
 
-namespace SCEngine
+namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/UIMgr")]
     public partial class UIMgr : TMonoSingleton<UIMgr>

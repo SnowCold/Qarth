@@ -9,7 +9,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-namespace SCEngine.Editor
+namespace Qarth.Editor
 {
     public class EditorFileUtils
     {

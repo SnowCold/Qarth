@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SCEngine
+namespace Qarth
 {
     public class TimerHelper
     {

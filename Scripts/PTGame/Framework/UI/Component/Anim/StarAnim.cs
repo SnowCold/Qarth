@@ -8,11 +8,11 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using SCEngine;
+using Qarth;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace SCEngine
+namespace Qarth
 {
     public class StarAnim : MonoBehaviour
     {

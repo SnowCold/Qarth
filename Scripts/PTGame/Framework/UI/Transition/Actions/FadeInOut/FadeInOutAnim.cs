@@ -8,10 +8,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SCEngine;
+using Qarth;
 using DG.Tweening;
 
-namespace SCEngine
+namespace Qarth
 {
     public class FadeInOutAction : ITransitionAction
     {

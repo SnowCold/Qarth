@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace SCEngine
+namespace Qarth
 {
     public interface IDownloadTask
     {

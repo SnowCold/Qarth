@@ -8,7 +8,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-namespace SCEngine
+namespace Qarth
 {
     public class TableMgr : TSingleton<TableMgr>
     {

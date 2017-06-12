@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SCEngine
+namespace Qarth
 {
     public class TransitionHelper
     {

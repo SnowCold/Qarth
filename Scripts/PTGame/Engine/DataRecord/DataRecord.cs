@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace SCEngine
+namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/DataRecord")]
     public class DataRecord : TMonoSingleton<DataRecord>

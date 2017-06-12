@@ -13,7 +13,7 @@ using ICSharpCode.SharpZipLib.Core;
 using System.IO;
 using System.IO.Compression;
 
-namespace SCEngine
+namespace Qarth
 {
     public delegate void OnZipFinished(string zipFilePath, string m_OutDirPath);
     public delegate void OnZipError(string zipFilePath, string m_OutDirPath, string errorMsg);

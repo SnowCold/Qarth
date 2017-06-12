@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
 
-namespace SCEngine
+namespace Qarth
 {
     [AddComponentMenu("")]
     [DisallowMultipleComponent]

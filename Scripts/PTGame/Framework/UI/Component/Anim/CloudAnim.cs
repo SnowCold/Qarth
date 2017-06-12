@@ -8,9 +8,9 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using SCEngine;
+using Qarth;
 
-namespace SCEngine
+namespace Qarth
 {
     public class CloudAnim : MonoBehaviour
     {

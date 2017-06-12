@@ -10,7 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace SCEngine
+namespace Qarth
 {
     public class MsgBox : TSingleton<MsgBox>
     {

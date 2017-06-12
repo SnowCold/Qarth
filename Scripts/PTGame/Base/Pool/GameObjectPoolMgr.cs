@@ -10,7 +10,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SCEngine
+namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/PoolMgr")]
     public class GameObjectPoolMgr : TMonoSingleton<GameObjectPoolMgr>

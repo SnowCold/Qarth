@@ -10,7 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace SCEngine
+namespace Qarth
 {
     [ExecuteInEditMode]
     public class RaycastArea : UnityEngine.UI.MaskableGraphic

@@ -9,10 +9,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using SCEngine;
+using Qarth;
 using UnityEngine.EventSystems;
 
-namespace SCEngine
+namespace Qarth
 {
     public class SoundButton : Button
     {

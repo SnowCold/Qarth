@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SCEngine
+namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/AudioMgr")]
     public class AudioMgr : TMonoSingleton<AudioMgr>

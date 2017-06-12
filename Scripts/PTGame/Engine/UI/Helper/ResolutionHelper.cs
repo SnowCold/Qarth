@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SCEngine
+namespace Qarth
 {
     public enum ResolutionMode
     {

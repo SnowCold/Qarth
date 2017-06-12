@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 
-namespace SCEngine.Editor
+namespace Qarth.Editor
 {
     [CustomEditor(typeof(LoopScrollRect), true)]
     public class LoopScrollRectInspector : UnityEditor.Editor

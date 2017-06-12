@@ -10,7 +10,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SCEngine
+namespace Qarth
 {
     #region 技能释放过滤器
     public interface ISkillReleaseFilter

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-namespace SCEngine
+namespace Qarth
 {
     public class TipsPanel : TipsBehaviour
     {

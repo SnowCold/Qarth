@@ -9,11 +9,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using SCEngine;
+using Qarth;
 using UnityEditor.UI;
 using UnityEditor;
 
-namespace SCEngine
+namespace Qarth
 {
     [CustomEditor(typeof(SoundButton), true)]
     [CanEditMultipleObjects]

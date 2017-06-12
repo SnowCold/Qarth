@@ -8,10 +8,10 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using SCEngine;
+using Qarth;
 using System.Text;
 
-namespace SCEngine
+namespace Qarth
 {
     public class AssetDataTable : TSingleton<AssetDataTable>
     {

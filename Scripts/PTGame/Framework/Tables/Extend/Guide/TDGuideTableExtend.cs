@@ -9,9 +9,9 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using SCEngine;
+using Qarth;
 
-namespace SCEngine
+namespace Qarth
 {
     public partial class TDGuideTable
     {

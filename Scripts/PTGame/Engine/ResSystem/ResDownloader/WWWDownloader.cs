@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-namespace SCEngine
+namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/HttpDownloader")]
     public class WWWDownloader : TMonoSingleton<WWWDownloader>, IHttpDownloader

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using UnityEngine.Profiling;
 #endif
 
-namespace SCEngine
+namespace Qarth
 {
     [TMonoSingletonAttribute("[App]/MemoryMgr")]
     public class MemoryMgr : TMonoSingleton<MemoryMgr>

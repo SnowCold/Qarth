@@ -6,7 +6,7 @@
 //  E-mail:      snowcold.ouyang@gmail.com
 using System.Collections;
 
-namespace SCEngine
+namespace Qarth
 {
     public class TSingleton<T> : ISingleton where T : TSingleton<T>, new()
 	{

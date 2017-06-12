@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-namespace SCEngine
+namespace Qarth
 {
     public class PopButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {

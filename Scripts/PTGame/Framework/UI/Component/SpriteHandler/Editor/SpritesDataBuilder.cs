@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using System.IO;
 
-namespace SCEngine.Editor
+namespace Qarth.Editor
 {
     public class SpritesDataBuilder
     {

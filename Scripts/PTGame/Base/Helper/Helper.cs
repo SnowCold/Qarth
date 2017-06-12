@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SCEngine
+namespace Qarth
 {
     public class Helper
     {

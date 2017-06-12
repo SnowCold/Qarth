@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SCEngine.Editor
+namespace Qarth.Editor
 {
     public class AssetBundleExporter
     {

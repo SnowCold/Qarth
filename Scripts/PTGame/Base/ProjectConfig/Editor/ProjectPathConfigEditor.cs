@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 
-namespace SCEngine.Editor
+namespace Qarth.Editor
 {
     [CustomEditor(typeof(ProjectPathConfig), false)]
     public class ProjectPathConfigEditor : UnityEditor.Editor

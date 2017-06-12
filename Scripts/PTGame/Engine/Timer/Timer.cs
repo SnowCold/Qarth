@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace SCEngine
+namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/Timer")]
     public class Timer : TMonoSingleton<Timer>

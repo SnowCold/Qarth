@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using DG;
 using DG.Tweening;
 
-namespace SCEngine
+namespace Qarth
 {
 	
 	public class BubbleAnim

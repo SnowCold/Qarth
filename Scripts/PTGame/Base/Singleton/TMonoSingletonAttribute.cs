@@ -9,7 +9,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SCEngine
+namespace Qarth
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class TMonoSingletonAttribute : System.Attribute

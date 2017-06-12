@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SCEngine
+namespace Qarth
 {
     public delegate void OnDownloadFinished(string fileName, int download, int totalFileLenght);
     public delegate void OnDownloadError(string errorMsg);

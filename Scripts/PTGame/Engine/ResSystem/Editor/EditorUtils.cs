@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using Object = UnityEngine.Object;
 
-namespace SCEngine.Editor
+namespace Qarth.Editor
 {
 
     public class EditorUtils

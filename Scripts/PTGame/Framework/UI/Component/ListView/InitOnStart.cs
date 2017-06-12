@@ -7,10 +7,10 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(SCEngine.LoopScrollRect))]
+[RequireComponent(typeof(Qarth.LoopScrollRect))]
 [DisallowMultipleComponent]
 public class InitOnStart : MonoBehaviour {
 	void Start () {
-        GetComponent<SCEngine.LoopScrollRect>().RefillCells();
+        GetComponent<Qarth.LoopScrollRect>().RefillCells();
 	}
 }

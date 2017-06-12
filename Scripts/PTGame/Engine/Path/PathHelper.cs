@@ -11,7 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace SCEngine
+namespace Qarth
 {
     public class PathHelper
     {

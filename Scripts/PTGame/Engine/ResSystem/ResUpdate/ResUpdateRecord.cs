@@ -11,7 +11,7 @@ using UnityEngine;
 using System.IO;
 using System.Text;
 
-namespace SCEngine
+namespace Qarth
 {
     public class ResUpdateRecord
     {

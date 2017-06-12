@@ -13,7 +13,7 @@ using System.Threading;
 using System.IO;
 using System.Diagnostics;
 
-namespace SCEngine.Editor
+namespace Qarth.Editor
 {
     public class TableExporter
     {

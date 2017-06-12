@@ -6,7 +6,7 @@
 //  E-mail:      snowcold.ouyang@gmail.com
 using System;
 
-namespace SCEngine
+namespace Qarth
 {
     //链表
     public class SCLinkedList<T> : ISCList<T>, Iteratable<T>

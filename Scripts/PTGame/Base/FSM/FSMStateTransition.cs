@@ -7,7 +7,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace SCEngine
+namespace Qarth
 {
     //	Map-<key, state>:key = sourceCode << 16 + targetCode
     //		Transition

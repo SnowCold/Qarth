@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace SCEngine
+namespace Qarth
 {
     public class PositionAdjuster : MonoBehaviour
     {

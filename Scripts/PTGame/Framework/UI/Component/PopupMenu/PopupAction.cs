@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace SCEngine
+namespace Qarth
 {
     public class PopupAction : MonoBehaviour
     {

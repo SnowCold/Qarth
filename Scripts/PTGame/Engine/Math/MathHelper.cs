@@ -7,7 +7,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace SCEngine
+namespace Qarth
 {
 	
 	public enum eMovingDir

@@ -10,7 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace SCEngine
+namespace Qarth
 {
     [CustomEditor(typeof(RaycastArea), false)]
     [CanEditMultipleObjects]

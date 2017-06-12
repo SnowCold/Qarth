@@ -7,7 +7,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace SCEngine
+namespace Qarth
 {
 	
 	#region 枚举

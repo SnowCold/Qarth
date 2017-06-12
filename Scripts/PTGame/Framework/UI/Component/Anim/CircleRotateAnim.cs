@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
 
-namespace SCEngine
+namespace Qarth
 {
     public class CircleRotateAnim : MonoBehaviour, IPointerDownHandler
     {

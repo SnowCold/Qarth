@@ -6,7 +6,7 @@
 //  E-mail:      snowcold.ouyang@gmail.com
 using System;
 
-namespace SCEngine
+namespace Qarth
 {
     public class LinkedListTest : BaseTestUnit
     {

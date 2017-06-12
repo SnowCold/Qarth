@@ -8,7 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SCEngine
+namespace Qarth
 {
     public delegate void DTableOnParse(byte[] data);
     public delegate void Run();

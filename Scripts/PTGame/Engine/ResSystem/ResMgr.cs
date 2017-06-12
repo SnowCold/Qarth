@@ -11,7 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SCEngine
+namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/ResMgr")]
     public class ResMgr : TMonoSingleton<ResMgr>, IEnumeratorTaskMgr

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 
-namespace SCEngine
+namespace Qarth
 {
     public class TestMeshEffect : BaseMeshEffect
     {

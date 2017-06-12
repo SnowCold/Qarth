@@ -10,7 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SCEngine
+namespace Qarth
 {
     public class AssetDataPackage
     {

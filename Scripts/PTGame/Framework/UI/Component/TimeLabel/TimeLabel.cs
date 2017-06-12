@@ -8,10 +8,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SCEngine;
+using Qarth;
 using UnityEngine.UI;
 
-namespace SCEngine
+namespace Qarth
 {
     public class TimeLabel : MonoBehaviour
     {

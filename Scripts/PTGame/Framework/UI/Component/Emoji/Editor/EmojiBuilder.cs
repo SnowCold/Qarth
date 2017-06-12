@@ -25,7 +25,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace SCEngine.Editor
+namespace Qarth.Editor
 {
     public class EmojiBuilder
     {

@@ -10,7 +10,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SCEngine
+namespace Qarth
 {
     //策略描述:加载完AB后 立即加载AB所有Asset
     public class UILoaderStrategy : TSingleton<UILoaderStrategy>, IResLoaderStrategy

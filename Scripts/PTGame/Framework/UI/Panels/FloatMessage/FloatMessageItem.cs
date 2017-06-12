@@ -10,7 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace SCEngine
+namespace Qarth
 {
     public class FloatMessageItem : MonoBehaviour
     {

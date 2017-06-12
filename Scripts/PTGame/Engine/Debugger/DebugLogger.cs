@@ -12,7 +12,7 @@ using System.Text;
 using System;
 using System.Diagnostics;
 
-namespace SCEngine
+namespace Qarth
 {
 	[TMonoSingletonAttribute("[Tools]/DebugLogger")]
 	public class DebugLogger : TMonoSingleton<DebugLogger>

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 
-namespace SCEngine
+namespace Qarth
 {
 
     public class TimeDebugger

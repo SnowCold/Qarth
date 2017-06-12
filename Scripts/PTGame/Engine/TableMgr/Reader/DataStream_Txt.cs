@@ -11,7 +11,7 @@ using UnityEngine;
 
 #if !USE_TABLE_XC 
 //&& (UNITY_STANDALONE_WIN || UNITY_EDITOR || UNITY_STANDALONE_OSX)
-namespace SCEngine
+namespace Qarth
 {
     public class DataStreamReader
     {

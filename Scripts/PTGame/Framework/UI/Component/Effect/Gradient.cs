@@ -11,7 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace SCEngine
+namespace Qarth
 {
     [AddComponentMenu("UI/Effects/Gradient")]
     public class Gradient : BaseMeshEffect

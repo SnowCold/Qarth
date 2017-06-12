@@ -13,7 +13,7 @@ using System.Text;
 using UnityEngine;
 using ICSharpCode.SharpZipLib.Zip;
 
-namespace SCEngine
+namespace Qarth
 {
     public class TableReadThreadWork
     {
@@ -22,7 +22,7 @@ namespace SCEngine
             public DTableOnParse    parseRun;
             public string           fileName;
 
-            public TableInfo(SCEngine.DTableOnParse parseRun, string fileName)
+            public TableInfo(Qarth.DTableOnParse parseRun, string fileName)
             {
                 this.parseRun = parseRun;
                 this.fileName = fileName;
@@ -66,7 +66,7 @@ namespace SCEngine
 #endif
         }
 
-        private static ReadParams CreateReadParams(SCEngine.DTableOnParse onParse, string tableName)
+        private static ReadParams CreateReadParams(Qarth.DTableOnParse onParse, string tableName)
         {
             ReadParams readParam = new ReadParams();
             
@@ -77,7 +77,7 @@ namespace SCEngine
             return readParam;
         }
 
-        public void AddJob(string tableName, SCEngine.DTableOnParse onParse = null)
+        public void AddJob(string tableName, Qarth.DTableOnParse onParse = null)
         {
             if (onParse == null)
             {
@@ -132,7 +132,7 @@ namespace SCEngine
             IsDone = true;
         }
 
-        public static void ReadSync( SCEngine.DTableOnParse onParse, string fileName)
+        public static void ReadSync( Qarth.DTableOnParse onParse, string fileName)
         {
             var readParam = CreateReadParams (onParse ,fileName);
             byte[] fileData = FileMgr.S.ReadSync(readParam.filePath);

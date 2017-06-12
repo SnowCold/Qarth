@@ -5,7 +5,7 @@
 //  Author:      SnowCold
 //  E-mail:      snowcold.ouyang@gmail.com
 
-namespace SCEngine
+namespace Qarth
 {
     public static class TableConfig
     {

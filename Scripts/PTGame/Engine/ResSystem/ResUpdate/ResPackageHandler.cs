@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace SCEngine
+namespace Qarth
 {
     public class ResPackageHandler
     {

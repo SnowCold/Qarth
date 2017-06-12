@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace SCEngine
+namespace Qarth
 {
     public class SerializeHelper
     {

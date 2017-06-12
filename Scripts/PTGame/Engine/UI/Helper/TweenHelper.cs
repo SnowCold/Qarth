@@ -12,7 +12,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 
-namespace SCEngine
+namespace Qarth
 {
     public static class TweenHelper
     {
