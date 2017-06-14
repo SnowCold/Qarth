@@ -166,6 +166,14 @@ namespace Qarth
 
             m_Asset = abQ.asset;
 
+            if (m_Asset == null)
+            {
+                Log.e("Failed Load Asset:" + m_Name);
+                OnResLoadFaild();
+                finishCallback();
+                yield break;
+            }
+
             resState = eResState.kReady;
 
             finishCallback();
