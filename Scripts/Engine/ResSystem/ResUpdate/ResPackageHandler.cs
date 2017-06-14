@@ -76,10 +76,6 @@ namespace Qarth
         {
             get
             {
-                if (alreadyUpdateFileCount < needUpdateFileCount)
-                {
-                    return m_AlreadyUpdateFileSize + WWWDownloader.S.alreadyDownloadSize;
-                }
                 return m_AlreadyUpdateFileSize;
             }
         }

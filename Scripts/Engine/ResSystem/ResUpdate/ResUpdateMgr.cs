@@ -124,7 +124,7 @@ namespace Qarth
                 {
                     size += m_UpdatePackageList[i].handler.alreadyUpdateFileSize;
                 }
-                return size;
+                return size + WWWDownloader.S.alreadyDownloadSize;
             }
         }
 

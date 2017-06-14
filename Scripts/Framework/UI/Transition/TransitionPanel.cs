@@ -18,6 +18,7 @@ namespace Qarth
         private ResLoader m_NextPanelResLoader;
 
         private ITransitionAction m_Action;
+        private AbstractPanel m_NextPanel;
 
         public AbstractPanel transitionPanel
         {
@@ -57,7 +58,7 @@ namespace Qarth
                 m_OpenParam = args[0] as TransitionHelper.OpenParam;
             }
 
-            if (m_OpenParam == null || m_OpenParam.action == null)
+            if (m_OpenParam == null)
             {
                 CloseSelfPanel();
                 return;
@@ -133,11 +134,16 @@ namespace Qarth
 
         protected override void OnClose()
         {
-            m_Action.OnTransitionDestroy();
+            if (m_Action != null)
+            {
+                m_Action.OnTransitionDestroy();
+            }
 
             m_OpenParam = null;
 
             m_Action = null;
+
+            m_NextPanel = null;
 
             if (m_NextPanelResLoader != null)
             {
@@ -177,6 +183,10 @@ namespace Qarth
 
         public void OnTransitionOutFinish()
         {
+            if (m_NextPanel != null)
+            {
+                m_NextPanel.OnTransitionFinish(true);
+            }
             CloseSelfPanel();
         }
 

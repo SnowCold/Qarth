@@ -146,6 +146,11 @@ namespace Qarth
             return false;
         }
 
+        public virtual void OnTransitionFinish(bool mode)
+        {
+
+        }
+
         protected override void OnViewEvent(ViewEvent e, object[] args)
         {
             switch (e)
