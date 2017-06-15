@@ -277,6 +277,9 @@ namespace Qarth
 
         public bool ReleaseRes()
         {
+            m_ResListener = null;
+            m_LoaderListener = null;
+
             if (m_ResState == eResState.kLoading)
             {
                 return false;
@@ -292,7 +295,7 @@ namespace Qarth
             OnReleaseRes();
 
             m_ResState = eResState.kWaiting;
-            m_ResListener = null;
+
             return true;
         }
 

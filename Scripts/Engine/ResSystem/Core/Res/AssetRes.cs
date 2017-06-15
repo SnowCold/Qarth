@@ -156,6 +156,13 @@ namespace Qarth
 
             UnHoldDependRes();
 
+            if (refCount <= 0)
+            {
+                OnResLoadFaild();
+                finishCallback();
+                yield break;
+            }
+
             if (!abQ.isDone)
             {
                 Log.e("Failed Load Asset:" + m_Name);
