@@ -1,6 +1,6 @@
 ﻿//  Desc:        Framework For Game Develop with Unity3d
 //  Copyright:   Copyright (C) 2017 SnowCold. All rights reserved.
-//  WebSite:     https://github.com/SnowCold/PTFramework
+//  WebSite:     https://github.com/SnowCold/Qarth
 //  Blog:        http://blog.csdn.net/snowcoldgame
 //  Author:      SnowCold
 //  E-mail:      snowcold.ouyang@gmail.com
@@ -29,7 +29,7 @@ namespace Qarth.Editor
             return false;
         }
 
-        [MenuItem("Assets/SCEngine/Table/Build C#")]
+        [MenuItem("Assets/Qarth/Table/Build C#")]
         public static void BuildCSharpFile()
         {
             string path = ProjectPathConfig.projectToolsFolder;
@@ -49,7 +49,7 @@ namespace Qarth.Editor
             newThread.Start();
         }
 
-        [MenuItem("Assets/SCEngine/Table/Build Data(txt)")]
+        [MenuItem("Assets/Qarth/Table/Build Data(txt)")]
         public static void BuildDataTxtMode()
         {
             string path = ProjectPathConfig.projectToolsFolder;
@@ -69,7 +69,7 @@ namespace Qarth.Editor
             newThread.Start();
         }
 
-        [MenuItem("Assets/SCEngine/Table/Build Data(lrg)")]
+        [MenuItem("Assets/Qarth/Table/Build Data(lrg)")]
         public static void BuildDataLrgMode()
         {
             string path = ProjectPathConfig.projectToolsFolder;

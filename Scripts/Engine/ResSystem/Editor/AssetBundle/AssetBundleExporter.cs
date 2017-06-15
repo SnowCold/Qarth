@@ -1,6 +1,6 @@
 ﻿//  Desc:        Framework For Game Develop with Unity3d
 //  Copyright:   Copyright (C) 2017 SnowCold. All rights reserved.
-//  WebSite:     https://github.com/SnowCold/PTFramework
+//  WebSite:     https://github.com/SnowCold/Qarth
 //  Blog:        http://blog.csdn.net/snowcoldgame
 //  Author:      SnowCold
 //  E-mail:      snowcold.ouyang@gmail.com
@@ -20,7 +20,7 @@ namespace Qarth.Editor
 
 #region 处理AssetBundle Name
         //自动设置选中目录下的AssetBundle Name
-        [MenuItem("Assets/SCEngine/Asset/设置Asset名字[文件夹])")]
+        [MenuItem("Assets/Qarth/Asset/设置Asset名字[文件夹])")]
         public static void GenAssetNameAsFolderName()
         {
             string selectPath = EditorUtils.GetSelectedDirAssetsPath();
@@ -35,7 +35,7 @@ namespace Qarth.Editor
         }
 
         //自动设置选中目录下的AssetBundle Name
-        [MenuItem("Assets/SCEngine/Asset/设置Asset名字[文件])")]
+        [MenuItem("Assets/Qarth/Asset/设置Asset名字[文件])")]
         public static void GenAssetNameAsFileName()
         {
             string selectPath = EditorUtils.GetSelectedDirAssetsPath();
@@ -117,7 +117,7 @@ namespace Qarth.Editor
 #region 构建AssetBundle
 
 #region 构建所有AssetBundle
-        [MenuItem("Assets/SCEngine/Asset/构建AB[全局])")]
+        [MenuItem("Assets/Qarth/Asset/构建AB[全局])")]
         public static void BuildAllAssetBundles()
         {
             Log.i("Start Build All AssetBundles.");
@@ -148,7 +148,7 @@ namespace Qarth.Editor
 
 #region 指定具体文件构建
 
-        [MenuItem("Assets/SCEngine/Asset/构建AB[当前文件夹]")]
+        [MenuItem("Assets/Qarth/Asset/构建AB[当前文件夹]")]
         public static void BuildAssetBundlesInSelectFolder()
         {
             string selectPath = EditorUtils.GetSelectedDirAssetsPath();//.CurrentSelectFolder;
@@ -285,7 +285,7 @@ namespace Qarth.Editor
 
 #region 构建 AssetDataTable
 
-        [MenuItem("Assets/SCEngine/Asset/生成Asset清单")]
+        [MenuItem("Assets/Qarth/Asset/生成Asset清单")]
         public static void BuildDataTable()
         {
             Log.i("Start BuildAssetDataTable!");
@@ -296,7 +296,7 @@ namespace Qarth.Editor
             table.Save(ProjectPathConfig.absExportRootFolder);
         }
 
-		[MenuItem("Assets/SCEngine/Res/清理无效AB")]
+		[MenuItem("Assets/Qarth/Res/清理无效AB")]
 		public static void RemoveInvalidAssetBundle()
 		{
 			AssetDataTable table = new AssetDataTable();
@@ -362,7 +362,7 @@ namespace Qarth.Editor
 		}
 
         /*
-        [MenuItem("Assets/SCEngine/Asset/生成Asset清单[当前文件夹]")]
+        [MenuItem("Assets/Qarth/Asset/生成Asset清单[当前文件夹]")]
         public static void BuildDataTableInFolder()
         {
             Log.i("Start BuildAssetDataTable!");
@@ -398,7 +398,7 @@ namespace Qarth.Editor
         }
         */
 
-        [MenuItem("Assets/SCEngine/Asset/生成Table清单")]
+        [MenuItem("Assets/Qarth/Asset/生成Table清单")]
         public static void BuildTableConfigTable()
         {
             Log.i("Start BuildTableConfigTable!");
