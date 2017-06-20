@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Qarth;
 
-namespace PTGame.PaiLogic
+namespace Qarth
 {
     public class UListItemView : IUListItemView
     {
