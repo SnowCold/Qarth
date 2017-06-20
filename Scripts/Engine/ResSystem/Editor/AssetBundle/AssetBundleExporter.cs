@@ -20,7 +20,7 @@ namespace Qarth.Editor
 
 #region 处理AssetBundle Name
         //自动设置选中目录下的AssetBundle Name
-        [MenuItem("Assets/Qarth/Asset/设置Asset名字[文件夹])")]
+        [MenuItem("Assets/Qarth/Asset/标记AB名字[文件夹])")]
         public static void GenAssetNameAsFolderName()
         {
             string selectPath = EditorUtils.GetSelectedDirAssetsPath();
@@ -35,7 +35,7 @@ namespace Qarth.Editor
         }
 
         //自动设置选中目录下的AssetBundle Name
-        [MenuItem("Assets/Qarth/Asset/设置Asset名字[文件])")]
+        [MenuItem("Assets/Qarth/Asset/标记AB名字[文件])")]
         public static void GenAssetNameAsFileName()
         {
             string selectPath = EditorUtils.GetSelectedDirAssetsPath();
