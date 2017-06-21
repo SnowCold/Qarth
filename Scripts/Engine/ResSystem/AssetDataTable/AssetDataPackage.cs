@@ -243,6 +243,11 @@ namespace Qarth
 
             string key = data.assetName.ToLower();
 
+            if (key.EndsWith(" "))
+            {
+                Log.e("Asset Name Is InValid:" + key);
+            }
+
             if (m_AssetDataMap.ContainsKey(key))
             {
                 AssetData old = GetAssetData(data.assetName);
