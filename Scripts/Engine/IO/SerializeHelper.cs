@@ -48,15 +48,22 @@ namespace Qarth
 
             using (stream)
             {
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                object data = bf.Deserialize(stream);
-
-                if (data != null)
+                try
                 {
-                    return data;
-                }
+                    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                    object data = bf.Deserialize(stream);
 
-                stream.Close();
+                    stream.Close();
+
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.e(e);
+                }
             }
 
             Log.w("DeserializeBinary Failed!");
