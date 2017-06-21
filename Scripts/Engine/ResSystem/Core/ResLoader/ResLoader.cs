@@ -169,12 +169,12 @@ namespace Qarth
             }
         }
 
-        public void Add2Load(string name, Action<bool, IRes> listener = null, bool lastOrder = true)
+        public bool Add2Load(string name, Action<bool, IRes> listener = null, bool lastOrder = true)
         {
             if (string.IsNullOrEmpty(name))
             {
                 Log.e("Res Name Is Null.");
-                return;
+                return false;
             }
 
             IRes res = FindResInArray(m_ResArray, name);
@@ -185,14 +185,14 @@ namespace Qarth
                     AddResListenerReward(res, listener);
                     res.RegisteResListener(listener);
                 }
-                return;
+                return true;
             }
 
             res = ResMgr.S.GetRes(name, true);
 
             if (res == null)
             {
-                return;
+                return false;
             }
 
             if (listener != null)
@@ -213,6 +213,8 @@ namespace Qarth
             }
 
             AddRes2Array(res, lastOrder);
+
+            return true;
         }
 
         public void LoadSync()
