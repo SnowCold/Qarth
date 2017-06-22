@@ -115,6 +115,8 @@ namespace Qarth
                 return;
             }
 
+            m_NextPanel = panel;
+
             if (m_Action.transitionSameTime)
             {
                 m_Action.TransitionIn(m_OpenParam.prePanel);
