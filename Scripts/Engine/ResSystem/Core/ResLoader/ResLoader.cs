@@ -306,6 +306,11 @@ namespace Qarth
 
         public void ReleaseAllRes()
         {
+            if (MonoSingleton.isApplicationQuit)
+            {
+                return;
+            }
+
             m_Listener = null;
             m_LoadingCount = 0;
             m_WaitLoadList.Clear();
