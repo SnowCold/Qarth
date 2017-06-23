@@ -351,6 +351,45 @@ System.Reflection.BindingFlags.Public);
             SetPanelSortingOrderDirty();
         }
 
+        public void CloseParentPanel(AbstractPanel panel, bool allParent = true)
+        {
+            if (panel == null)
+            {
+                return;
+            }
+
+            PanelInfo panelInfo = FindPanelInfoByPanelID(panel.panelID);
+
+            if (panelInfo == null)
+            {
+                return;
+            }
+
+            do
+            {
+                if (panelInfo.currentMaster != panelInfo.panelID)
+                {
+                    var nextInfo = FindPanelInfoByPanelID(panelInfo.currentMaster);
+                    if (nextInfo != null)
+                    {
+                        panelInfo = nextInfo;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (allParent);
+
+            ClosePanel(panelInfo.abstractPanel);
+        }
+
+
         public void SetPanelVisible<T>(T uiID, bool visible) where T : IConvertible
         {
             int eID = uiID.ToInt32(null);

@@ -218,6 +218,14 @@ namespace Qarth
                 }
             }
 
+            public int currentMaster
+            {
+                get
+                {
+                    return m_CurrentMaster;
+                }
+            }
+
             public bool isReady
             {
                 get { return m_Panel != null; }
