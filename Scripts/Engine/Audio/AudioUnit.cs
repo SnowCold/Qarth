@@ -193,7 +193,6 @@ namespace Qarth
 
             m_Source.clip = m_AudioClip;
             m_Source.loop = m_IsLoop;
-			m_Source.volume = 1.0f;
 
             int loopCount = 1;
             if (m_IsLoop)
@@ -269,6 +268,7 @@ namespace Qarth
                     m_Source.Stop();
                     m_Source.clip = null;
                 }
+                m_Source.volume = 1.0f;
             }
 
             m_AudioClip = null;
