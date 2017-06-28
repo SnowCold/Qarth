@@ -81,6 +81,11 @@ namespace Qarth
 
                 public void AddListener(Action<AbstractPage> listener)
                 {
+                    if (listener == null)
+                    {
+                        return;
+                    }
+
                     if (m_Page != null)
                     {
                         listener(m_Page);

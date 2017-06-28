@@ -12,8 +12,8 @@ using UnityEngine;
 
 namespace Qarth
 {
-    [TMonoSingletonAttribute("[Tools]/DataRecord")]
-    public class DataRecord : TMonoSingleton<DataRecord>
+    /*[TMonoSingletonAttribute("[Tools]/DataRecord")]*/
+    public class DataRecord_Default : IDataRecord
     {
         [Serializable]
         public class RecordCell
@@ -94,42 +94,9 @@ namespace Qarth
         private Dictionary<string, RecordCell> m_DataMap = new Dictionary<string, RecordCell>();
         private bool m_IsMapDirty = false;
 
-        public override void OnSingletonInit()
+        public void Init()
         {
             LoadFromFile();
-        }
-
-        public string GetLocalFilePath()
-        {
-            string filePath = FilePath.GetPersistentPath("Record/");
-            filePath = filePath + "dataRecord.bin";
-            return filePath;
-        }
-
-        public void LoadFromFile()
-        {
-            /*
-            string path = GetLocalFilePath();
-            object data = SerializeHelper.DeserializeBinary(FileMgr.S.OpenReadStream(path));
-
-            if (data == null)
-            {
-                Log.w("Failed Deserialize DataRecord:" + path);
-                return;
-            }
-            */
-
-            m_DataMap.Clear();
-
-            string sd  = PlayerPrefs.GetString("DataRecord", "");
-
-            if (sd == null)
-            {
-                //Log.w("Failed Load AssetDataTable:" + path);
-                return;
-            }
-
-            SetSerizlizeData(sd);
         }
 
         public void Reset()
@@ -153,23 +120,6 @@ namespace Qarth
 
             PlayerPrefs.Save();
             m_IsMapDirty = false;
-        }
-
-        public string GetSerializeData()
-        {
-            if (m_DataMap != null)
-            {
-                StringBuilder builder = new StringBuilder();
-
-                foreach (var item in m_DataMap)
-                {
-                    item.Value.WriteData(builder);
-                }
-
-                return builder.ToString();
-            }
-
-            return "";
         }
 
         public bool GetBool(string key, bool defaultValue = false)
@@ -303,6 +253,56 @@ namespace Qarth
 
                 m_DataMap.Add(cell.key, cell);
             }
+        }
+
+        private string GetLocalFilePath()
+        {
+            string filePath = FilePath.GetPersistentPath("Record/");
+            filePath = filePath + "dataRecord.bin";
+            return filePath;
+        }
+
+        private void LoadFromFile()
+        {
+            /*
+            string path = GetLocalFilePath();
+            object data = SerializeHelper.DeserializeBinary(FileMgr.S.OpenReadStream(path));
+
+            if (data == null)
+            {
+                Log.w("Failed Deserialize DataRecord:" + path);
+                return;
+            }
+            */
+
+            m_DataMap.Clear();
+
+            string sd = PlayerPrefs.GetString("DataRecord", "");
+
+            if (sd == null)
+            {
+                //Log.w("Failed Load AssetDataTable:" + path);
+                return;
+            }
+
+            SetSerizlizeData(sd);
+        }
+
+        private string GetSerializeData()
+        {
+            if (m_DataMap != null)
+            {
+                StringBuilder builder = new StringBuilder();
+
+                foreach (var item in m_DataMap)
+                {
+                    item.Value.WriteData(builder);
+                }
+
+                return builder.ToString();
+            }
+
+            return "";
         }
     }
 }
