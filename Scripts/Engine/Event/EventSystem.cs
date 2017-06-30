@@ -138,6 +138,19 @@ namespace Qarth
             return false;
         }
 
+        private static object[] s_EmptyParam = new object[0];
+
+        public bool Send<T>(T key) where T : IConvertible
+        {
+            int kv = key.ToInt32(null);
+            ListenerWrap wrap;
+            if (m_AllListenerMap.TryGetValue(kv, out wrap))
+            {
+                return wrap.Fire(kv, s_EmptyParam);
+            }
+            return false;
+        }
+
         public void OnCacheReset()
         {
             m_AllListenerMap.Clear();
