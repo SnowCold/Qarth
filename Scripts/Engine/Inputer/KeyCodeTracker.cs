@@ -14,15 +14,16 @@ namespace Qarth
 	{
 		public class PressKeyRecord
 		{
-			public float PressTime;
+			public float m_PressTime;
 
-			public bool CanActionTime {
-				get { return DateTime.Now.Second - PressTime <= 2;}
+			public bool canActionTime
+            {
+				get { return DateTime.Now.Second - m_PressTime <= 2;}
 			}
 
 			public PressKeyRecord()
 			{
-				PressTime = DateTime.Now.Second;
+				m_PressTime = DateTime.Now.Second;
 			}
 		}
 
@@ -46,7 +47,7 @@ namespace Qarth
             {
                 if (null != m_CurPressKeyRecord)
                 {
-                    if (m_CurPressKeyRecord.CanActionTime || m_SimalutionKeyBack)
+                    if (m_CurPressKeyRecord.canActionTime || m_SimalutionKeyBack)
                     {
                         Application.Quit();
                     }
