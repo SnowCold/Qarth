@@ -14,11 +14,11 @@ namespace Qarth
 {
     public class AbstractMonoCom : MonoBehaviour, ICom
     {
-        private AbstractActor m_Actor;
+        private AbstractActor m_AbstractActor;
 
         public AbstractActor actor
         {
-            get { return m_Actor; }
+            get { return m_AbstractActor; }
         }
 
         public virtual int comOrder
@@ -28,11 +28,11 @@ namespace Qarth
 
         public void AwakeCom(AbstractActor actor)
         {
-            m_Actor = actor;
+            m_AbstractActor = actor;
 
             OnActorBind(actor);
 
-            OnAwakeCom();
+            OnComAwake();
         }
 
         public void OnComDisable()
@@ -45,9 +45,9 @@ namespace Qarth
 
         }
 
-        public virtual void OnComLateUpdate(float dt)
+        public void OnComLateUpdate(float dt)
         {
-
+            throw new NotSupportedException();
         }
 
         public virtual void OnComStart()
@@ -55,15 +55,15 @@ namespace Qarth
 
         }
 
-        public virtual void OnComUpdate(float dt)
+        public void OnComUpdate(float dt)
         {
-
+            throw new NotSupportedException();
         }
 
         public void DestroyCom()
         {
-            OnDestroyCom();
-            m_Actor = null;
+            OnComDestroy();
+            m_AbstractActor = null;
             Destroy(this);
         }
 
@@ -73,11 +73,11 @@ namespace Qarth
 
         }
 
-        protected virtual void OnAwakeCom()
+        protected virtual void OnComAwake()
         {
 
         }
-        protected virtual void OnDestroyCom()
+        protected virtual void OnComDestroy()
         {
 
         }

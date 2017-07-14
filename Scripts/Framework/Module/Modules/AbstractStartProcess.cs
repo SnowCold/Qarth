@@ -57,7 +57,7 @@ namespace Qarth
             m_ExecuteContainer.Append(node);
         }
 
-        protected override void OnAwakeCom()
+        protected override void OnComAwake()
         {
             InitExechuteContainer();
         }
@@ -73,7 +73,7 @@ namespace Qarth
             m_ExecuteContainer.Start();
         }
 
-        public override void OnComUpdate(float dt)
+        private void Update()
         {
             if (m_ExecuteContainer == null)
             {

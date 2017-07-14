@@ -19,55 +19,8 @@ namespace Qarth
         private bool            m_HasAwake = false;
         private bool            m_HasStart = false;
         private List<ICom>      m_ComponentList = new List<ICom>();
+        private List<ICom>      m_UpdateComList = new List<ICom>();
         private EventSystem     m_EventSystem;
-
-#region MonoBehaviour
-        private void Awake()
-        {
-            OnActorAwake();
-
-            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
-            {
-                AwakeCom(m_ComponentList[i]);
-            }
-
-            m_HasAwake = true;
-        }
-        
-        private void Start()
-        {
-            OnActorStart();
-            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
-            {
-                StartCom(m_ComponentList[i]);
-            }
-            m_HasStart = true;
-        }
-
-        //关于Update的优化方案，可以后续再做
-        private void Update()
-        {
-            UpdateAllComs();
-        }
-
-        private void LateUpdate()
-        {
-            LateUpdateAllComs();
-        }
-
-        private void OnDestroy()
-        {
-            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
-            {
-                DestroyCom(m_ComponentList[i]);
-            }
-
-            m_ComponentList.Clear();
-            m_ComsNameList.Clear();
-
-            OnActorDestroy();
-        }
-#endregion
 
 #region Public
 
@@ -101,8 +54,15 @@ namespace Qarth
             m_ComponentList.Add(com);
 
             m_ComsNameList.Add(com.GetType().Name);
-
-            m_ComponentList.Sort(ComWrapComparison);
+            
+            if (com is MonoBehaviour)
+            {
+            }
+            else
+            {
+                m_UpdateComList.Add(com);
+                m_UpdateComList.Sort(ComWrapComparison);
+            }
 
             OnAddCom(com);
 
@@ -141,6 +101,15 @@ namespace Qarth
 
                     m_ComponentList.RemoveAt(i);
                     m_ComsNameList.RemoveAt(i);
+
+                    if (com is MonoBehaviour)
+                    {
+                    }
+                    else
+                    {
+                        m_UpdateComList.Remove(com);
+                    }
+
                     OnRemoveCom(com);
 
                     DestroyCom(com);
@@ -157,6 +126,15 @@ namespace Qarth
                 {
                     m_ComponentList.RemoveAt(i);
                     m_ComsNameList.RemoveAt(i);
+
+                    if (com is MonoBehaviour)
+                    {
+                    }
+                    else
+                    {
+                        m_UpdateComList.Remove(com);
+                    }
+
                     OnRemoveCom(com);
 
                     DestroyCom(com);
@@ -178,6 +156,70 @@ namespace Qarth
             return default(T);
         }
 
+#endregion
+
+
+#region MonoBehaviour
+        private void Awake()
+        {
+            InitMonoCom();
+
+            OnActorAwake();
+
+            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
+            {
+                AwakeCom(m_ComponentList[i]);
+            }
+
+            m_HasAwake = true;
+        }
+
+        private void Start()
+        {
+            OnActorStart();
+            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
+            {
+                StartCom(m_ComponentList[i]);
+            }
+            m_HasStart = true;
+        }
+
+        //关于Update的优化方案，可以后续再做
+        private void Update()
+        {
+            UpdateAllComs();
+        }
+
+        private void LateUpdate()
+        {
+            LateUpdateAllComs();
+        }
+
+        private void OnDestroy()
+        {
+            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
+            {
+                DestroyCom(m_ComponentList[i]);
+            }
+
+            m_ComponentList.Clear();
+            m_ComsNameList.Clear();
+            m_UpdateComList.Clear();
+
+            OnActorDestroy();
+        }
+
+        private void InitMonoCom()
+        {
+            var coms = GetComponents<AbstractMonoCom>();
+            if (coms != null && coms.Length > 0)
+            {
+                for (int i = 0; i < coms.Length; ++i)
+                {
+                    AddCom(coms[i]);
+                }
+            }
+        }
 #endregion
 
 #region Private
@@ -206,18 +248,18 @@ namespace Qarth
         protected void LateUpdateAllComs()
         {
             float dt = Time.deltaTime;
-            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
+            for (int i = m_UpdateComList.Count - 1; i >= 0; --i)
             {
-                m_ComponentList[i].OnComLateUpdate(dt);
+                m_UpdateComList[i].OnComLateUpdate(dt);
             }
         }
 
         protected void UpdateAllComs()
         {
             float dt = Time.deltaTime;
-            for (int i = m_ComponentList.Count - 1; i >= 0; --i)
+            for (int i = m_UpdateComList.Count - 1; i >= 0; --i)
             {
-                m_ComponentList[i].OnComUpdate(dt);
+                m_UpdateComList[i].OnComUpdate(dt);
             }
         }
 
