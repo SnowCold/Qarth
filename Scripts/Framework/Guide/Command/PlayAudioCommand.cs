@@ -15,7 +15,7 @@ namespace Qarth
 	{
 		private string m_AudioName;
 		private bool m_FinishStep = false;
-		private AudioUnit m_AudioUnit;
+		private int m_AudioID;
 
 		public override void SetParam (object[] pv)
 		{
@@ -34,12 +34,12 @@ namespace Qarth
 
 		protected override void OnStart()
 		{
-			m_AudioUnit = AudioMgr.S.PlaySound(m_AudioName, false, OnAoundPlayFinish);
+			m_AudioID = AudioMgr.S.PlaySound(m_AudioName, false, OnAoundPlayFinish);
 		}
 
-		private void OnAoundPlayFinish(AudioUnit unit)
+		private void OnAoundPlayFinish(int unit)
 		{
-			m_AudioUnit = null;
+			m_AudioID = -1;
 			if (m_FinishStep)
 			{
 				FinishStep ();
@@ -48,10 +48,10 @@ namespace Qarth
 
 		protected override void OnFinish(bool forceClean)
 		{
-			if (m_AudioUnit != null)
+			if (m_AudioID > 0)
 			{
-				m_AudioUnit.Stop ();
-				m_AudioUnit = null;
+                AudioMgr.S.Stop(m_AudioID);
+				m_AudioID = -1;
 			}
 		}
 

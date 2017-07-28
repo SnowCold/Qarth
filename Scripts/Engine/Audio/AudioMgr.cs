@@ -12,7 +12,7 @@ using UnityEngine;
 namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/AudioMgr")]
-    public class AudioMgr : TMonoSingleton<AudioMgr>
+    public partial class AudioMgr : TMonoSingleton<AudioMgr>
     {
         protected int m_MaxSoundCount = 5;
         protected AudioUnit m_MainUnit;
@@ -21,34 +21,34 @@ namespace Qarth
         public override void OnSingletonInit()
         {
             ObjectPool<AudioUnit>.S.Init(m_MaxSoundCount, 1);
-            m_MainUnit = new AudioUnit();
+            m_MainUnit = AudioUnit.Allocate();
             m_MainUnit.usedCache = false;
         }
 
-        public AudioUnit PlayBg(string name, bool loop = true, Action<AudioUnit> callBack = null, int customEventID = -1)
+        public int PlayBg(string name, bool loop = true, Action<int> callBack = null, int customEventID = -1)
         {
             m_MainUnit.SetAudio(gameObject, name, loop);
             m_MainUnit.SetOnFinishListener(callBack);
             m_MainUnit.customEventID = customEventID;
-            return m_MainUnit;
+            return m_MainUnit.id;
         }
 
-        public AudioUnit PlaySound(string name, bool loop = false, Action<AudioUnit> callBack = null, int customEventID = -1)
+        public int PlaySound(string name, bool loop = false, Action<int> callBack = null, int customEventID = -1)
         {
             if (string.IsNullOrEmpty(name))
             {
-                return null;
+                return -1;
             }
 
-            AudioUnit unit = ObjectPool<AudioUnit>.S.Allocate();
+            AudioUnit unit = AudioUnit.Allocate();
 
             unit.SetAudio(gameObject, name, loop);
             unit.SetOnFinishListener(callBack);
             unit.customEventID = customEventID;
-            return unit;
+            return unit.id;
         }
 
-        public AudioUnit PlaySoundSingleton(string name, bool replace)
+        public int PlaySoundSingleton(string name, bool replace)
         {
             if (m_SingletonSoundMap.ContainsKey(name))
             {
@@ -59,26 +59,101 @@ namespace Qarth
                 }
                 else
                 {
-                    return null;
+                    return -1;
                 }
             }
 
-            AudioUnit unit = PlaySound(name, false, OnSingleAudioFinish);
+            int id = PlaySound(name, false);
+
+            if (id < 0)
+            {
+                return id;
+            }
+
+            AudioUnit unit = AudioUnit.GetAudioUnitByID(id);
+            unit.SetOnStopListener(OnSingleAudioFinish);
             m_SingletonSoundMap.Add(name, unit);
-            return unit;
+            return unit.id;
         }
-        
-        private void OnSingleAudioFinish(AudioUnit unit)
+
+        public bool Resume(int id)
         {
+            AudioUnit unit = AudioUnit.GetAudioUnitByID(id);
+            if (unit == null)
+            {
+                return false;
+            }
+
+            unit.Resume();
+            return true;
+        }
+
+        public bool Pause(int id)
+        {
+            AudioUnit unit = AudioUnit.GetAudioUnitByID(id);
+            if (unit == null)
+            {
+                return false;
+            }
+
+            unit.Pause();
+            return true;
+        }
+
+        public bool Stop(int id)
+        {
+            AudioUnit unit = AudioUnit.GetAudioUnitByID(id);
+            if (unit == null)
+            {
+                return false;
+            }
+
+            unit.Stop();
+            return true;
+        }
+
+        public bool SetVolume(int id, float volume)
+        {
+            AudioUnit unit = AudioUnit.GetAudioUnitByID(id);
+            if (unit == null)
+            {
+                return false;
+            }
+
+            unit.SetVolume(volume);
+            return true;
+        }
+
+        public bool SetOnFinishListener(int id, Action<int> l)
+        {
+            AudioUnit unit = AudioUnit.GetAudioUnitByID(id);
+            if (unit == null)
+            {
+                return false;
+            }
+
+            unit.SetOnFinishListener(l);
+            return true;
+        }
+
+        private void OnSingleAudioFinish(int id)
+        {
+            AudioUnit unit = AudioUnit.GetAudioUnitByID(id);
+            if (unit == null)
+            {
+                Log.e("WTF! Not Impossible.");
+                return;
+            }
+
             if (m_SingletonSoundMap.ContainsKey(unit.audioName))
             {
                 m_SingletonSoundMap.Remove(unit.audioName);
             }
         }
 
-		public AudioUnit GetBGUnit()
-		{
-			return m_MainUnit;
-		}
+        public int GetBGID()
+        {
+            return m_MainUnit.id;
+        }
     }
 }
