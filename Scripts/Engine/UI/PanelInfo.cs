@@ -617,7 +617,7 @@ namespace Qarth
                     return;
                 }
 
-                OpenParam info = GetOpenInfo(m_CurrentMaster);
+                OpenParam info = GetOpenInfo(m_NextMaster);
 
                 object[] args = null;
 
