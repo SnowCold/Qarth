@@ -248,13 +248,19 @@ System.Reflection.BindingFlags.Public);
         public void OpenDependPanel<T>(int panelID, T uiID, Action<AbstractPanel> callBack, params object[] args)
             where T : IConvertible
         {
+            OpenDependPanel(panelID, uiID, callBack, 1, args);
+        }
+
+        public void OpenDependPanel<T>(int panelID, T uiID, Action<AbstractPanel> callBack, int sortIndexOffset, params object[] args)
+    where T : IConvertible
+        {
             PanelInfo panelInfo = FindPanelInfoByPanelID(panelID);
             if (panelInfo == null)
             {
                 Log.e("OpenDependPanel Not Find PanelID:" + panelID);
                 return;
             }
-            OpenDependPanel(uiID.ToInt32(null), panelInfo, callBack, args);
+            OpenDependPanel(uiID.ToInt32(null), panelInfo, callBack, sortIndexOffset, args);
         }
 
         public void OpenPanel<T>(T uiID, params object[] args) where T : IConvertible
@@ -288,7 +294,7 @@ System.Reflection.BindingFlags.Public);
             }
 
             panelInfo.sortIndex = m_UIRoot.RequireNextPanelSortingOrder(panelType);
-            panelInfo.AddMaster(panelInfo.panelID, args);
+            panelInfo.AddMaster(panelInfo.panelID, 0, args);
 
             if (panelInfo.isReady)
             {
@@ -650,7 +656,7 @@ System.Reflection.BindingFlags.Public);
             }
 
             panelInfo.sortIndex = m_UIRoot.RequireNextPanelSortingOrder(panelType);
-            panelInfo.AddMaster(panelInfo.panelID, args);
+            panelInfo.AddMaster(panelInfo.panelID, 0, args);
 
             if (panelInfo.isReady)
             {
@@ -665,7 +671,7 @@ System.Reflection.BindingFlags.Public);
             }
         }
 
-        private void OpenDependPanel(int uiID, PanelInfo masterInfo, Action<AbstractPanel> listener, params object[] args)
+        private void OpenDependPanel(int uiID, PanelInfo masterInfo, Action<AbstractPanel> listener, int sortIndexOffset, params object[] args)
         {
             if (masterInfo == null)
             {
@@ -680,7 +686,7 @@ System.Reflection.BindingFlags.Public);
                 return;
             }
 
-            panelInfo.AddMaster(masterInfo.panelID, args);
+            panelInfo.AddMaster(masterInfo.panelID, sortIndexOffset, args);
 
             if (panelInfo.isReady)
             {

@@ -318,6 +318,11 @@ namespace Qarth
             UIMgr.S.OpenDependPanel(GetParentPanelID(), uiID, null, args);
         }
 
+        protected void OpenDependPanel<T>(T uiID, int sortIndexOffset, params object[] args) where T : IConvertible
+        {
+            UIMgr.S.OpenDependPanel(GetParentPanelID(), uiID, null, sortIndexOffset, args);
+        }
+
         protected void CloseDependPanel<T>(T uiID) where T : IConvertible
         {
             UIMgr.S.CloseDependPanel(GetParentPanelID(), uiID);

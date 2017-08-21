@@ -21,6 +21,7 @@ namespace Qarth
                 public int MasterID;
                 public object[] Args;
                 private bool m_CacheFlag = false;
+                public int SortIndexOffset = 0;
 
                 public bool cacheFlag
                 {
@@ -40,9 +41,10 @@ namespace Qarth
 
                 }
 
-                public OpenParam Set(int masterID, object[] args)
+                public OpenParam Set(int masterID, int sortIndexOffset, object[] args)
                 {
                     MasterID = masterID;
+                    SortIndexOffset = sortIndexOffset;
                     Args = args;
                     return this;
                 }
@@ -416,7 +418,7 @@ namespace Qarth
                 }
             }
 
-            public void AddMaster(int master, params object[] args)
+            public void AddMaster(int master, int sortIndexOffset, params object[] args)
             {
                 if (master <= 0)
                 {
@@ -438,7 +440,7 @@ namespace Qarth
                     }
                 }
 
-                m_OpenInfoList.Add(ObjectPool<OpenParam>.S.Allocate().Set(master, args));
+                m_OpenInfoList.Add(ObjectPool<OpenParam>.S.Allocate().Set(master, sortIndexOffset, args));
 
                 SelectNextMaster();
             }
@@ -505,6 +507,8 @@ namespace Qarth
 
                 int maxIndex = -1;
 
+                OpenParam op = null;
+
                 for (int i = m_OpenInfoList.Count - 1; i >= 0; --i)
                 {
                     PanelInfo info = UIMgr.S.FindPanelInfoByPanelID(m_OpenInfoList[i].MasterID);
@@ -519,6 +523,7 @@ namespace Qarth
                     {
                         maxIndex = info.sortIndex;
                         m_NextMaster = info.panelID;
+                        op = m_OpenInfoList[i];
                     }
                 }
 
@@ -528,7 +533,7 @@ namespace Qarth
                 }
                 else
                 {
-                    m_SortIndex = maxIndex + 1;
+                    m_SortIndex = maxIndex + op.SortIndexOffset;
                 }
             }
 
