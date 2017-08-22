@@ -17,6 +17,16 @@ namespace Qarth
     {
         [SerializeField]
         private AbstractPanel m_Panel;
+        [SerializeField]
+        private bool m_CheckOnlyTop = true;
+
+        private Action m_Listener;
+        private int m_PanelEventFrame = 0;
+
+        public void SetOnClickEmptyListener(Action l)
+        {
+            m_Listener = l;
+        }
 
         protected override void Awake()
         {
@@ -31,6 +41,8 @@ namespace Qarth
             {
                 UIMgr.S.uiEventSystem.Register(m_Panel.GetParentPanelID(), OnParentPanelEvent);
             }
+
+            EventSystem.S.Register(EngineEventID.OnPanelUpdate, OnPanelUpdate);
         }
 
         protected void OnDestroy()
@@ -44,6 +56,13 @@ namespace Qarth
             {
                 UIMgr.S.uiEventSystem.UnRegister(m_Panel.GetParentPanelID(), OnParentPanelEvent);
             }
+
+            EventSystem.S.UnRegister(EngineEventID.OnPanelUpdate, OnPanelUpdate);
+        }
+
+        private void OnPanelUpdate(int key, params object[] args)
+        {
+            m_PanelEventFrame = Time.frameCount;
         }
 
         protected void OnParentPanelEvent(int key, params object[] args)
@@ -70,13 +89,33 @@ namespace Qarth
 
         protected override void OnClickEmptyArea()
         {
+            if (m_PanelEventFrame == Time.frameCount)
+            {
+                return;
+            }
+
             if (m_Panel != null)
             {
                 if(m_Panel.hasOpen)
                 {
+                    if (m_CheckOnlyTop)
+                    {
+                        if (m_Panel.uiID != UIMgr.S.FindTopPanel<int>())
+                        {
+                            return;
+                        }
+                    }
+
                     if (Time.frameCount > m_Panel.lastOpenFrame)
                     {
-                        UIMgr.S.ClosePanel(m_Panel);
+                        if (m_Listener != null)
+                        {
+                            m_Listener();
+                        }
+                        else
+                        {
+                            UIMgr.S.ClosePanel(m_Panel);
+                        }
                     }
                 }
             }
