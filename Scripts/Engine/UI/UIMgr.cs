@@ -646,31 +646,6 @@ System.Reflection.BindingFlags.Public);
         }
 
 
-        private void OpenPanel(int uiID, PanelType panelType, Action<AbstractPanel> listener, params object[] args)
-        {
-            PanelInfo panelInfo = LoadPanelInfo(uiID);
-
-            if (panelInfo == null)
-            {
-                return;
-            }
-
-            panelInfo.sortIndex = m_UIRoot.RequireNextPanelSortingOrder(panelType);
-            panelInfo.AddMaster(panelInfo.panelID, 0, args);
-
-            if (panelInfo.isReady)
-            {
-                //ReSortPanel();
-                SetPanelSortingOrderDirty();
-                panelInfo.AddOpenCallback(listener);
-            }
-            else
-            {
-                panelInfo.AddOpenCallback(listener);
-                panelInfo.LoadPanelResAsync();
-            }
-        }
-
         private void OpenDependPanel(int uiID, PanelInfo masterInfo, Action<AbstractPanel> listener, int sortIndexOffset, params object[] args)
         {
             if (masterInfo == null)
