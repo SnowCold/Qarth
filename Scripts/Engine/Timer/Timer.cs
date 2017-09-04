@@ -12,7 +12,7 @@ using UnityEngine;
 namespace Qarth
 {
     [TMonoSingletonAttribute("[Tools]/Timer")]
-    public class Timer : TMonoSingleton<Timer>
+    public partial class Timer : TMonoSingleton<Timer>
     {
         BinaryHeap<TimeItem>        m_UnScaleTimeHeap = new BinaryHeap<TimeItem>(128, eBinaryHeapSortMode.kMin);
         BinaryHeap<TimeItem>        m_ScaleTimeHeap = new BinaryHeap<TimeItem>(128, eBinaryHeapSortMode.kMin);
@@ -51,21 +51,21 @@ namespace Qarth
         }
 
         #region 投递受缩放影响定时器
-        public TimeItem Post2Scale(Run<int> callback, float delay, int repeat)
+        public int Post2Scale(Run<int> callback, float delay, int repeat)
         {
             TimeItem item = TimeItem.Allocate(callback, delay, repeat);
             Post2Scale(item);
-            return item;
+            return item.id;
         }
 
-        public TimeItem Post2Scale(Run<int> callback, float delay)
+        public int Post2Scale(Run<int> callback, float delay)
         {
             TimeItem item = TimeItem.Allocate(callback, delay);
             Post2Scale(item);
-            return item;
+            return item.id;
         }
 
-        public void Post2Scale(TimeItem item)
+        private void Post2Scale(TimeItem item)
         {
             item.sortScore = m_CurrentScaleTime + item.DelayTime();
             m_ScaleTimeHeap.Insert(item);
@@ -75,7 +75,7 @@ namespace Qarth
         #region 投递真实时间定时器
 
         //投递指定时间计时器：只支持标准时间
-        public TimeItem Post2Really(Run<int> callback, DateTime toTime)
+        public int Post2Really(Run<int> callback, DateTime toTime)
         {
             float passTick = (toTime.Ticks - DateTime.Now.Ticks) / 10000000;
             if (passTick < 0)
@@ -86,26 +86,38 @@ namespace Qarth
             return Post2Really(callback, passTick);
         }
 
-        public TimeItem Post2Really(Run<int> callback, float delay, int repeat)
+        public int Post2Really(Run<int> callback, float delay, int repeat)
         {
             TimeItem item = TimeItem.Allocate(callback, delay, repeat);
             Post2Really(item);
-            return item;
+            return item.id;
         }
 
-        public TimeItem Post2Really(Run<int> callback, float delay)
+        public int Post2Really(Run<int> callback, float delay)
         {
             TimeItem item = TimeItem.Allocate(callback, delay);
             Post2Really(item);
-            return item;
+            return item.id;
         }
 
-        public void Post2Really(TimeItem item)
+        private void Post2Really(TimeItem item)
         {
             item.sortScore = m_CurrentUnScaleTime + item.DelayTime();
             m_UnScaleTimeHeap.Insert(item);
         }
         #endregion
+
+        public bool Cancel(int id)
+        {
+            TimeItem item = TimeItem.GetTimeItemByID(id);
+            if (item == null)
+            {
+                return false;
+            }
+
+            item.Cancel();
+            return true;
+        }
 
         public void Update()
         {

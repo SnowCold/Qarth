@@ -16,7 +16,7 @@ namespace Qarth
         [SerializeField]
         private float m_DelayTime = -1;
 
-        private TimeItem m_TimeItem;
+        private int m_TimeItemID;
 
         public float delayTime
         {
@@ -28,22 +28,22 @@ namespace Qarth
         {
             if (m_DelayTime > 0)
             {
-                m_TimeItem = Timer.S.Post2Scale(OnTimeReach, m_DelayTime);
+                m_TimeItemID = Timer.S.Post2Scale(OnTimeReach, m_DelayTime);
             }
         }
 
         private void OnDisable()
         {
-            if (m_TimeItem != null)
+            if (m_TimeItemID > 0)
             {
-                m_TimeItem.Cancel();
-                m_TimeItem = null;
+                Timer.S.Cancel(m_TimeItemID);
+                m_TimeItemID = 0;
             }
         }
 
         private void OnTimeReach(int count)
         {
-            m_TimeItem = null;
+            m_TimeItemID = 0;
             gameObject.SetActive(false);
         }
     }

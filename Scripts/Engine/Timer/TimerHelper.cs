@@ -11,10 +11,10 @@ namespace Qarth
 {
     public class TimerHelper
     {
-        protected List<TimeItem>    m_TimeItemList;
+        protected List<int>    m_TimeItemList;
         protected bool              m_IsUseAble = true;
 
-        public void Add(TimeItem item)
+        public void Add(int item)
         {
             if (!m_IsUseAble)
             {
@@ -24,7 +24,7 @@ namespace Qarth
 
             if (m_TimeItemList == null)
             {
-                m_TimeItemList = new List<TimeItem>(2);
+                m_TimeItemList = new List<int>(2);
             }
             m_TimeItemList.Add(item);
         }
@@ -35,7 +35,7 @@ namespace Qarth
             {
                 for (int i = m_TimeItemList.Count - 1; i >= 0; --i)
                 {
-                    m_TimeItemList[i].Cancel();
+                    Timer.S.Cancel(m_TimeItemList[i]);
                 }
                 
                 m_TimeItemList.Clear();

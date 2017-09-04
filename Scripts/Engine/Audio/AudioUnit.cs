@@ -26,7 +26,7 @@ namespace Qarth
 
             private bool m_IsLoop;
             private AudioClip m_AudioClip;
-            private TimeItem m_TimeItem;
+            private int m_TimeItemID;
             private bool m_UsedCache = true;
             private bool m_IsCache = false;
 
@@ -160,12 +160,14 @@ namespace Qarth
                 }
 
                 m_LeftDelayTime = -1;
+
+                Timer.TimeItem item = Timer.TimeItem.GetTimeItemByID(m_TimeItemID);
                 //暂停
-                if (m_TimeItem != null)
+                if (item != null)
                 {
-                    m_LeftDelayTime = m_TimeItem.sortScore - Timer.S.currentScaleTime;
-                    m_TimeItem.Cancel();
-                    m_TimeItem = null;
+                    m_LeftDelayTime = item.sortScore - Timer.S.currentScaleTime;
+                    item.Cancel();
+                    m_TimeItemID = -1;
                 }
 
                 m_IsPause = true;
@@ -182,7 +184,7 @@ namespace Qarth
 
                 if (m_LeftDelayTime >= 0)
                 {
-                    m_TimeItem = Timer.S.Post2Scale(OnResumeTimeTick, m_LeftDelayTime);
+                    m_TimeItemID = Timer.S.Post2Scale(OnResumeTimeTick, m_LeftDelayTime);
                 }
 
                 m_IsPause = false;
@@ -232,7 +234,7 @@ namespace Qarth
                     loopCount = -1;
                 }
 
-                m_TimeItem = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, loopCount);
+                m_TimeItemID = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, loopCount);
 
                 m_Source.Play();
             }
@@ -243,7 +245,7 @@ namespace Qarth
 
                 if (m_IsLoop)
                 {
-                    m_TimeItem = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, -1);
+                    m_TimeItemID = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, -1);
                 }
             }
 
@@ -293,10 +295,10 @@ namespace Qarth
                 m_LeftDelayTime = -1;
                 m_CustomEventID = -1;
 
-                if (m_TimeItem != null)
+                if (m_TimeItemID > 0)
                 {
-                    m_TimeItem.Cancel();
-                    m_TimeItem = null;
+                    Timer.S.Cancel(m_TimeItemID);
+                    m_TimeItemID = -1;
                 }
 
                 if (m_Source != null)
