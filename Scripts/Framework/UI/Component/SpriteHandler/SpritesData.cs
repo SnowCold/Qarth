@@ -25,6 +25,11 @@ namespace Qarth
             set { m_AtlasName = value; }
         }
 
+        public List<Sprite> spritesList
+        {
+            get { return m_SpriteList; }
+        }
+
         public void AddSprite(Sprite sprite)
         {
             if (sprite == null)
