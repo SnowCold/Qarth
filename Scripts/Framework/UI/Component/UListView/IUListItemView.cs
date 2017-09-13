@@ -13,8 +13,6 @@ namespace Qarth
 	{
 		RectTransform rectTransform;
 
-		public abstract void SetData(int index, object data);
-
 		public virtual Vector2 GetItemSize(int index)
 		{
 			if (null == rectTransform) 
