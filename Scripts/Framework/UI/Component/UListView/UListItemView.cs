@@ -14,9 +14,5 @@ namespace Qarth
 {
     public class UListItemView : IUListItemView
     {
-        public override void SetData(int index, object data)
-        {
-
-        }
     }
 }
