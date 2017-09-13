@@ -29,7 +29,7 @@ namespace Qarth
 
 			// record the item size
 			IUListItemView itemView = itemPrefab.GetComponent<IUListItemView> ();
-			itemSize = itemView.GetItemSize (null);
+			itemSize = itemView.GetItemSize(-1);
 
 			// record max numbers per row/column
 			numPerRow = (int)(scrollRectSize.x / (itemSize.x + spacing.x));
@@ -78,7 +78,7 @@ namespace Qarth
 				break;
 			}
 			if (index < 0)	index = 0;
-            if (index >= lstData.Count) index = 0;
+            if (index >= lstCount) index = 0;
 			return index;
 		}
 
@@ -110,7 +110,7 @@ namespace Qarth
 		public override Vector2 GetContentSize()
 		{
 			Vector2 size = scrollRectSize;
-			int count = lstData.Count;
+			int count = lstCount;
 
 			switch (layout) 
 			{
@@ -147,7 +147,7 @@ namespace Qarth
 		
 		public override void HideNonuseableItems ()
 		{
-			for (int i = lstData.Count; lstItems != null && i < lstItems.Count; ++i) 
+			for (int i = lstCount; lstItems != null && i < lstItems.Count; ++i) 
 			{
 				if(lstItems[i].activeSelf)
 				{

@@ -35,7 +35,7 @@ namespace Qarth
 
 			// record the item size
 			IUListItemView itemView = itemPrefab.GetComponent<IUListItemView> ();
-			itemSize = itemView.GetItemSize (null);
+			itemSize = itemView.GetItemSize (-1);
 
 			// spawn pool for listitems
 			lstItems = new List<GameObject> ();
@@ -75,7 +75,7 @@ namespace Qarth
 				break;
 			}
 			if (index < 0)	index = 0;
-            if (index >= lstData.Count) index = 0;
+            if (index >= lstCount) index = 0;
 			return index;
 		}
 
@@ -121,7 +121,7 @@ namespace Qarth
 		public override Vector2 GetContentSize()
 		{
 			Vector2 size = scrollRectSize;
-			int count = lstData.Count;
+			int count = lstCount;
 			switch (layout) 
 			{
 			case Layout.Horizontal:

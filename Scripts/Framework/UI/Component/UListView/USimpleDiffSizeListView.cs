@@ -35,17 +35,17 @@ namespace Qarth
 			switch (layout) 
 			{
 			case Layout.Horizontal:
-				while(index < lstData.Count && sum < scrollRectSize.x)
+				while(index < lstCount && sum < scrollRectSize.x)
 				{
-					sum += (itemView.GetItemSize(lstData[index]).x + spacing.x);
+					sum += (itemView.GetItemSize(index).x + spacing.x);
 					index++;
 					max++;
 				}
 				break;
 			case Layout.Vertical:
-				while(index < lstData.Count && sum < scrollRectSize.x)
+				while(index < lstCount && sum < scrollRectSize.x)
 				{
-					sum += (itemView.GetItemSize(lstData[index]).y + spacing.y);
+					sum += (itemView.GetItemSize(index).y + spacing.y);
 					index++;
 					max++;
 				}
@@ -65,9 +65,9 @@ namespace Qarth
 			{
 			case Layout.Horizontal:
 				sum = -spacing.x;
-				for(int i=0; i<lstData.Count; ++i)
+				for(int i=0; i < lstCount; ++i)
 				{
-					Vector2 itemSize = itemView.GetItemSize(lstData[i]);
+					Vector2 itemSize = itemView.GetItemSize(i);
 					sum += (itemSize.x + spacing.x);
 					if(sum <= anchorPosition.x)
 					{
@@ -81,9 +81,9 @@ namespace Qarth
 				break;
 			case Layout.Vertical:
 				sum = spacing.y;
-				for(int i=0; i<lstData.Count; ++i)
+				for(int i=0; i < lstCount; ++i)
 				{
-					Vector2 itemSize = itemView.GetItemSize(lstData[i]);
+					Vector2 itemSize = itemView.GetItemSize(i);
 					sum += (itemSize.y + spacing.y);
 					if(sum <= anchorPosition.y)
 					{
@@ -98,7 +98,7 @@ namespace Qarth
 			}
             ++index;
 			if (index < 0)	index = 0;
-            if (index >= lstData.Count) index = 0;
+            if (index >= lstCount) index = 0;
 
 			return index;
 		}
@@ -112,36 +112,36 @@ namespace Qarth
 
 			if (layout == Layout.Horizontal) 
 			{
-				basePos.x = -contentRectSize.x / 2 - itemView.GetItemSize(lstData[index]).x / 2;
+				basePos.x = -contentRectSize.x / 2 - itemView.GetItemSize(index).x / 2;
 				for(int i=0; i <= index; ++i)
 				{
-					offset.x += (itemView.GetItemSize(lstData[i]).x + spacing.x);
+					offset.x += (itemView.GetItemSize(i).x + spacing.x);
 				}
 
 				switch(alignment)
 				{
 				case Alignment.Top:
-					offset.y = -(contentRectSize.y - itemView.GetItemSize(lstData[index]).y)/2;
+					offset.y = -(contentRectSize.y - itemView.GetItemSize(index).y)/2;
 					break;
 				case Alignment.Bottom:
-					offset.y = (contentRectSize.y - itemView.GetItemSize(lstData[index]).y)/2;
+					offset.y = (contentRectSize.y - itemView.GetItemSize(index).y)/2;
 					break;
 				}
 			} 
 			else 
 			{
-				basePos.y = contentRectSize.y / 2 + itemView.GetItemSize(lstData[index]).y / 2;
+				basePos.y = contentRectSize.y / 2 + itemView.GetItemSize(index).y / 2;
 				for(int i=0; i <= index; ++i)
 				{
-					offset.y -= (itemView.GetItemSize(lstData[i]).y + spacing.y);
+					offset.y -= (itemView.GetItemSize(i).y + spacing.y);
 				}
 				switch(alignment)
 				{
 				case Alignment.Left:
-					offset.x = -(contentRectSize.x - itemView.GetItemSize(lstData[index]).x)/2;
+					offset.x = -(contentRectSize.x - itemView.GetItemSize(index).x)/2;
 					break;
 				case Alignment.Right:
-					offset.x = (contentRectSize.x - itemView.GetItemSize(lstData[index]).x)/2;
+					offset.x = (contentRectSize.x - itemView.GetItemSize(index).x)/2;
 					break;
 				}
 			}
@@ -161,15 +161,15 @@ namespace Qarth
 				break;
 			}
 
-			for (int i=0; i<lstData.Count; ++i) 
+			for (int i=0; i < lstCount; ++i) 
 			{
 				if(layout == Layout.Horizontal)
 				{
-					size.x += itemView.GetItemSize(lstData[i]).x + spacing.x;
+					size.x += itemView.GetItemSize(i).x + spacing.x;
 				}
 				else
 				{
-					size.y += itemView.GetItemSize(lstData[i]).y + spacing.y;
+					size.y += itemView.GetItemSize(i).y + spacing.y;
 				}
 			}
 			return size;
@@ -196,7 +196,7 @@ namespace Qarth
 		
 		public override void HideNonuseableItems ()
 		{
-			for (int i = lstData.Count; lstItems != null && i < lstItems.Count; ++i) 
+			for (int i = lstCount; lstItems != null && i < lstItems.Count; ++i) 
 			{
 				if(lstItems[i].activeSelf)
 				{

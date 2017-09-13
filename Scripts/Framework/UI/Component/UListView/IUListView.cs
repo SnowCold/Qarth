@@ -20,6 +20,8 @@ namespace Qarth
 	[RequireComponent(typeof(ScrollRect))]
 	public abstract class IUListView : MonoBehaviour, IPointerClickHandler
 	{
+        public delegate void CellRenderer(Transform root, int index);
+
 		public Layout 				layout;
 		public Vector2				spacing;
 		public bool					needMask;
@@ -30,9 +32,16 @@ namespace Qarth
         public RectTransform		content;
 		protected Vector2			scrollRectSize;
 		protected int				lastStartInex = 0;
-		protected List<object>		lstData;
+        protected int               lstCount;
 		protected Vector2			leftTopCorner = Vector2.zero;
 		private bool				leftTopCornerInit = false;
+
+        private CellRenderer m_CellRenderer;
+
+        public void SetCellRenderer(CellRenderer renderer)
+        {
+            m_CellRenderer = renderer;
+        }
 
         public Vector2 normalizedPosition
         {
@@ -95,7 +104,11 @@ namespace Qarth
 
         public void Jump2Index(int index)
         {
-            float precent = (float)index / GetDataCount();
+            int dataCount = GetDataCount();
+
+            dataCount = dataCount > 0 ? dataCount : 0;
+
+            float precent = (float)index / dataCount;
             precent = Mathf.Min(0.999f, precent);
             precent = Mathf.Max(0.001f, precent);
             Vector2 oldPrecent = m_ScrollRect.normalizedPosition;
@@ -103,18 +116,20 @@ namespace Qarth
             m_ScrollRect.normalizedPosition = oldPrecent;
         }
 
-		public void SetData(List<object> lstData)
-		{
-			if (false == initialized) 
-			{
-				Init();
-				initialized = true;
-			}
+        public void SetDataCount(int count)
+        {
+            if (false == initialized)
+            {
+                Init();
+                initialized = true;
+            }
 
             lastStartInex = -1;
-			this.lstData = lstData;
-			RefreshListView();
-		}
+            this.lstCount = count;
+            //this.lstData = lstData;
+            RefreshListView();
+        }
+
 
         public void ForceUpdateList()
         {
@@ -156,7 +171,7 @@ namespace Qarth
 			for (int i = 0; i < showItemNum; ++i)
 			{
                 int dataIndex = startIndex + i;
-                if (dataIndex >= lstData.Count)
+                if (dataIndex >= lstCount)
                 {
                     break;
                 }
@@ -170,8 +185,11 @@ namespace Qarth
 				trans.pivot = trans.anchorMin = trans.anchorMax = new Vector2(0.5f, 0.5f);
 				trans.anchoredPosition = GetItemAnchorPos(dataIndex);
 				trans.localScale = Vector3.one;
-				IUListItemView itemView = go.GetComponent<IUListItemView>();
-				itemView.SetData(dataIndex, lstData[dataIndex]);
+
+                if (m_CellRenderer != null)
+                {
+                    m_CellRenderer(trans, dataIndex);
+                }
 			}
 
 			// dont show the extra items shown before
@@ -194,7 +212,7 @@ namespace Qarth
 		{
 			int startIndex = GetStartIndex ();
 			int maxShowNum = GetMaxShowItemNum ();
-			int maxItemNum = lstData.Count - startIndex;
+			int maxItemNum = lstCount - startIndex;
 			return maxShowNum < maxItemNum ? maxShowNum : maxItemNum;
 		}
 
@@ -273,8 +291,7 @@ namespace Qarth
 		/// <returns>The data count.</returns>
 		public virtual int GetDataCount()
 		{
-			if (null == lstData)return 1;
-			else return lstData.Count;
+            return lstCount;
 		}
 
 		/// <summary>
