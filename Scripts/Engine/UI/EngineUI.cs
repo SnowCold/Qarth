@@ -21,6 +21,7 @@ namespace Qarth
         TransitionPanel,
         HighlightMaskPanel,
 		GuideHandPanel,
-        GuidePanel
+        GuidePanel,
+        MaskPanel,
     }
 }
