@@ -30,6 +30,7 @@ namespace Qarth
 		protected bool				initialized = false;
 
         public RectTransform		content;
+        public RectTransform        viewPort;
 		protected Vector2			scrollRectSize;
 		protected int				lastStartInex = 0;
         protected int               lstCount;
@@ -154,12 +155,20 @@ namespace Qarth
 			}
 		}
 
-		protected void RefreshListView()
+        protected virtual void AdjustViewportSize(Vector2 contentSize)
+        {
+
+        }
+
+        protected void RefreshListView()
 		{
 			// set the content size
 			Vector2 size = GetContentSize ();
 			RectTransform contentRectTransform = content.transform as RectTransform;
-			contentRectTransform.sizeDelta = size;
+
+            AdjustViewportSize(size);
+
+            contentRectTransform.sizeDelta = size;
 
             // set the item postion and data
             int startIndex = GetStartIndex();
