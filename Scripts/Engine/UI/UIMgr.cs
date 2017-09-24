@@ -315,6 +315,11 @@ System.Reflection.BindingFlags.Public);
             bool hasChange = false;
             for (int i = m_ActivePanelInfoList.Count - 1; i >= 0; --i)
             {
+                if (i >= m_ActivePanelInfoList.Count)
+                {
+                    continue;
+                }
+
                 if (m_ActivePanelInfoList[i].uiID == eID)
                 {
                     ClosePanelInfo(m_ActivePanelInfoList[i]);

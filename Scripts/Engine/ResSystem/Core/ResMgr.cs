@@ -41,7 +41,7 @@ namespace Qarth
 
         public override void OnSingletonInit()
         {
-            ReloadABTable();
+            //ReloadABTable();
         }
 
         public void Dump()
@@ -171,6 +171,7 @@ namespace Qarth
         public void InitResMgr()
         {
             Log.i("Init[ResMgr]");
+            ReloadABTable();
         }
 
         #region 属性
