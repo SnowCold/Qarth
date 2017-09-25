@@ -104,7 +104,12 @@ namespace Qarth
                 }
             }
 
-            public void SetAudio(GameObject root, string name, bool loop)
+            public AudioSource audioSource
+            {
+                get { return m_Source; }
+            }
+
+            public void SetAudio(GameObject root, string name, bool loop, bool isEnable)
             {
                 if (string.IsNullOrEmpty(name))
                 {
@@ -119,6 +124,10 @@ namespace Qarth
                 if (m_Source == null)
                 {
                     m_Source = root.AddComponent<AudioSource>();
+                    if (!isEnable)
+                    {
+                        m_Source.enabled = isEnable;
+                    }
                 }
 
                 //防止卸载后立马加载的情况
@@ -172,7 +181,10 @@ namespace Qarth
 
                 m_IsPause = true;
 
-                m_Source.Pause();
+                if (m_Source.enabled)
+                {
+                    m_Source.Pause();
+                }
             }
 
             public void Resume()
@@ -189,7 +201,10 @@ namespace Qarth
 
                 m_IsPause = false;
 
-                m_Source.Play();
+                if (m_Source.enabled)
+                {
+                    m_Source.Play();
+                }
             }
 
             public void SetVolume(float volume)
@@ -236,7 +251,10 @@ namespace Qarth
 
                 m_TimeItemID = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, loopCount);
 
-                m_Source.Play();
+                if (m_Source.enabled)
+                {
+                    m_Source.Play();
+                }
             }
 
             private void OnResumeTimeTick(int repeatCount)
@@ -305,7 +323,10 @@ namespace Qarth
                 {
                     if (m_Source.clip == m_AudioClip)
                     {
-                        m_Source.Stop();
+                        if (m_Source.enabled)
+                        {
+                            m_Source.Stop();
+                        }
                         m_Source.clip = null;
                     }
                     m_Source.volume = 1.0f;
