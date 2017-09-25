@@ -10,6 +10,18 @@ namespace Qarth
     {
         [SerializeField]
         private bool m_DebugFlag = false;
+        [SerializeField]
+        private bool m_AutoPlayOnStart = false;
+        [SerializeField]
+        protected bool m_IsLoop = false;
+
+        private void Start()
+        {
+            if (m_AutoPlayOnStart)
+            {
+                StartAnim();
+            }
+        }
 
         public virtual void StartAnim(float delayTime = 0)
         {

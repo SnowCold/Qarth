@@ -20,17 +20,29 @@ namespace Qarth
         [SerializeField]
         private Vector3 m_EndPosition;
         [SerializeField]
-        private float m_Duration = 1;
+        private float m_Duration = 0.6f;
         [SerializeField]
-        private Ease m_EaseMode = Ease.Linear;
+        private Ease m_EaseMode = Ease.OutElastic;
 
         [SerializeField]
-        private float m_V0;
+        private float m_V0 = 0.1f;
         [SerializeField]
-        private float m_V1;
+        private float m_V1 = 0.3f;
 
         private Tweener m_Tweener;
         private bool m_HasInit = false;
+
+        public Vector3 startPos
+        {
+            get { return m_StartPos; }
+            set { m_StartPos = value; }
+        }
+
+        public Vector3 endPos
+        {
+            get { return m_EndPosition; }
+            set { m_EndPosition = value; }
+        }
 
         public override void StartAnim(float delayTime = 0)
         {

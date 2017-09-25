@@ -249,7 +249,7 @@ namespace Qarth
                     loopCount = -1;
                 }
 
-                m_TimeItemID = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, loopCount);
+                m_TimeItemID = Timer.S.Post2Scale(OnSoundPlayFinish, GetAudioClipLength(m_AudioClip), loopCount);
 
                 if (m_Source.enabled)
                 {
@@ -263,7 +263,7 @@ namespace Qarth
 
                 if (m_IsLoop)
                 {
-                    m_TimeItemID = Timer.S.Post2Scale(OnSoundPlayFinish, m_AudioClip.length, -1);
+                    m_TimeItemID = Timer.S.Post2Scale(OnSoundPlayFinish, GetAudioClipLength(m_AudioClip), -1);
                 }
             }
 
@@ -371,6 +371,16 @@ namespace Qarth
                     s_AudioUnitMap.Remove(unit.id);
                 }
                 unit.id = -1;
+            }
+
+            private float GetAudioClipLength(AudioClip clip)
+            {
+                if (clip.length < 0.1f)
+                {
+                    return 0.1f;
+                }
+
+                return clip.length;
             }
 
         }
