@@ -22,6 +22,11 @@ namespace Qarth
             m_Loader = ResLoader.Allocate("ResHolder");
         }
 
+        public ResLoader loader
+        {
+            get { return m_Loader; }
+        }
+
         public void AddRes(string res)
         {
             m_Loader.Add2Load(res);
