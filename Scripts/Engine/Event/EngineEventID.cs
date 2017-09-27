@@ -15,6 +15,11 @@ namespace Qarth
     {
         EngineEventIDMin = 1000000,
         OnPanelUpdate,
+
+        OnApplicationFocusChange,
+        OnApplicationPauseChange,
+        OnApplicationQuit,
+
         BackKeyDown
     }
 }

@@ -11,11 +11,103 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using System.Text;
 
 namespace Qarth
 {
     public class SerializeHelper
     {
+        public static bool SerializeJson(string path, object obj)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                Log.w("SerializeJson Without Valid Path.");
+                return false;
+            }
+
+            if (obj == null)
+            {
+                Log.w("SerializeJson obj is Null.");
+                return false;
+            }
+
+            string jsonValue = null;
+            try
+            {
+                jsonValue = JsonUtility.ToJson(obj);
+            }
+            catch (Exception e)
+            {
+                Log.e(e);
+                return false;
+            }
+
+            FileInfo fileInfo = new FileInfo(path);
+            if (fileInfo.Exists)
+            {
+                fileInfo.Delete();
+            }
+
+            using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+            {
+                byte[] writeDataArray = UTF8Encoding.UTF8.GetBytes(jsonValue);
+                fs.Write(writeDataArray, 0, writeDataArray.Length);
+                fs.Flush();
+            }
+
+            return true;
+        }
+
+        public static T DeserializeJson<T>(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                Log.w("DeserializeJson Without Valid Path.");
+                return default(T);
+            }
+
+            FileInfo fileInfo = new FileInfo(path);
+
+            if (!fileInfo.Exists)
+            {
+                return default(T);
+            }
+
+            using (FileStream stream = fileInfo.OpenRead())
+            {
+                try
+                {
+                    if (stream.Length <= 0)
+                    {
+                        stream.Close();
+                        return default(T);
+                    }
+
+                    byte[] byteData = new byte[stream.Length];
+
+                    stream.Read(byteData, 0, byteData.Length);
+
+                    string context = UTF8Encoding.UTF8.GetString(byteData);
+
+                    stream.Close();
+
+                    if (string.IsNullOrEmpty(context))
+                    {
+                        return default(T);
+                    }
+
+                    return JsonUtility.FromJson<T>(context);
+                }
+                catch (Exception e)
+                {
+                    Log.e(e);
+                }
+            }
+
+            Log.w("DeserializeJson Failed!");
+            return default(T);
+        }
+
         public static bool SerializeBinary(string path, object obj)
         {
             if (string.IsNullOrEmpty(path))

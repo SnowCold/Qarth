@@ -13,11 +13,8 @@ namespace Qarth
 {
     public class AbstractApplicationMgr<T> : TMonoSingleton<T> where T : TMonoSingleton<T>
     {
-        public static Action s_OnApplicationQuit = null;
-        public static Action<bool> s_OnApplicationPause = null;
-        public static Action<bool> s_OnApplicationFocus = null;
-        public static Action s_OnApplicationUpdate = null;
-        public static Action s_OnApplicationOnGUI = null;
+        public Action onApplicationUpdate = null;
+        public Action onApplicationOnGUI = null;
 
         protected void Start()
         {
@@ -54,62 +51,32 @@ namespace Qarth
         {
             MonoSingleton.isApplicationQuit = true;
 
-            if (s_OnApplicationQuit != null)
-            {
-                try
-                {
-                    s_OnApplicationQuit();
-                }
-                catch (Exception e)
-                {
-                    Log.e(e);
-                }
-            }
+            EventSystem.S.Send(EngineEventID.OnApplicationQuit);
         }
 
         void OnApplicationPause(bool pauseStatus)
         {
-            if (s_OnApplicationPause != null)
-            {
-                try
-                {
-                    s_OnApplicationPause(pauseStatus);
-                }
-                catch (Exception e)
-                {
-                    Log.e(e);
-                }
-            }
+            EventSystem.S.Send(EngineEventID.OnApplicationPauseChange, pauseStatus);
         }
 
         void OnApplicationFocus(bool focusStatus)
         {
-            if (s_OnApplicationFocus != null)
-            {
-                try
-                {
-                    s_OnApplicationFocus(focusStatus);
-                }
-                catch (Exception e)
-                {
-                    Log.e(e);
-                }
-            }
+            EventSystem.S.Send(EngineEventID.OnApplicationFocusChange, focusStatus);
         }
 
         void Update()
         {
-            if (s_OnApplicationUpdate != null)
+            if (onApplicationUpdate != null)
             {
-                s_OnApplicationUpdate();
+                onApplicationUpdate();
             }
         }
 
         void OnGUI()
         {
-            if (s_OnApplicationOnGUI != null)
+            if (onApplicationOnGUI != null)
             {
-                s_OnApplicationOnGUI();
+                onApplicationOnGUI();
             } 
         }
     }
