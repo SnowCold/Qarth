@@ -82,8 +82,16 @@ namespace Qarth
 					.Join(DOTween.To(()=>wrap.schedule, x=>wrap.schedule = x, 1.0f, duration)).SetLoops(loop);
 		}
 
-		//这个模式需要完善 并测试下性能才能用
-		private static Dictionary<string, Tween> s_AllTweenMap = new Dictionary<string, Tween>(50);
+        public static Sequence PlayBubbleAction2(Transform transform, float duration, int loop = -1)
+        {
+            Vector3 scale = transform.localScale;
+            return DOTween.Sequence().Append(transform.DOScale(scale * 1.1f, duration * 2).SetEase(Ease.OutElastic, 0.1f, 0.3f))
+                .Append(transform.DOScale(scale * 0.9f, duration * 2).SetEase(Ease.OutElastic, 0.1f, 0.3f)).SetLoops(loop).SetEase(Ease.Linear);
+
+        }
+
+        //这个模式需要完善 并测试下性能才能用
+        private static Dictionary<string, Tween> s_AllTweenMap = new Dictionary<string, Tween>(50);
 		public static void playTweenToTarget(Object obj, Tween tween, string name, bool complate)
 		{
 			string key = string.Format("{0}-{1}", obj.GetInstanceID(), name);

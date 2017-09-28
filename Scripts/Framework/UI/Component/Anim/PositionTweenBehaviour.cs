@@ -10,6 +10,8 @@ namespace Qarth
     public class PositionTweenBehaviour : TweenBehaviour
     {
         [SerializeField]
+        private float m_DelayTime = 0;
+        [SerializeField]
         private bool m_IsLocalPosition = true;
         [SerializeField]
         private bool m_AutoSyncStartPosition = false;
@@ -67,7 +69,15 @@ namespace Qarth
 
                 m_Tweener = transform.DOMove(m_EndPosition, m_Duration)
                     .SetEase(m_EaseMode).OnComplete(OnTweenComplate);
+            }
 
+            if (delayTime > 0)
+            {
+                m_Tweener.SetDelay(delayTime);
+            }
+            else if (m_DelayTime > 0)
+            {
+                m_Tweener.SetDelay(m_DelayTime);
             }
         }
 

@@ -25,7 +25,7 @@ namespace Qarth.Editor
 
 		public static bool IsAssetBundle(string fileName)
 		{
-			if (fileName.LastIndexOf('.') < 0)
+			if (fileName.EndsWith(".bundle"))
 			{
 				return true;
 			}
