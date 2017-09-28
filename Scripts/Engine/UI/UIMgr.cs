@@ -13,6 +13,14 @@ using System.Reflection;
 
 namespace Qarth
 {
+    public enum BackKeyCodeResult
+    {
+        NONE = 0,
+        BLOCK = 1,//不传递
+        PROCESS = 2,//已处理
+        PROCESS_AND_BLOCK = PROCESS | BLOCK
+    }
+
     [TMonoSingletonAttribute("[Tools]/UIMgr")]
     public partial class UIMgr : TMonoSingleton<UIMgr>
     {
@@ -1053,17 +1061,24 @@ System.Reflection.BindingFlags.Public);
 
         private void OnBackKeyDownEvent(int key, params object[] args)
         {
+            KeyCodeEventInfo eventInfo = args[0] as KeyCodeEventInfo;
+            if (eventInfo == null)
+            {
+                return;
+            }
+
             for (int i = m_ActivePanelInfoList.Count - 1; i >= 0; --i)
             {
                 if (m_ActivePanelInfoList[i].abstractPanel != null)
                 {
-                    if (m_ActivePanelInfoList[i].abstractPanel.OnBackKeyDown())
+                    int result = (int)m_ActivePanelInfoList[i].abstractPanel.OnBackKeyDown();
+                    if (((result ^ (int)BackKeyCodeResult.PROCESS) & (int)BackKeyCodeResult.PROCESS) == 0)
                     {
-                        KeyCodeEventInfo eventInfo = args[0] as KeyCodeEventInfo;
-                        if (eventInfo != null)
-                        {
-                            eventInfo.Process();
-                        }
+                        eventInfo.Process();
+                    }
+
+                    if (((result ^ (int)BackKeyCodeResult.BLOCK) & (int)BackKeyCodeResult.BLOCK) == 0)
+                    {
                         return;
                     }
                 }

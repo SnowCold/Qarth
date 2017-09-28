@@ -141,9 +141,9 @@ namespace Qarth
 
         }
 
-        public virtual bool OnBackKeyDown()
+        public virtual BackKeyCodeResult OnBackKeyDown()
         {
-            return false;
+            return BackKeyCodeResult.NONE;
         }
 
         public virtual void OnTransitionFinish(bool mode)
