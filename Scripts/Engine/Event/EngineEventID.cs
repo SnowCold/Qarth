@@ -20,6 +20,11 @@ namespace Qarth
         OnApplicationPauseChange,
         OnApplicationQuit,
 
+        OnAdNotReadyEvent,
+        OnAdCloseEvent,
+        OnAdClickEvent,
+        OnAdRewardSuccess,
+        OnAdRewardFailed,
         BackKeyDown
     }
 }
