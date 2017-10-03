@@ -128,7 +128,7 @@ namespace Qarth
 			get { return m_ServerPort; }
 		}
 
-		public APP_MODE AppMode
+		public APP_MODE appMode
 		{
 			get { return m_AppMode; }
 			set
