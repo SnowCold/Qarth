@@ -176,11 +176,12 @@ namespace Qarth.Editor
                     AssetImporter ai = AssetImporter.GetAtPath(EditorUtils.ABSPath2AssetsPath(files[i]));
                     if (ai != null)
                     {
-                        if (!String.IsNullOrEmpty(ai.assetBundleName))
+                        if (!string.IsNullOrEmpty(ai.assetBundleName))
                         {
                             //Log.i("Files:" + files[i] + " ---> " + ai.assetBundleName);
                             string assetPath = EditorFileUtils.RemoveFileExtend(ai.assetPath).ToLower();
-                            if (assetPath.EndsWith(ai.assetBundleName))
+                            string bundleName = EditorFileUtils.RemoveFileExtend(ai.assetBundleName);
+                            if (assetPath.EndsWith(bundleName))
                             {
                                 //Log.i("File Flag:" + assetPath);
                                 state.flag |= ABStateDefine.FILE;

@@ -167,7 +167,7 @@ namespace Qarth.Editor
                     }
                     else
                     {
-                        ai.assetBundleName = string.Format("{0}/{1}", assetBundleName, PathHelper.FileNameWithoutSuffix(fileName));
+                        ai.assetBundleName = string.Format("{0}/{1}.bundle", assetBundleName, PathHelper.FileNameWithoutSuffix(fileName));
                     }
                 }
 
