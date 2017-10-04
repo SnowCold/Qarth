@@ -375,9 +375,9 @@ namespace Qarth
 
             private float GetAudioClipLength(AudioClip clip)
             {
-                if (clip.length < 0.1f)
+                if (clip.length < 0.2f)
                 {
-                    return 0.1f;
+                    return 0.2f;
                 }
 
                 return clip.length;
