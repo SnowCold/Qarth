@@ -16,7 +16,7 @@ namespace Qarth
         public class OpenParam
         {
             private AbstractPanel m_PrePanel;
-            private int m_NextPanelUIID;
+            private int m_NextPanelUIID = -1;
             private bool m_NeedClosePrePanel;
             private object[] m_Args;
             private ITransitionAction m_Action;

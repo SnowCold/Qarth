@@ -87,6 +87,11 @@ namespace Qarth
                 m_NextPanelResLoader = ResLoader.Allocate("SwitchAnimPanel");
             }
 
+            if (m_OpenParam.nextPanelUIID < 0)
+            {
+                OnNextPanelResLoadFinish();
+            }
+
             UIData data = UIDataTable.Get(m_OpenParam.nextPanelUIID);
 
             if (data == null)
@@ -108,13 +113,13 @@ namespace Qarth
                 m_NextPanelResLoader.Recycle2Cache();
                 m_NextPanelResLoader = null;
             }
-
+            /*
             if (panel == null)
             {
                 CloseSelfPanel();
                 return;
             }
-
+            */
             m_NextPanel = panel;
 
             if (m_Action.transitionSameTime)
@@ -130,7 +135,15 @@ namespace Qarth
 
         private void OnNextPanelResLoadFinish()
         {
-            UIMgr.S.OpenPanel(m_OpenParam.nextPanelUIID, OnNextPanelOpen, m_OpenParam.args);
+            if (m_OpenParam.nextPanelUIID < 0)
+            {
+                OnNextPanelOpen(null);
+            }
+            else
+            {
+                UIMgr.S.OpenPanel(m_OpenParam.nextPanelUIID, OnNextPanelOpen, m_OpenParam.args);
+            }
+
             m_Action.OnNextPanelReady();
         }
 

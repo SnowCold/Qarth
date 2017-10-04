@@ -23,5 +23,6 @@ namespace Qarth
 		GuideHandPanel,
         GuidePanel,
         MaskPanel,
+        ColorFadeTransition,
     }
 }
