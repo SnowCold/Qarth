@@ -58,6 +58,49 @@ namespace Qarth
             return true;
         }
 
+        public static T DeserializeJson<T>(Stream stream)
+        {
+            if (stream == null)
+            {
+                Log.w("DeserializeJson Failed!");
+                return default(T);
+            }
+
+            using (stream)
+            {
+                try
+                {
+                    if (stream.Length <= 0)
+                    {
+                        stream.Close();
+                        return default(T);
+                    }
+
+                    byte[] byteData = new byte[stream.Length];
+
+                    stream.Read(byteData, 0, byteData.Length);
+
+                    string context = UTF8Encoding.UTF8.GetString(byteData);
+
+                    stream.Close();
+
+                    if (string.IsNullOrEmpty(context))
+                    {
+                        return default(T);
+                    }
+
+                    return JsonUtility.FromJson<T>(context);
+                }
+                catch (Exception e)
+                {
+                    Log.e(e);
+                }
+            }
+
+            Log.w("DeserializeBinary Failed!");
+            return default(T);
+        }
+
         public static T DeserializeJson<T>(string path)
         {
             if (string.IsNullOrEmpty(path))

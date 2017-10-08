@@ -233,12 +233,15 @@ namespace Qarth
 			RegisterGuideCommand(typeof(PlayAudioCommand));
             RegisterGuideCommand(typeof(EventPauseCommand));
             RegisterGuideCommand(typeof(MonoFuncCall));
+            RegisterGuideCommand(typeof(OpenPanelCommand));
 		}
 
 		private void InitGuideTriggerFactory()
 		{
 			RegisterGuideTrigger(typeof(TopPanelTrigger));
 			RegisterGuideTrigger(typeof(UINodeVisibleTrigger));
+            RegisterGuideTrigger(typeof(EventTrigger));
+            RegisterGuideTrigger(typeof(EmptyTrigger));
 		}
 
 		private void InitRuntimeParamFactory()
