@@ -15,6 +15,12 @@ namespace Qarth
 {
     public class Helper
     {
+        public static long GetCurrentTimeSecond()
+        {
+            long ticks = DateTime.UtcNow.Ticks;
+            return ticks / 10000000;
+        }
+
         public static Dictionary<string, string> GetUrlParmDict(string parmStr)
         {
             List<string> parmList = Helper.String2ListString(parmStr, "&");
