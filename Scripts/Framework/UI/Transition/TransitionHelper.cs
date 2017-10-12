@@ -70,7 +70,7 @@ namespace Qarth
                 get { return m_Args; }
             }
 
-            public OpenParam SetOpenParam(object[] args)
+            public OpenParam SetOpenParam(params object[] args)
             {
                 m_Args = args;
                 return this;
