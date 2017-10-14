@@ -15,6 +15,12 @@ namespace Qarth
         [SerializeField]
         private Vector3 m_Axis = new Vector3(1,1,1);
 
+        public Transform target
+        {
+            get { return m_Target; }
+            set { m_Target = value; }
+        }
+
         private void LateUpdate()
         {
             if (m_Target == null)
