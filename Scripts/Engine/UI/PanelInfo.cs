@@ -354,9 +354,12 @@ namespace Qarth
                 }
                 else
                 {
-                    UITools.SetGameObjectLayer(m_Panel.gameObject, LayerDefine.LAYER_HIDE_UI);
-                    m_Panel.gameObject.transform.localPosition = UIMgr.S.uiRoot.RequireNextFreePos();
-                    m_Panel.OnBecomeHide();
+                    if (m_Panel.gameObject.activeSelf)
+                    {
+                        UITools.SetGameObjectLayer(m_Panel.gameObject, LayerDefine.LAYER_HIDE_UI);
+                        m_Panel.gameObject.transform.localPosition = UIMgr.S.uiRoot.RequireNextFreePos();
+                        m_Panel.OnBecomeHide();
+                    }
                 }
 
                 //2. 使用GameObject开关模式,经过测试每次切换的开销比较大，但是在编辑器模式下方便编辑调试
@@ -568,7 +571,7 @@ namespace Qarth
                     return;
                 }
 
-                if (m_Panel == null)//这个条件的检测反而比较少
+                if (m_Panel == null || !m_Panel.gameObject.activeSelf)//这个条件的检测反而比较少
                 {
                     return;
                 }

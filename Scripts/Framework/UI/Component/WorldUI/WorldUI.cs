@@ -23,6 +23,7 @@ namespace Qarth
 
         private Vector3 m_ViewPos;
 
+        protected bool m_IsDirty = false;
         protected WorldUIBinding m_Binding = null;
 
         public float zPos
@@ -62,6 +63,7 @@ namespace Qarth
 
         public void SetDirty()
         {
+            m_IsDirty = true;
             if (m_Binding != null)
             {
                 m_Binding.SetDirty();
@@ -74,7 +76,7 @@ namespace Qarth
             {
                 return;
             }
-
+            m_IsDirty = true;
             OnWorldUIBinding();
         }
 
@@ -111,8 +113,9 @@ namespace Qarth
                 return;
             }
 
-            if (IsNeedUpdate())
+            if (IsNeedUpdate() || m_IsDirty)
             {
+                m_IsDirty = false;
                 m_Binding.Update();
             }
         }
