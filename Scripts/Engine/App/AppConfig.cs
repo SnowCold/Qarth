@@ -91,6 +91,7 @@ namespace Qarth
         public void InitAppConfig()
         {
             Log.i("Init[AppConfig]");
+            Log.Level = m_LogLevel;
         }
 
         #region 数据区
@@ -101,6 +102,7 @@ namespace Qarth
 		[SerializeField] private eServerMode	m_ServerMode = eServerMode.kLocal;
 		[SerializeField] private APP_MODE 		m_AppMode;
 		[SerializeField] private DebugSetting 	m_DebugSetting;
+        [SerializeField] private LogLevel       m_LogLevel = LogLevel.Max;
 		[SerializeField] private bool			m_IsGuideActive = false;
         [SerializeField] private bool           m_IsResUpdateActive = false;
         [SerializeField] private string         m_ReleaseBundleId = "com.putao.logic.cn";

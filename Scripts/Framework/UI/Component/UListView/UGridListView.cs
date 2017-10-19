@@ -18,6 +18,11 @@ namespace Qarth
 		public GameObject			itemPrefab;
 		protected List<GameObject>	lstItems;
 
+        [SerializeField]
+        public int m_MaxRow;
+        [SerializeField]
+        public int m_MaxCol;
+
 		private int 				numPerRow;
 		private	int					numPerColumn;
 		private	Vector2				padding;
@@ -31,10 +36,21 @@ namespace Qarth
 			IUListItemView itemView = itemPrefab.GetComponent<IUListItemView> ();
 			itemSize = itemView.GetItemSize(-1);
 
-			// record max numbers per row/column
-			numPerRow = (int)(scrollRectSize.x / (itemSize.x + spacing.x));
-			numPerColumn = (int)(scrollRectSize.y / (itemSize.y + spacing.y));
-			if (numPerRow < 1 || numPerColumn < 1) 
+            // record max numbers per row/column
+            numPerRow = m_MaxRow;
+            numPerColumn = m_MaxCol;
+
+            if (numPerRow < 1)
+            {
+                numPerRow = (int)(scrollRectSize.x / (itemSize.x + spacing.x));
+            }
+
+            if (numPerColumn < 1)
+            {
+                numPerColumn = (int)(scrollRectSize.y / (itemSize.y + spacing.y));
+            }
+
+            if (numPerRow < 1 || numPerColumn < 1) 
 			{
 				Debug.LogError("ScrollRect size is too small to contain even one item");
 			}
