@@ -25,6 +25,9 @@ namespace Qarth
         OnAdClickEvent,
         OnAdRewardSuccess,
         OnAdRewardFailed,
-        BackKeyDown
+        BackKeyDown,
+
+        OnArchevementComplate,
+        OnArchevementFinish,
     }
 }

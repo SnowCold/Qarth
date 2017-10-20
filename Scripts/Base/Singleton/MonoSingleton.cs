@@ -54,9 +54,9 @@ namespace Qarth
                         UnityEngine.Object.DontDestroyOnLoad(obj);
                         instance = obj.AddComponent<K>();
                     }
-
-                    instance.OnSingletonInit();
                 }
+
+                instance.OnSingletonInit();
             }
 
             return instance;
