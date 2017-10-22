@@ -23,6 +23,7 @@ namespace Qarth
 
         protected void StartApp()
         {
+            I18Mgr.S.Init();
             InitThirdLibConfig();
             InitAppEnvironment();
             StartGame();

@@ -28,5 +28,24 @@ namespace Qarth
             }
             return string.Format(msg, args);
         }
+
+        public static TDTableMetaData GetLanguageMetaData()
+        {
+            string key = I18Mgr.S.langugePrefix;
+
+            string tableName = FormatTableName(TDLanguageTable.metaData.tableName, key);
+
+            if (!FileMgr.S.FileExists(TableHelper.GetTableFilePath(tableName)))
+            {
+                return TDLanguageTable.metaData;
+            }
+
+            return new TDTableMetaData(TDLanguageTable.Parse, tableName);
+        }
+
+        private static string FormatTableName(string rawName, string key)
+        {
+            return string.Format("{0}_{1}", rawName, key);
+        }
     }
 }

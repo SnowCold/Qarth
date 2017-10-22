@@ -27,7 +27,7 @@ namespace Qarth
         OnAdRewardFailed,
         BackKeyDown,
 
-        OnArchevementComplate,
-        OnArchevementFinish,
+        OnAchievementComplate,
+        OnAchievementFinish,
     }
 }
