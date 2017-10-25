@@ -26,7 +26,7 @@ namespace Qarth
         OnAdRewardSuccess,
         OnAdRewardFailed,
         BackKeyDown,
-
+        OnShare2Social,
         OnAchievementComplate,
         OnAchievementFinish,
     }
